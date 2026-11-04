@@ -301,6 +301,51 @@
                 }
             }
         },
+        "/api/v1/catalog/collections/{slug}": {
+            "get": {
+                "operationId": "catalog_collection",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CollectionCard"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/catalog/facets": {
             "get": {
                 "operationId": "catalog_facets",
@@ -590,6 +635,207 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Home"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/navigation": {
+            "get": {
+                "operationId": "cms_navigation",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Navigation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/pages": {
+            "get": {
+                "operationId": "cms_pages",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PageSummary"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/pages/{slug}": {
+            "get": {
+                "operationId": "cms_page",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Page"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/redirects/resolve": {
+            "get": {
+                "operationId": "cms_redirect_resolve",
+                "description": "Asked by the storefront only for addresses that would otherwise be 'not found'.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Redirect"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/seo/{key}": {
+            "get": {
+                "operationId": "cms_seo",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Seo"
                                 }
                             }
                         },
@@ -1661,6 +1907,737 @@
                 }
             }
         },
+        "/api/v1/staff/cms/banners": {
+            "get": {
+                "operationId": "staff_cms_banners",
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EditableBlockOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/banners/{key}": {
+            "put": {
+                "operationId": "staff_cms_banner_visibility",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EnabledInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/banners/{key}/draft": {
+            "put": {
+                "operationId": "staff_cms_banner_draft",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContentInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "staff_cms_banner_discard",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/banners/{key}/publish": {
+            "post": {
+                "operationId": "staff_cms_banner_publish",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/home-sections": {
+            "get": {
+                "operationId": "staff_cms_sections",
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EditableBlockOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/home-sections/{key}/draft": {
+            "put": {
+                "operationId": "staff_cms_section_draft",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContentInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "staff_cms_section_discard",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/home-sections/{key}/publish": {
+            "post": {
+                "operationId": "staff_cms_section_publish",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EditableBlockOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/home-sections/layout": {
+            "put": {
+                "operationId": "staff_cms_layout",
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LayoutInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/EditableBlockOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/navigation": {
+            "get": {
+                "operationId": "staff_cms_navigation",
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MenuOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/navigation/{menu}": {
+            "put": {
+                "operationId": "staff_cms_menu_set",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "menu",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MenuInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MenuOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/pages": {
+            "get": {
+                "operationId": "staff_cms_pages",
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PageSummaryOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_cms_page_create",
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PageCreateInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/pages/{page_id}": {
+            "get": {
+                "operationId": "staff_cms_page",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "page_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "staff_cms_page_settings",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "page_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PageSettingsInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/pages/{page_id}/draft": {
+            "put": {
+                "operationId": "staff_cms_page_draft",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "page_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContentInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "staff_cms_page_discard",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "page_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/pages/{page_id}/publish": {
+            "post": {
+                "operationId": "staff_cms_page_publish",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "page_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/cms/pages/{page_id}/unpublish": {
+            "post": {
+                "operationId": "staff_cms_page_unpublish",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "page_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/me/mfa/confirm": {
             "post": {
                 "operationId": "staff_me_mfa_confirm",
@@ -1891,6 +2868,96 @@
                 }
             }
         },
+        "/api/v1/staff/redirects": {
+            "get": {
+                "operationId": "staff_redirects",
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RedirectOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_redirect_create",
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RedirectInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RedirectOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/redirects/{redirect_id}": {
+            "delete": {
+                "operationId": "staff_redirect_delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "redirect_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/v1/staff/roles": {
             "get": {
                 "operationId": "staff_roles",
@@ -1911,6 +2978,79 @@
                                     "items": {
                                         "$ref": "#/components/schemas/RoleWithPermissionsOut"
                                     }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/seo": {
+            "get": {
+                "operationId": "staff_seo_list",
+                "tags": [
+                    "staff content"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SeoOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/seo/{key}": {
+            "put": {
+                "operationId": "staff_seo_set",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff content"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SeoInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SeoOut"
                                 }
                             }
                         },
@@ -2272,6 +3412,24 @@
                     "token"
                 ]
             },
+            "ContentFieldKindEnum": {
+                "enum": [
+                    "text",
+                    "textarea",
+                    "href"
+                ],
+                "type": "string",
+                "description": "* `text` - text\n* `textarea` - textarea\n* `href` - href"
+            },
+            "ContentInRequest": {
+                "type": "object",
+                "properties": {
+                    "content": {}
+                },
+                "required": [
+                    "content"
+                ]
+            },
             "CountFacet": {
                 "type": "object",
                 "properties": {
@@ -2388,6 +3546,47 @@
                 "type": "string",
                 "description": "* `women` - women\n* `men` - men"
             },
+            "EditableBlockOut": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "is_enabled": {
+                        "type": "boolean"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "content": {},
+                    "draft": {
+                        "nullable": true
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FieldSpecOut"
+                        }
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "content",
+                    "draft",
+                    "fields",
+                    "is_enabled",
+                    "key",
+                    "label",
+                    "position",
+                    "updated_at"
+                ]
+            },
             "EmailInRequest": {
                 "type": "object",
                 "properties": {
@@ -2420,6 +3619,17 @@
                 "required": [
                     "email",
                     "password"
+                ]
+            },
+            "EnabledInRequest": {
+                "type": "object",
+                "properties": {
+                    "is_enabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "is_enabled"
                 ]
             },
             "Facets": {
@@ -2459,6 +3669,37 @@
                     "departments",
                     "price",
                     "sizes"
+                ]
+            },
+            "FieldSpecOut": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/ContentFieldKindEnum"
+                    },
+                    "max_length": {
+                        "type": "integer"
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "translatable": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "kind",
+                    "label",
+                    "max_length",
+                    "name",
+                    "required",
+                    "translatable"
                 ]
             },
             "Home": {
@@ -2540,6 +3781,36 @@
                 "type": "string",
                 "description": "* `hero` - hero\n* `collections` - collections\n* `featured_products` - featured_products\n* `new_arrivals` - new_arrivals\n* `brand_story` - brand_story"
             },
+            "LayoutInRequest": {
+                "type": "object",
+                "properties": {
+                    "sections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LayoutItemInRequest"
+                        }
+                    }
+                },
+                "required": [
+                    "sections"
+                ]
+            },
+            "LayoutItemInRequest": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "is_enabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "is_enabled",
+                    "key"
+                ]
+            },
             "LocaleEnum": {
                 "enum": [
                     "en",
@@ -2547,6 +3818,37 @@
                 ],
                 "type": "string",
                 "description": "* `en` - en\n* `ur` - ur"
+            },
+            "MenuInRequest": {
+                "type": "object",
+                "properties": {
+                    "items": {}
+                },
+                "required": [
+                    "items"
+                ]
+            },
+            "MenuOut": {
+                "type": "object",
+                "properties": {
+                    "menu": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NavLinkOut"
+                        }
+                    }
+                },
+                "required": [
+                    "items",
+                    "label",
+                    "menu"
+                ]
             },
             "MfaVerifyInRequest": {
                 "type": "object",
@@ -2584,6 +3886,67 @@
                     "currency"
                 ]
             },
+            "NavLink": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "href": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "href",
+                    "label"
+                ]
+            },
+            "NavLinkOut": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "href": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "href",
+                    "label"
+                ]
+            },
+            "Navigation": {
+                "type": "object",
+                "properties": {
+                    "header": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NavLink"
+                        }
+                    },
+                    "footer_shop": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NavLink"
+                        }
+                    },
+                    "footer_help": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/NavLink"
+                        }
+                    }
+                },
+                "required": [
+                    "footer_help",
+                    "footer_shop",
+                    "header"
+                ]
+            },
             "NewsletterOut": {
                 "type": "object",
                 "properties": {
@@ -2613,6 +3976,248 @@
                     "approved_by",
                     "effective_at",
                     "status"
+                ]
+            },
+            "Page": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/PageKindEnum"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PageBlock"
+                        }
+                    },
+                    "seo_title": {
+                        "type": "string"
+                    },
+                    "seo_description": {
+                        "type": "string"
+                    },
+                    "translated": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "body",
+                    "kind",
+                    "seo_description",
+                    "seo_title",
+                    "slug",
+                    "summary",
+                    "title",
+                    "translated",
+                    "updated_at"
+                ]
+            },
+            "PageBlock": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/TypeEnum"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "PageCreateInRequest": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/PageKindEnum"
+                    },
+                    "content": {}
+                },
+                "required": [
+                    "content",
+                    "kind",
+                    "slug"
+                ]
+            },
+            "PageKindEnum": {
+                "enum": [
+                    "content",
+                    "policy"
+                ],
+                "type": "string",
+                "description": "* `content` - content\n* `policy` - policy"
+            },
+            "PageOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/PageKindEnum"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "is_published": {
+                        "type": "boolean"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "has_draft": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "content": {},
+                    "draft": {
+                        "nullable": true
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FieldSpecOut"
+                        }
+                    }
+                },
+                "required": [
+                    "content",
+                    "draft",
+                    "fields",
+                    "has_draft",
+                    "id",
+                    "is_published",
+                    "kind",
+                    "path",
+                    "published_at",
+                    "slug",
+                    "title",
+                    "updated_at"
+                ]
+            },
+            "PageSettingsInRequest": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/PageKindEnum"
+                    }
+                },
+                "required": [
+                    "kind",
+                    "slug"
+                ]
+            },
+            "PageSummary": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/PageKindEnum"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "kind",
+                    "slug",
+                    "title",
+                    "updated_at"
+                ]
+            },
+            "PageSummaryOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/PageKindEnum"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "is_published": {
+                        "type": "boolean"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "has_draft": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "has_draft",
+                    "id",
+                    "is_published",
+                    "kind",
+                    "path",
+                    "published_at",
+                    "slug",
+                    "title",
+                    "updated_at"
                 ]
             },
             "PendingDeviceOut": {
@@ -2838,6 +4443,77 @@
                     "recovery_email"
                 ]
             },
+            "Redirect": {
+                "type": "object",
+                "properties": {
+                    "to": {
+                        "type": "string"
+                    },
+                    "permanent": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "permanent",
+                    "to"
+                ]
+            },
+            "RedirectInRequest": {
+                "type": "object",
+                "properties": {
+                    "from_path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "to_path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "is_permanent": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "from_path",
+                    "to_path"
+                ]
+            },
+            "RedirectOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "from_path": {
+                        "type": "string"
+                    },
+                    "to_path": {
+                        "type": "string"
+                    },
+                    "is_permanent": {
+                        "type": "boolean"
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/SourceEnum"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "from_path",
+                    "id",
+                    "is_permanent",
+                    "source",
+                    "to_path"
+                ]
+            },
             "RevokedOut": {
                 "type": "object",
                 "properties": {
@@ -2906,6 +4582,74 @@
                 ],
                 "type": "string",
                 "description": "* `single_owner` - single_owner\n* `few_recovery_codes` - few_recovery_codes"
+            },
+            "Seo": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "noindex": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "description",
+                    "key",
+                    "noindex",
+                    "title"
+                ]
+            },
+            "SeoInRequest": {
+                "type": "object",
+                "properties": {
+                    "content": {},
+                    "noindex": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "content",
+                    "noindex"
+                ]
+            },
+            "SeoOut": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "content": {},
+                    "noindex": {
+                        "type": "boolean"
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FieldSpecOut"
+                        }
+                    }
+                },
+                "required": [
+                    "content",
+                    "fields",
+                    "key",
+                    "label",
+                    "noindex",
+                    "path"
+                ]
             },
             "SessionOut": {
                 "type": "object",
@@ -3002,6 +4746,14 @@
                     "recovery_codes",
                     "session"
                 ]
+            },
+            "SourceEnum": {
+                "enum": [
+                    "manual",
+                    "slug_change"
+                ],
+                "type": "string",
+                "description": "* `manual` - manual\n* `slug_change` - slug_change"
             },
             "StaffAccountDetailOut": {
                 "type": "object",
@@ -3315,6 +5067,15 @@
                     "password",
                     "token"
                 ]
+            },
+            "TypeEnum": {
+                "enum": [
+                    "heading",
+                    "paragraph",
+                    "list"
+                ],
+                "type": "string",
+                "description": "* `heading` - heading\n* `paragraph` - paragraph\n* `list` - list"
             }
         },
         "securitySchemes": {

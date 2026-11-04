@@ -167,6 +167,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/catalog/collections/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["catalog_collection"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/catalog/facets": {
     parameters: {
       query?: never;
@@ -227,6 +244,91 @@ export interface paths {
     };
     /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
     get: operations["cms_home"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/navigation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["cms_navigation"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/pages": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["cms_pages"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/pages/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["cms_page"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/redirects/resolve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Asked by the storefront only for addresses that would otherwise be 'not found'. */
+    get: operations["cms_redirect_resolve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/seo/{key}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["cms_seo"];
     put?: never;
     post?: never;
     delete?: never;
@@ -729,6 +831,246 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/cms/banners": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_cms_banners"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/banners/{key}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_cms_banner_visibility"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/banners/{key}/draft": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_cms_banner_draft"];
+    post?: never;
+    delete: operations["staff_cms_banner_discard"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/banners/{key}/publish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_cms_banner_publish"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/home-sections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_cms_sections"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/home-sections/{key}/draft": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_cms_section_draft"];
+    post?: never;
+    delete: operations["staff_cms_section_discard"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/home-sections/{key}/publish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_cms_section_publish"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/home-sections/layout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_cms_layout"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/navigation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_cms_navigation"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/navigation/{menu}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_cms_menu_set"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/pages": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_cms_pages"];
+    put?: never;
+    post: operations["staff_cms_page_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/pages/{page_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_cms_page"];
+    put: operations["staff_cms_page_settings"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/pages/{page_id}/draft": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_cms_page_draft"];
+    post?: never;
+    delete: operations["staff_cms_page_discard"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/pages/{page_id}/publish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_cms_page_publish"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/cms/pages/{page_id}/unpublish": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_cms_page_unpublish"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/me/mfa/confirm": {
     parameters: {
       query?: never;
@@ -849,6 +1191,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/redirects": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_redirects"];
+    put?: never;
+    post: operations["staff_redirect_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/redirects/{redirect_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["staff_redirect_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/roles": {
     parameters: {
       query?: never;
@@ -858,6 +1232,38 @@ export interface paths {
     };
     get: operations["staff_roles"];
     put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/seo": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_seo_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/seo/{key}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_seo_set"];
     post?: never;
     delete?: never;
     options?: never;
@@ -975,6 +1381,16 @@ export interface components {
     ConfirmInRequest: {
       token: string;
     };
+    /**
+     * @description * `text` - text
+     *     * `textarea` - textarea
+     *     * `href` - href
+     * @enum {string}
+     */
+    ContentFieldKindEnum: "text" | "textarea" | "href";
+    ContentInRequest: {
+      content: unknown;
+    };
     CountFacet: {
       value: string;
       count: number;
@@ -1012,6 +1428,17 @@ export interface components {
      * @enum {string}
      */
     DepartmentEnum: "women" | "men";
+    EditableBlockOut: {
+      key: string;
+      label: string;
+      is_enabled: boolean;
+      position: number;
+      content: unknown;
+      draft: unknown;
+      fields: components["schemas"]["FieldSpecOut"][];
+      /** Format: date-time */
+      updated_at: string;
+    };
     EmailInRequest: {
       /** Format: email */
       email: string;
@@ -1021,12 +1448,23 @@ export interface components {
       email: string;
       password: string;
     };
+    EnabledInRequest: {
+      is_enabled: boolean;
+    };
     Facets: {
       departments: components["schemas"]["CountFacet"][];
       categories: components["schemas"]["CategoryFacet"][];
       sizes: components["schemas"]["CountFacet"][];
       colours: components["schemas"]["ColourFacet"][];
       price: components["schemas"]["PriceFacet"];
+    };
+    FieldSpecOut: {
+      name: string;
+      label: string;
+      kind: components["schemas"]["ContentFieldKindEnum"];
+      max_length: number;
+      required: boolean;
+      translatable: boolean;
     };
     Home: {
       sections: components["schemas"]["HomeSection"][];
@@ -1054,12 +1492,27 @@ export interface components {
      * @enum {string}
      */
     KeyEnum: "hero" | "collections" | "featured_products" | "new_arrivals" | "brand_story";
+    LayoutInRequest: {
+      sections: components["schemas"]["LayoutItemInRequest"][];
+    };
+    LayoutItemInRequest: {
+      key: string;
+      is_enabled: boolean;
+    };
     /**
      * @description * `en` - en
      *     * `ur` - ur
      * @enum {string}
      */
     LocaleEnum: "en" | "ur";
+    MenuInRequest: {
+      items: unknown;
+    };
+    MenuOut: {
+      menu: string;
+      label: string;
+      items: components["schemas"]["NavLinkOut"][];
+    };
     MfaVerifyInRequest: {
       challenge: string;
       code?: string;
@@ -1069,6 +1522,21 @@ export interface components {
       amount: string;
       currency: string;
     };
+    NavLink: {
+      label: string;
+      href: string;
+    };
+    NavLinkOut: {
+      label: {
+        [key: string]: string;
+      };
+      href: string;
+    };
+    Navigation: {
+      header: components["schemas"]["NavLink"][];
+      footer_shop: components["schemas"]["NavLink"][];
+      footer_help: components["schemas"]["NavLink"][];
+    };
     NewsletterOut: {
       status: string;
     };
@@ -1077,6 +1545,76 @@ export interface components {
       /** Format: date-time */
       effective_at: string;
       approved_by: string;
+    };
+    Page: {
+      slug: string;
+      kind: components["schemas"]["PageKindEnum"];
+      title: string;
+      summary: string;
+      body: components["schemas"]["PageBlock"][];
+      seo_title: string;
+      seo_description: string;
+      translated: boolean;
+      /** Format: date-time */
+      updated_at: string;
+    };
+    PageBlock: {
+      type: components["schemas"]["TypeEnum"];
+      text?: string;
+      items?: string[];
+    };
+    PageCreateInRequest: {
+      slug: string;
+      kind: components["schemas"]["PageKindEnum"];
+      content: unknown;
+    };
+    /**
+     * @description * `content` - content
+     *     * `policy` - policy
+     * @enum {string}
+     */
+    PageKindEnum: "content" | "policy";
+    PageOut: {
+      /** Format: uuid */
+      id: string;
+      slug: string;
+      path: string;
+      kind: components["schemas"]["PageKindEnum"];
+      title: string;
+      is_published: boolean;
+      /** Format: date-time */
+      published_at: string | null;
+      has_draft: boolean;
+      /** Format: date-time */
+      updated_at: string;
+      content: unknown;
+      draft: unknown;
+      fields: components["schemas"]["FieldSpecOut"][];
+    };
+    PageSettingsInRequest: {
+      slug: string;
+      kind: components["schemas"]["PageKindEnum"];
+    };
+    PageSummary: {
+      slug: string;
+      kind: components["schemas"]["PageKindEnum"];
+      title: string;
+      /** Format: date-time */
+      updated_at: string;
+    };
+    PageSummaryOut: {
+      /** Format: uuid */
+      id: string;
+      slug: string;
+      path: string;
+      kind: components["schemas"]["PageKindEnum"];
+      title: string;
+      is_published: boolean;
+      /** Format: date-time */
+      published_at: string | null;
+      has_draft: boolean;
+      /** Format: date-time */
+      updated_at: string;
     };
     PendingDeviceOut: {
       /** Format: email */
@@ -1130,6 +1668,26 @@ export interface components {
     RecoveryEmailOut: {
       recovery_email: string;
     };
+    Redirect: {
+      to: string;
+      permanent: boolean;
+    };
+    RedirectInRequest: {
+      from_path: string;
+      to_path: string;
+      /** @default true */
+      is_permanent: boolean;
+    };
+    RedirectOut: {
+      /** Format: uuid */
+      id: string;
+      from_path: string;
+      to_path: string;
+      is_permanent: boolean;
+      source: components["schemas"]["SourceEnum"];
+      /** Format: date-time */
+      created_at: string;
+    };
     RevokedOut: {
       revoked: number;
     };
@@ -1151,6 +1709,24 @@ export interface components {
      * @enum {string}
      */
     SecurityWarningsEnum: "single_owner" | "few_recovery_codes";
+    Seo: {
+      key: string;
+      title: string;
+      description: string;
+      noindex: boolean;
+    };
+    SeoInRequest: {
+      content: unknown;
+      noindex: boolean;
+    };
+    SeoOut: {
+      key: string;
+      label: string;
+      path: string;
+      content: unknown;
+      noindex: boolean;
+      fields: components["schemas"]["FieldSpecOut"][];
+    };
     SessionOut: {
       /** Format: uuid */
       id: string;
@@ -1178,6 +1754,12 @@ export interface components {
       session: components["schemas"]["StaffSessionInfoOut"];
       recovery_codes: string[];
     };
+    /**
+     * @description * `manual` - manual
+     *     * `slug_change` - slug_change
+     * @enum {string}
+     */
+    SourceEnum: "manual" | "slug_change";
     StaffAccountDetailOut: {
       /** Format: uuid */
       id: string;
@@ -1262,6 +1844,13 @@ export interface components {
       token: string;
       password: string;
     };
+    /**
+     * @description * `heading` - heading
+     *     * `paragraph` - paragraph
+     *     * `list` - list
+     * @enum {string}
+     */
+    TypeEnum: "heading" | "paragraph" | "list";
   };
   responses: never;
   parameters: never;
@@ -1482,6 +2071,29 @@ export interface operations {
       };
     };
   };
+  catalog_collection: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CollectionCard"];
+        };
+      };
+    };
+  };
   catalog_facets: {
     parameters: {
       query?: {
@@ -1585,6 +2197,115 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Home"];
+        };
+      };
+    };
+  };
+  cms_navigation: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Navigation"];
+        };
+      };
+    };
+  };
+  cms_pages: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageSummary"][];
+        };
+      };
+    };
+  };
+  cms_page: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Page"];
+        };
+      };
+    };
+  };
+  cms_redirect_resolve: {
+    parameters: {
+      query: {
+        path: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Redirect"];
+        };
+      };
+    };
+  };
+  cms_seo: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Seo"];
         };
       };
     };
@@ -2272,6 +2993,446 @@ export interface operations {
       };
     };
   };
+  staff_cms_banners: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"][];
+        };
+      };
+    };
+  };
+  staff_cms_banner_visibility: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EnabledInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_banner_draft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ContentInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_banner_discard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_banner_publish: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_sections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"][];
+        };
+      };
+    };
+  };
+  staff_cms_section_draft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ContentInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_section_discard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_section_publish: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"];
+        };
+      };
+    };
+  };
+  staff_cms_layout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LayoutInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EditableBlockOut"][];
+        };
+      };
+    };
+  };
+  staff_cms_navigation: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuOut"][];
+        };
+      };
+    };
+  };
+  staff_cms_menu_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        menu: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MenuInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MenuOut"];
+        };
+      };
+    };
+  };
+  staff_cms_pages: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageSummaryOut"][];
+        };
+      };
+    };
+  };
+  staff_cms_page_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PageCreateInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
+  staff_cms_page: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        page_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
+  staff_cms_page_settings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        page_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PageSettingsInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
+  staff_cms_page_draft: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        page_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ContentInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
+  staff_cms_page_discard: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        page_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
+  staff_cms_page_publish: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        page_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
+  staff_cms_page_unpublish: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        page_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PageOut"];
+        };
+      };
+    };
+  };
   staff_me_mfa_confirm: {
     parameters: {
       query?: never;
@@ -2436,6 +3597,68 @@ export interface operations {
       };
     };
   };
+  staff_redirects: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RedirectOut"][];
+        };
+      };
+    };
+  };
+  staff_redirect_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RedirectInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RedirectOut"];
+        };
+      };
+    };
+  };
+  staff_redirect_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        redirect_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   staff_roles: {
     parameters: {
       query?: never;
@@ -2451,6 +3674,50 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["RoleWithPermissionsOut"][];
+        };
+      };
+    };
+  };
+  staff_seo_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SeoOut"][];
+        };
+      };
+    };
+  };
+  staff_seo_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SeoInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SeoOut"];
         };
       };
     };

@@ -1,0 +1,175 @@
+/*
+ * Collections index and collection pages (M4). PROVISIONAL presentation (decision 0004, item 5), built from the
+ * homepage collection cards and the Shop All grid: a dark band introducing the collection (gold only on dark),
+ * then the light product grid. Retuned against the A-04 references when they are supplied.
+ */
+.intro {
+  inline-size: 100%;
+  box-sizing: border-box;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-6) var(--av-gutter) var(--av-space-4);
+}
+
+.introTitle {
+  margin: 0;
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h1);
+  font-weight: 400;
+}
+
+.introSubtitle {
+  margin: var(--av-space-2) 0 0;
+  color: var(--av-text-muted);
+}
+
+.list {
+  inline-size: 100%;
+  box-sizing: border-box;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-4) var(--av-gutter) var(--av-space-12);
+}
+
+.band {
+  position: relative;
+  overflow: hidden;
+  color: var(--av-text-inverse);
+  background: var(--av-surface-inverse);
+}
+
+.bandTone {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: 0.85;
+}
+
+.bandInner {
+  inline-size: 100%;
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  gap: var(--av-space-6);
+  align-items: center;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-6) var(--av-gutter) var(--av-space-10);
+}
+
+@media (min-width: 48rem) {
+  .bandInner {
+    grid-template-columns: 3fr 2fr;
+    padding-block: var(--av-space-12);
+  }
+}
+
+.bandCrumbs a,
+.bandCrumbs span,
+.bandCrumbs ol {
+  color: var(--av-text-inverse);
+}
+
+.bandEyebrow {
+  margin: 0 0 var(--av-space-2);
+  color: var(--av-accent);
+  font-size: var(--av-text-caption);
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+}
+
+.bandTitle {
+  margin: 0;
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-display);
+  font-weight: 400;
+  line-height: var(--av-line-height-tight);
+}
+
+.bandDescription {
+  max-inline-size: 32rem;
+  margin: var(--av-space-3) 0 0;
+  color: var(--av-color-stone);
+}
+
+.bandArt {
+  justify-self: center;
+  inline-size: min(16rem, 60vw);
+}
+
+.products {
+  inline-size: 100%;
+  box-sizing: border-box;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-6) var(--av-gutter) var(--av-space-12);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--av-space-4);
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--av-space-6);
+}
+
+.toolbarEnd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--av-space-4);
+  align-items: center;
+}
+
+.count {
+  margin: 0;
+  color: var(--av-text-muted);
+  font-size: var(--av-text-small);
+}
+
+.refine {
+  color: var(--av-text);
+  font-size: var(--av-text-small);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--av-space-6) var(--av-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 64rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.empty {
+  padding-block: var(--av-space-10);
+  text-align: center;
+  color: var(--av-text-muted);
+}
+
+.pagination {
+  display: flex;
+  gap: var(--av-space-4);
+  justify-content: center;
+  margin-block-start: var(--av-space-8);
+}
+
+.pageLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--av-tap-target);
+  padding-inline: var(--av-space-6);
+  border: var(--av-border-width) solid var(--av-text);
+  color: var(--av-text);
+  font-size: var(--av-text-small);
+  letter-spacing: var(--av-tracking-caps);
+  text-decoration: none;
+  text-transform: uppercase;
+}

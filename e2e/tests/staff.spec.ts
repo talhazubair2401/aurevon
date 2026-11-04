@@ -137,6 +137,88 @@ test("Owner invites a staff member, who enrols, and suspension ends their sessio
   await expect(owner.getByRole("cell", { name: "staff.suspended" })).toBeVisible();
 });
 
+/** Waits until the authenticator shows a code that hasn't been used yet (codes are single-use, decision 0003). */
+async function freshStep(secret: string): Promise<void> {
+  const used = lastStep.get(secret) ?? -1;
+  while (Math.floor(Date.now() / 1000 / 30) <= used) await new Promise((r) => setTimeout(r, 500));
+}
+
+async function signInOwner(browser: import("@playwright/test").Browser): Promise<Page> {
+  await freshStep(ownerSecret);
+  const owner = await browser.newPage();
+  await owner.goto("/staff/sign-in");
+  await owner.getByLabel("Email").fill(OWNER);
+  await owner.getByLabel("Password").fill(PASSWORD);
+  await owner.getByRole("button", { name: "Continue" }).click();
+  await owner.getByLabel("Authenticator code").fill(totp(ownerSecret));
+  await owner.getByRole("button", { name: "Sign in" }).click();
+  await expect(owner.getByTestId("single-owner-warning")).toBeVisible();
+  return owner;
+}
+
+/*
+ * M4 content journey: a new page stays private as a draft, goes live on publish, later edits stay private
+ * until published, the store shows each publish at once (cache refreshed on publish, decision 0005), and
+ * renaming the live page keeps its old address working through a redirect.
+ */
+test("Owner creates, publishes, edits and renames a content page", async ({ browser, page }) => {
+  test.setTimeout(120_000); // may wait up to one authenticator step for a fresh code
+  const owner = await signInOwner(browser);
+  await owner
+    .getByRole("navigation", { name: "Staff" })
+    .getByRole("link", { name: "Content" })
+    .click();
+  await expect(owner.getByTestId("panel-hero")).toBeVisible();
+  await owner
+    .getByRole("navigation", { name: "Content" })
+    .getByRole("link", { name: "Pages" })
+    .click();
+  await owner.getByRole("link", { name: "New page" }).click();
+  await owner.getByLabel("Address: /pages/…").fill("size-guide");
+  await owner.locator("#page-en-title").fill("Size guide");
+  await owner.getByLabel("Block 1 text").first().fill("How our pieces fit.");
+  await owner.getByRole("button", { name: "Create draft" }).click();
+  await expect(owner.getByText("Not published")).toBeVisible();
+
+  expect((await page.goto("/en/pages/size-guide"))!.status()).toBe(404);
+
+  await owner.getByRole("button", { name: "Publish", exact: true }).click();
+  await expect(owner.getByText("Published. The store shows it now.")).toBeVisible();
+  await page.goto("/en/pages/size-guide");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Size guide");
+
+  await owner.locator("#page-en-title").fill("Size and fit");
+  await owner.getByRole("button", { name: "Save draft" }).click();
+  await expect(owner.getByText("Draft saved.")).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Size guide");
+
+  await owner.getByRole("button", { name: "Publish", exact: true }).click();
+  await expect(owner.getByText("Published. The store shows it now.")).toBeVisible();
+  // Well inside the one-minute cache: only the refresh on publish can make this pass.
+  await expect(async () => {
+    await page.reload();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Size and fit", {
+      timeout: 1000,
+    });
+  }).toPass({ timeout: 15_000 });
+
+  await owner.getByLabel("Address: /pages/…").fill("fit-guide");
+  await owner.getByRole("button", { name: "Save settings" }).click();
+  await expect(owner.getByText("Page settings saved.")).toBeVisible();
+  await page.goto("/ur/pages/size-guide");
+  await expect(page).toHaveURL(/\/ur\/pages\/fit-guide$/);
+
+  await owner.getByRole("navigation", { name: "Staff" }).getByRole("link", { name: "SEO" }).click();
+  await owner.getByRole("link", { name: "Redirects" }).click();
+  await expect(owner.getByRole("cell", { name: "/pages/size-guide", exact: true })).toBeVisible();
+  await owner
+    .getByRole("navigation", { name: "Staff" })
+    .getByRole("link", { name: "Audit log" })
+    .click();
+  await expect(owner.getByRole("cell", { name: "cms.page.publish" }).first()).toBeVisible();
+});
+
 test("a customer session is never accepted by the staff API", async ({ request }) => {
   const email = `shopper-${Date.now()}@aurevon.test`;
   await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });

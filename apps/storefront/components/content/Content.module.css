@@ -1,0 +1,113 @@
+/*
+ * Content and policy pages (M4). PROVISIONAL presentation (decision 0004, item 5): a calm reading column on the
+ * light surface, Playfair title, Inter body. Retuned against the A-04 references when they are supplied.
+ */
+.page {
+  inline-size: 100%;
+  box-sizing: border-box;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-6) var(--av-gutter) var(--av-space-12);
+}
+
+.article {
+  max-inline-size: 44rem;
+  margin-inline: auto;
+}
+
+.eyebrow {
+  margin: 0 0 var(--av-space-2);
+  color: var(--av-text-muted);
+  font-size: var(--av-text-caption);
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h1);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.summary {
+  margin: var(--av-space-3) 0 0;
+  color: var(--av-text-muted);
+  font-size: var(--av-text-body);
+}
+
+.meta {
+  margin: var(--av-space-3) 0 0;
+  color: var(--av-text-muted);
+  font-size: var(--av-text-small);
+}
+
+.notice {
+  margin: var(--av-space-6) 0 0;
+  padding: var(--av-space-3) var(--av-space-4);
+  border-inline-start: 2px solid var(--av-supporting);
+  background: var(--av-surface-raised);
+  font-size: var(--av-text-small);
+}
+
+.body {
+  margin-block-start: var(--av-space-8);
+  padding-block-start: var(--av-space-6);
+  border-block-start: var(--av-border-width) solid var(--av-divider);
+}
+
+.body h2 {
+  margin: var(--av-space-8) 0 var(--av-space-3);
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h3);
+  font-weight: 500;
+}
+
+.body h2:first-child {
+  margin-block-start: 0;
+}
+
+.body p,
+.body ul {
+  margin: 0 0 var(--av-space-4);
+  line-height: 1.7;
+}
+
+.body ul {
+  padding-inline-start: var(--av-space-5);
+}
+
+.body li + li {
+  margin-block-start: var(--av-space-2);
+}
+
+/* ---------- Breadcrumbs ---------- */
+.breadcrumbs {
+  margin-block-end: var(--av-space-6);
+  font-size: var(--av-text-small);
+}
+
+.breadcrumbList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--av-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--av-text-muted);
+}
+
+.breadcrumbItem + .breadcrumbItem::before {
+  content: "/";
+  margin-inline-end: var(--av-space-2);
+  color: var(--av-color-stone);
+}
+
+.breadcrumbLink {
+  color: inherit;
+}
+
+.breadcrumbLink:hover {
+  color: var(--av-text);
+}

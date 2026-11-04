@@ -9,13 +9,38 @@ import { FilterForm } from "@/components/shop/FilterForm";
 import { MobileFilters, SortSelect } from "@/components/shop/ShopControls";
 import styles from "@/components/shop/Shop.module.css";
 import { Link } from "@/i18n/navigation";
-import { getBanner, getFacets, getProducts } from "@/lib/api";
+import { getBanner, getFacets, getProducts, getSeo } from "@/lib/api";
+import { pageMetadata } from "@/lib/seo";
 import { cursorFrom, parseShopState, toSearch, withoutCursor } from "@/lib/shop-query";
 
-export async function generateMetadata({ params }: PageProps<"/[locale]/shop">): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps<"/[locale]/shop">): Promise<Metadata> {
   const { locale } = await params;
+  if (!isLocale(locale)) return {};
   const t = await getTranslations({ locale, namespace: "shop" });
-  return { title: t("title"), description: t("subtitle") };
+  const seo = await getSeo("shop", locale);
+  const state = parseShopState(await searchParams);
+  // Department views are pages in their own right; any other filter, sort or page points back at them and
+  // stays out of the index, so search engines see one URL per department (M17 canonical tags).
+  const narrowed = Boolean(
+    state.category ||
+    state.collection ||
+    state.size.length ||
+    state.colour.length ||
+    state.price_min ||
+    state.price_max ||
+    state.cursor ||
+    state.sort !== "featured",
+  );
+  return pageMetadata({
+    locale,
+    path: `/shop${toSearch(state.department ? { department: state.department } : {})}`,
+    title: seo?.title || t("title"),
+    description: seo?.description || t("subtitle"),
+    noindex: seo?.noindex || narrowed,
+  });
 }
 
 /** Where the "BEYOND THE ORDINARY" editorial banner sits in the grid: after the second row of four. */

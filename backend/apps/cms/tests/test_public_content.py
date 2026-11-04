@@ -102,3 +102,38 @@ def test_newsletter_requires_consent_and_never_reveals_subscribers(
         unknown = subscribe(client, "new@example.com")
     assert known.status_code == unknown.status_code == 202 and known.json() == unknown.json()
     assert [m.to for m in mail.outbox] == [["new@example.com"]]  # confirmed address isn't mailed again
+
+
+def test_published_pages_and_language_fallback(demo: None, client: Client) -> None:
+    slugs = [p["slug"] for p in client.get("/api/v1/cms/pages").json()]
+    assert set(slugs) == {"about", "contact", "shipping", "returns", "privacy", "terms"}
+    about = client.get("/api/v1/cms/pages/about", {"locale": "ur"}).json()
+    assert about["title"] == "ہماری کہانی" and about["translated"] is True
+    assert client.get("/api/v1/cms/pages/missing").status_code == 404
+
+
+def test_policy_pages_are_placeholders_until_decided(demo: None, client: Client) -> None:
+    returns = client.get("/api/v1/cms/pages/returns").json()
+    assert returns["kind"] == "policy"
+    assert "P-14" in returns["body"][1]["text"]  # no invented return window
+
+
+def test_navigation_and_seo(demo: None, client: Client) -> None:
+    nav = client.get("/api/v1/cms/navigation").json()
+    assert [i["href"] for i in nav["header"]] == [
+        "/shop",
+        "/shop?department=women",
+        "/shop?department=men",
+        "/collections",
+    ]
+    assert {"label": "Returns", "href": "/pages/returns"} in nav["footer_help"]
+    assert client.get("/api/v1/cms/seo/shop").json()["title"] == "Shop All"
+    assert client.get("/api/v1/cms/seo/collection:evening").status_code == 404  # none set: page defaults apply
+
+
+def test_collection_detail_is_public_only_when_published(demo: None, client: Client) -> None:
+    from apps.catalog.models import Collection
+
+    assert client.get("/api/v1/catalog/collections/evening").json()["name"] == "Evening"
+    Collection.objects.filter(slug="evening").update(is_published=False)
+    assert client.get("/api/v1/catalog/collections/evening").status_code == 404

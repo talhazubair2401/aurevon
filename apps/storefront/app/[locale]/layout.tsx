@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { directionOf, locales, type Locale } from "@aurevon/i18n";
+import { directionOf, type Locale } from "@aurevon/i18n";
 import { colors } from "@aurevon/design-tokens";
 import "@aurevon/design-tokens/tokens.css";
 import "../globals.css";
@@ -12,6 +12,7 @@ import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/shell/SiteHeader";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SkipLink } from "@aurevon/ui";
+import { siteUrl } from "@/lib/seo";
 
 // Every page renders per request so it carries that request's CSP nonce (decision 0005, D-08). Reading the
 // request headers opts the whole tree out of static generation; Next.js then stamps the nonce on its scripts.
@@ -23,9 +24,11 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "meta" });
   return {
+    // Relative canonical and alternate URLs resolve against the public site address (M17).
+    metadataBase: new URL(siteUrl()),
     title: { default: t("title"), template: `%s · ${t("title")}` },
     description: t("tagline"),
-    alternates: { languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])) },
+    applicationName: t("title"),
   };
 }
 

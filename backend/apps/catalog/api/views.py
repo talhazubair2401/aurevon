@@ -12,6 +12,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from common.api import PublicAPIView, request_locale
+from common.exceptions import ApiProblem
 
 from .. import presenters, selectors
 from ..models import Department
@@ -207,6 +208,21 @@ class CollectionListView(PublicAPIView):
     def get(self, request: Request) -> Response:
         locale = request_locale(request)
         return Response([presenters.collection(c, locale) for c in selectors.published_collections()])
+
+
+class CollectionDetailView(PublicAPIView):
+    @extend_schema(
+        tags=["catalogue"],
+        operation_id="catalog_collection",
+        parameters=[OpenApiParameter("locale", OpenApiTypes.STR, enum=["en", "ur"])],
+        responses=CollectionCardSerializer,
+    )
+    def get(self, request: Request, slug: str) -> Response:
+        locale = request_locale(request)
+        collection = selectors.published_collections().filter(slug=slug).first()
+        if collection is None:
+            raise ApiProblem(404, "not-found", "No such collection.")
+        return Response(presenters.collection(collection, locale))
 
 
 def cards(products: list[Any], locale: str) -> list[dict[str, Any]]:

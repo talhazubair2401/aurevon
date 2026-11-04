@@ -72,6 +72,10 @@ TRUSTED_PROXY_COUNT = env.int("TRUSTED_PROXY_COUNT", default=0)
 ALLOW_DEMO_DATA = env.bool("ALLOW_DEMO_DATA", default=False)
 
 SITE_URL = env("SITE_URL", default="http://localhost:8080").rstrip("/")
+# Publishing CMS content refreshes the storefront's data cache at once (decision 0005: "cache refreshed on publish").
+# The worker calls the storefront's internal endpoint with this shared secret; unset, pages refresh within a minute.
+STOREFRONT_INTERNAL_URL = env("STOREFRONT_INTERNAL_URL", default="").rstrip("/")
+STOREFRONT_REVALIDATE_SECRET = env("STOREFRONT_REVALIDATE_SECRET", default="")
 DISPLAY_TIME_ZONE = "Asia/Karachi"  # times shown to people (MTS §5); storage stays UTC
 
 # Encrypts authenticator secrets at rest. Required in production; derived from SECRET_KEY elsewhere.
@@ -119,6 +123,10 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": r"/api/v1",
     "COMPONENT_SPLIT_REQUEST": True,
+    "ENUM_NAME_OVERRIDES": {
+        "PageKindEnum": ["content", "policy"],
+        "ContentFieldKindEnum": ["text", "textarea", "href"],
+    },
 }
 
 # Whether /api/v1/schema/ is reachable. Off in production; the schema is generated in CI instead.

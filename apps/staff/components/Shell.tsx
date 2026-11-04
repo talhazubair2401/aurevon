@@ -9,6 +9,8 @@ import ui from "./ui.module.css";
 
 const NAV = [
   { href: "/", label: "Overview", permission: null },
+  { href: "/content", label: "Content", permission: "cms.edit" },
+  { href: "/seo", label: "SEO", permission: "seo.edit" },
   { href: "/team", label: "Team", permission: "staff.view" },
   { href: "/audit", label: "Audit log", permission: "audit.view" },
   { href: "/settings", label: "Settings", permission: "settings.store" },
@@ -63,7 +65,12 @@ export function Shell({ children }: { children: ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={pathname === item.href ? ui.navLinkActive : ui.navLink}
+                  className={
+                    pathname === item.href ||
+                    (item.href !== "/" && pathname.startsWith(`${item.href}/`))
+                      ? ui.navLinkActive
+                      : ui.navLink
+                  }
                 >
                   {item.label}
                 </Link>

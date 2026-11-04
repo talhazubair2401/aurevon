@@ -43,5 +43,5 @@ export default function proxy(request: NextRequest) {
 export const config = {
   // Pages only. Build assets, fonts, Draco files, media, API and staff paths never pass through here, so
   // they keep their own long-term caching (MTS §2).
-  matcher: ["/((?!api|staff|_next|_vercel|3d|media|health|.*\\..*).*)"],
+  matcher: ["/((?!api|staff|internal|_next|_vercel|3d|media|health|.*\\..*).*)"],
 };

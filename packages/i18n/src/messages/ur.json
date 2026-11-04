@@ -94,5 +94,21 @@
     "confirmed": "آپ کی رکنیت ہو گئی۔ AureVon میں خوش آمدید۔",
     "confirmFailed": "یہ لنک غلط ہے یا اس کی میعاد ختم ہو چکی ہے۔ دوبارہ سبسکرائب کریں۔",
     "confirmTitle": "نیوز لیٹر"
+  },
+  "collections": {
+    "title": "کلیکشنز",
+    "subtitle": "اس موسم کے تین انداز۔",
+    "explore": "دیکھیں",
+    "breadcrumb": "راستہ",
+    "home": "ہوم",
+    "pieces": "{count, plural, one {# لباس} other {# لباس}}",
+    "refine": "اس کلیکشن کو فلٹر کریں",
+    "empty": "اس کلیکشن میں ابھی کوئی لباس نہیں۔",
+    "allCollections": "تمام کلیکشنز"
+  },
+  "page": {
+    "updated": "آخری تبدیلی {date}",
+    "englishOnly": "یہ صفحہ فی الحال صرف انگریزی میں دستیاب ہے۔",
+    "policy": "پالیسی"
   }
 }

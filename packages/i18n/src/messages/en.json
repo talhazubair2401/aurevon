@@ -94,5 +94,21 @@
     "confirmed": "You're subscribed. Welcome to AureVon.",
     "confirmFailed": "This link is invalid or has expired. Please subscribe again.",
     "confirmTitle": "Newsletter"
+  },
+  "collections": {
+    "title": "Collections",
+    "subtitle": "Three ways into the season.",
+    "explore": "Explore",
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "pieces": "{count, plural, one {# piece} other {# pieces}}",
+    "refine": "Filter this collection",
+    "empty": "No pieces in this collection yet.",
+    "allCollections": "All collections"
+  },
+  "page": {
+    "updated": "Last updated {date}",
+    "englishOnly": "This page is available in English only for now.",
+    "policy": "Policy"
   }
 }

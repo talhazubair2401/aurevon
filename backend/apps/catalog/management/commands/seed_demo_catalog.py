@@ -26,7 +26,8 @@ from apps.catalog.models import (
     ProductTranslation,
     ProductVariant,
 )
-from apps.cms.models import Banner, HomepageSection
+from apps.cms import demo as cms_demo
+from apps.cms.models import Banner, HomepageSection, NavigationItem, Page, SEORecord
 
 COLOURS: dict[str, tuple[str, str, str]] = {
     "ivory": ("Ivory", "ہاتھی دانت", "#F2EDE4"),
@@ -479,7 +480,7 @@ HOME_SECTIONS: list[tuple[str, int, dict[str, Any]]] = [
                     "certain today as it will in ten years."
                 ),
                 "link_label": "Explore the Heritage Edit",
-                "link_href": "/shop?collection=heritage-edit",
+                "link_href": "/collections/heritage-edit",
             },
             "ur": {
                 "eyebrow": "ہماری کہانی",
@@ -500,7 +501,7 @@ SHOP_BANNER = {
         "title": "BEYOND THE ORDINARY",
         "body": "Pieces made with intent: heritage technique, modern proportion.",
         "link_label": "Explore the Heritage Edit",
-        "link_href": "/shop?collection=heritage-edit",
+        "link_href": "/collections/heritage-edit",
     },
     "ur": {
         "title": "BEYOND THE ORDINARY",
@@ -593,6 +594,25 @@ class Command(BaseCommand):
 
         for key, position, content in HOME_SECTIONS:
             HomepageSection.objects.update_or_create(
-                key=key, defaults={"position": position, "is_enabled": True, "content": content}
+                key=key, defaults={"position": position, "is_enabled": True, "content": content, "draft": None}
             )
-        Banner.objects.update_or_create(key="shop_editorial", defaults={"is_enabled": True, "content": SHOP_BANNER})
+        Banner.objects.update_or_create(
+            key="shop_editorial", defaults={"is_enabled": True, "content": SHOP_BANNER, "draft": None}
+        )
+        for slug, kind, page_content in cms_demo.PAGES:
+            Page.objects.update_or_create(
+                slug=slug,
+                defaults={
+                    "kind": kind,
+                    "content": page_content,
+                    "draft": None,
+                    "is_published": True,
+                    "published_at": now,
+                },
+            )
+        NavigationItem.objects.all().delete()
+        for menu, links in cms_demo.NAVIGATION.items():
+            for position, link in enumerate(links):
+                NavigationItem.objects.create(menu=menu, label=link["label"], href=link["href"], position=position)
+        for key, seo_content in cms_demo.SEO.items():
+            SEORecord.objects.update_or_create(key=key, defaults={"content": seo_content, "noindex": False})

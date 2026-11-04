@@ -3,6 +3,7 @@
 from django.urls import URLPattern, path
 
 from apps.audit.api.views import AuditLogView
+from apps.cms.api import staff as cms
 from apps.cms.api.views import SettingsView, SettingView
 
 from . import customer, staff_admin, staff_auth, staff_me
@@ -43,6 +44,26 @@ staff_urlpatterns: list[URLPattern] = [
     path("audit-log", AuditLogView.as_view()),
     path("settings", SettingsView.as_view()),
     path("settings/<str:key>", SettingView.as_view()),
+    # Content and SEO (M4; MTS §8 "Staff: content and marketing").
+    path("cms/home-sections", cms.HomeSectionsView.as_view()),
+    path("cms/home-sections/layout", cms.HomeLayoutView.as_view()),
+    path("cms/home-sections/<str:key>/draft", cms.HomeSectionDraftView.as_view()),
+    path("cms/home-sections/<str:key>/publish", cms.HomeSectionPublishView.as_view()),
+    path("cms/banners", cms.BannersView.as_view()),
+    path("cms/banners/<slug:key>", cms.BannerView.as_view()),
+    path("cms/banners/<slug:key>/draft", cms.BannerDraftView.as_view()),
+    path("cms/banners/<slug:key>/publish", cms.BannerPublishView.as_view()),
+    path("cms/pages", cms.PagesView.as_view()),
+    path("cms/pages/<uuid:page_id>", cms.PageView.as_view()),
+    path("cms/pages/<uuid:page_id>/draft", cms.PageDraftView.as_view()),
+    path("cms/pages/<uuid:page_id>/publish", cms.PagePublishView.as_view()),
+    path("cms/pages/<uuid:page_id>/unpublish", cms.PageUnpublishView.as_view()),
+    path("cms/navigation", cms.NavigationView.as_view()),
+    path("cms/navigation/<str:menu>", cms.MenuView.as_view()),
+    path("seo", cms.SeoListView.as_view()),
+    path("seo/<str:key>", cms.SeoView.as_view()),
+    path("redirects", cms.RedirectsView.as_view()),
+    path("redirects/<uuid:redirect_id>", cms.RedirectView.as_view()),
 ]
 
 customer_urlpatterns: list[URLPattern] = [

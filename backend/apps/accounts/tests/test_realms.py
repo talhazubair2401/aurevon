@@ -1,5 +1,7 @@
 """MTS v2.1 A-22 / C-1: customer and staff authentication are strictly separate."""
 
+import re
+
 import pytest
 from django.urls import URLPattern, URLResolver, get_resolver
 from rest_framework.test import APIClient
@@ -33,9 +35,10 @@ def _staff_routes() -> list[tuple[str, type]]:
 
 
 def _concrete(route: str) -> str:
-    return "/" + route.replace("<uuid:account_id>", "00000000-0000-0000-0000-000000000001").replace(
-        "<uuid:session_id>", "00000000-0000-0000-0000-000000000002"
-    ).replace("<str:key>", "store.support_email")
+    """Fills every path parameter, so each route resolves to its view (and is refused there)."""
+    route = route.replace("<str:key>", "store.support_email")
+    route = re.sub(r"<uuid:\w+>", "00000000-0000-0000-0000-000000000001", route)
+    return "/" + re.sub(r"<(?:slug|str):\w+>", "example", route)
 
 
 def customer_client() -> APIClient:

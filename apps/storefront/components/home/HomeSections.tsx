@@ -5,14 +5,10 @@ import { Link } from "@/i18n/navigation";
 import type { CollectionCard, HomeSection, ProductCard as Card } from "@/lib/api";
 import { GarmentArt, type ArtKind } from "../art/GarmentArt";
 import { ProductCard } from "../product/ProductCard";
+import { safeHref } from "../shell/navigation";
 import styles from "./HomeSections.module.css";
 
 type Content = Record<string, string | undefined>;
-
-/** Hrefs from the CMS are locale-free paths ("/shop?…"); only same-site paths are accepted. */
-function safeHref(href: string | undefined, fallback = "/shop"): string {
-  return href && href.startsWith("/") && !href.startsWith("//") ? href : fallback;
-}
 
 const HERO_PIECES: Array<{ kind: ArtKind; colour: string; className: string }> = [
   { kind: "coat", colour: "#B08B5E", className: "pieceA" },
@@ -96,47 +92,64 @@ export async function Collections({
   collections: CollectionCard[];
   locale: Locale;
 }) {
-  const t = await getTranslations({ locale, namespace: "home" });
   return (
     <section className={styles.section} aria-labelledby="collections-title">
       <SectionHeader id="collections-title" title={content.title} subtitle={content.subtitle} />
-      <ul className={styles.collections}>
-        {collections.map((c) => (
-          <li key={c.slug}>
-            <Link
-              href={`/shop?collection=${encodeURIComponent(c.slug)}`}
-              className={styles.collection}
-            >
-              {/* Tone as an SVG fill: no inline styles under the CSP (decision 0005). */}
-              <svg
-                className={styles.collectionTone}
-                preserveAspectRatio="none"
-                viewBox="0 0 1 1"
-                aria-hidden="true"
-              >
-                <rect
-                  width="1"
-                  height="1"
-                  fill={/^#[0-9a-fA-F]{6}$/.test(c.tone) ? c.tone : colors.deepBrown}
-                />
-              </svg>
-              {c.demo_art ? (
-                <div className={styles.collectionArt} aria-hidden="true">
-                  <GarmentArt kind={c.demo_art as ArtKind} colour="#F2EDE4" stage="dark" />
-                </div>
-              ) : null}
-              <div className={styles.collectionText}>
-                <h3 className={styles.collectionName}>{c.name}</h3>
-                {c.description ? (
-                  <p className={styles.collectionDescription}>{c.description}</p>
-                ) : null}
-                <span className={styles.collectionCta}>{t("explore")}</span>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <CollectionCardList collections={collections} locale={locale} />
     </section>
+  );
+}
+
+/** Collection cards, used on the homepage and the collections index; each opens /collections/<slug>. */
+export async function CollectionCardList({
+  collections,
+  locale,
+  headingLevel = 3,
+}: {
+  collections: CollectionCard[];
+  locale: Locale;
+  headingLevel?: 2 | 3;
+}) {
+  const t = await getTranslations({ locale, namespace: "home" });
+  const Heading = headingLevel === 2 ? "h2" : "h3";
+  return (
+    <ul className={styles.collections}>
+      {collections.map((c) => (
+        <li key={c.slug}>
+          <Link href={`/collections/${encodeURIComponent(c.slug)}`} className={styles.collection}>
+            {/* Tone as an SVG fill: no inline styles under the CSP (decision 0005). */}
+            <CollectionTone tone={c.tone} className={styles.collectionTone} />
+            {c.demo_art ? (
+              <div className={styles.collectionArt} aria-hidden="true">
+                <GarmentArt kind={c.demo_art as ArtKind} colour="#F2EDE4" stage="dark" />
+              </div>
+            ) : null}
+            <div className={styles.collectionText}>
+              <Heading className={styles.collectionName}>{c.name}</Heading>
+              {c.description ? (
+                <p className={styles.collectionDescription}>{c.description}</p>
+              ) : null}
+              <span className={styles.collectionCta}>{t("explore")}</span>
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** A collection's background tone as an SVG fill (no inline styles under the CSP, decision 0005). */
+export function CollectionTone({
+  tone,
+  className,
+}: {
+  tone: string;
+  className?: string | undefined;
+}) {
+  return (
+    <svg className={className} preserveAspectRatio="none" viewBox="0 0 1 1" aria-hidden="true">
+      <rect width="1" height="1" fill={/^#[0-9a-fA-F]{6}$/.test(tone) ? tone : colors.deepBrown} />
+    </svg>
   );
 }
 

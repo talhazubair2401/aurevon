@@ -2,7 +2,8 @@
 #   /api/v1/*  -> Django API
 #   /staff/*   -> staff dashboard (never cached, never indexed)
 #   /*         -> storefront
-# /health/* and Django admin are not routed (internal only).
+# /health/*, Django admin and the storefront's /internal/* (cache refresh, called by the API worker) are not
+# routed: internal only.
 #
 # CSP (decision 0005, D-08): each Next.js app sets its own enforcing policy with a per-request nonce. This proxy
 # never sets or replaces that policy. It only:
@@ -27,6 +28,11 @@
 	handle @api {
 		header ?Cache-Control "no-store"
 		reverse_proxy api:8000
+	}
+
+	@internal path /internal /internal/*
+	handle @internal {
+		respond 404
 	}
 
 	@staffAssets path /staff/_next/static/*

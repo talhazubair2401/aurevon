@@ -4,7 +4,8 @@ import { Icon, Wordmark } from "@aurevon/ui";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
-import { primaryNav, utilityLinks } from "./navigation";
+import { getNavigation } from "@/lib/api";
+import { safeHref, utilityLinks } from "./navigation";
 import styles from "./Shell.module.css";
 
 /**
@@ -13,8 +14,8 @@ import styles from "./Shell.module.css";
  */
 export async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "shell" });
-  const nav = await getTranslations({ locale, namespace: "nav" });
-  const items = primaryNav.map((item) => ({ href: item.href, label: nav(item.key) }));
+  const menus = await getNavigation(locale);
+  const items = menus.header.map((item) => ({ href: safeHref(item.href), label: item.label }));
 
   return (
     <header className={styles.header}>

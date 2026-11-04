@@ -43,3 +43,15 @@ MISS/BYPASS/DYNAMIC (the header name varies by CDN, e.g. `cf-cache-status`, `x-c
 Reports arrive at `POST /api/v1/csp-reports` and are logged as `csp_violation` (logger `aurevon.csp`). Find the
 cause and fix it; never add `'unsafe-inline'`, `'unsafe-eval'` or a broad host allowance to make a report go
 away (A-26). A sudden spike usually means a browser extension, an injected CDN feature or an attack.
+
+## Refresh on publish (M4)
+
+CMS reads in the storefront are cached for at most a minute and refreshed as soon as staff publish:
+
+- The API worker calls `POST <STOREFRONT_INTERNAL_URL>/internal/revalidate` with `Authorization: Bearer
+  <STOREFRONT_REVALIDATE_SECRET>`; the storefront drops its cached `cms` data (`revalidateTag`, `expire: 0`).
+- `/internal/` must **never** be routed publicly by the CDN or proxy (the local Caddyfile returns 404). Use the
+  same long random secret (at least 16 characters) on the API, worker and storefront; rotate it on all three.
+- If the call fails, the worker retries with back-off; pages still refresh within a minute on their own.
+- `/sitemap.xml` and `/robots.txt` are generated per request. `SITE_INDEXABLE=true` only in production; every
+  other environment tells search engines not to index it.
