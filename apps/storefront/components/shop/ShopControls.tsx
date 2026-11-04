@@ -23,6 +23,7 @@ export function SortSelect({ state }: { state: ShopState }) {
   const pathname = usePathname();
   return (
     <form method="get" action={pathname} className={styles.sortForm}>
+      {state.q ? <input type="hidden" name="q" value={state.q} /> : null}
       {state.department ? <input type="hidden" name="department" value={state.department} /> : null}
       {state.category ? <input type="hidden" name="category" value={state.category} /> : null}
       {state.collection ? <input type="hidden" name="collection" value={state.collection} /> : null}

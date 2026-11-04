@@ -1,0 +1,47 @@
+/* Search form (M5): one field and a button, on the shared tokens. */
+.form {
+  display: grid;
+  gap: var(--av-space-2);
+  max-inline-size: 36rem;
+  margin-block-start: var(--av-space-4);
+}
+
+.label {
+  font-size: var(--av-text-small);
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  gap: var(--av-space-2);
+}
+
+.input {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: var(--av-tap-target);
+  padding-inline: var(--av-space-3);
+  border: var(--av-border-width) solid var(--av-field-border);
+  background: var(--av-color-white);
+  color: var(--av-text);
+  font: inherit;
+}
+
+.input:focus-visible,
+.submit:focus-visible {
+  outline: var(--av-focus-width) solid var(--av-focus);
+  outline-offset: var(--av-focus-offset);
+}
+
+.submit {
+  min-block-size: var(--av-tap-target);
+  padding-inline: var(--av-space-6);
+  border: 0;
+  background: var(--av-color-charcoal);
+  color: var(--av-color-off-white);
+  font: inherit;
+  font-size: var(--av-text-small);
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+  cursor: pointer;
+}

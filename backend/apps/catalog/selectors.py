@@ -1,15 +1,17 @@
 """Catalogue reads for the storefront: published products only, filtering, facets and card data."""
 
+import re
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from datetime import timedelta
 from decimal import Decimal
 from typing import Any
 
+from django.contrib.postgres.search import SearchQuery
 from django.db.models import Count, Max, Min, Prefetch, Q, QuerySet
 from django.utils import timezone
 
-from .models import Category, Collection, Product, ProductImage, ProductStatus, ProductVariant
+from .models import Category, Collection, Product, ProductImage, ProductStatus, ProductTranslation, ProductVariant
 
 NEW_ARRIVAL_DAYS = 30
 SORTS = {
@@ -30,6 +32,7 @@ class ProductFilters:
     colours: list[str] = field(default_factory=list)
     price_min: Decimal | None = None
     price_max: Decimal | None = None
+    query: str = ""
 
 
 def published() -> QuerySet[Product]:
@@ -39,7 +42,7 @@ def published() -> QuerySet[Product]:
 def with_card_data(qs: QuerySet[Product]) -> QuerySet[Product]:
     return qs.select_related("category").prefetch_related(
         "translations",
-        Prefetch("variants", queryset=ProductVariant.objects.filter(is_active=True)),
+        Prefetch("variants", queryset=ProductVariant.objects.filter(is_active=True).select_related("colour")),
         Prefetch("images", queryset=ProductImage.objects.order_by("position")),
     )
 
@@ -50,6 +53,8 @@ def apply_filters(qs: QuerySet[Product], f: ProductFilters, *, skip: str | None 
         qs = qs.filter(department=f.department)
     if f.category and skip != "category":
         qs = qs.filter(category__slug=f.category)
+    if f.query:
+        qs = qs.filter(id__in=search_ids(f.query))
     if f.collection:
         qs = qs.filter(collections__slug=f.collection, collections__is_published=True)
     variant_q = Q(variants__is_active=True)
@@ -58,7 +63,7 @@ def apply_filters(qs: QuerySet[Product], f: ProductFilters, *, skip: str | None 
         variant_q &= Q(variants__size__in=f.sizes)
         variant_filtered = True
     if f.colours and skip != "colour":
-        variant_q &= Q(variants__colour_slug__in=f.colours)
+        variant_q &= Q(variants__colour__slug__in=f.colours)
         variant_filtered = True
     if variant_filtered:
         # One variant must match both size and colour, so "M in Ivory" means that variant exists.
@@ -73,6 +78,21 @@ def apply_filters(qs: QuerySet[Product], f: ProductFilters, *, skip: str | None 
 
 def products(f: ProductFilters, sort: str) -> QuerySet[Product]:
     return with_card_data(apply_filters(published(), f)).order_by(*SORTS.get(sort, SORTS[DEFAULT_SORT]))
+
+
+_WORD = re.compile(r"\w+", re.UNICODE)
+
+
+def search_ids(text: str) -> "QuerySet[ProductTranslation, Any]":
+    """Products whose English or Urdu text matches every word; the last word may be a prefix ("kur" → kurta).
+    Words are reduced to letters and digits, so nothing the shopper types reaches the query as syntax."""
+    words = _WORD.findall(text.lower())[:8]
+    if not words:
+        return ProductTranslation.objects.none().values("product_id")
+    raw = " & ".join([*words[:-1], f"{words[-1]}:*"])
+    english = SearchQuery(raw, config="english", search_type="raw")
+    simple = SearchQuery(raw, config="simple", search_type="raw")
+    return ProductTranslation.objects.filter(Q(search_vector=english) | Q(search_vector=simple)).values("product_id")
 
 
 SIZE_ORDER = ["XS", "S", "M", "L", "XL", "XXL"]
@@ -99,9 +119,9 @@ def facets(f: ProductFilters) -> dict[str, Any]:
     )
     colour_rows = (
         ProductVariant.objects.filter(is_active=True, product__in=apply_filters(base, f, skip="colour"))
-        .values("colour_slug", "colour_name_en", "colour_name_ur", "colour_hex")
+        .values("colour__slug", "colour__name_en", "colour__name_ur", "colour__hex", "colour__position")
         .annotate(n=Count("product", distinct=True))
-        .order_by("colour_name_en")
+        .order_by("colour__position", "colour__name_en")
     )
     price = apply_filters(base, f, skip="price").aggregate(lo=Min("price_min"), hi=Max("price_max"))
     return {
@@ -117,13 +137,13 @@ def facets(f: ProductFilters) -> dict[str, Any]:
         ],
         "sizes": sorted(
             ({"value": r["size"], "count": r["n"]} for r in size_rows),
-            key=lambda s: SIZE_ORDER.index(s["value"]) if s["value"] in SIZE_ORDER else len(SIZE_ORDER),
+            key=lambda s: size_sort_key(s["value"]),
         ),
         "colours": [
             {
-                "slug": r["colour_slug"],
-                "name": {"en": r["colour_name_en"], "ur": r["colour_name_ur"]},
-                "hex": r["colour_hex"],
+                "slug": r["colour__slug"],
+                "name": {"en": r["colour__name_en"], "ur": r["colour__name_ur"]},
+                "hex": r["colour__hex"],
                 "count": r["n"],
             }
             for r in colour_rows
@@ -153,11 +173,34 @@ def is_new(product: Product) -> bool:
 
 
 def translations(product: Product) -> dict[str, dict[str, str]]:
-    return {t.locale: {"name": t.name, "description": t.description} for t in product.translations.all()}
+    return {
+        t.locale: {
+            "name": t.name,
+            "description": t.description,
+            "fabric": t.fabric,
+            "care": t.care,
+            "fit_note": t.fit_note,
+        }
+        for t in product.translations.all()
+    }
 
 
 def unique_colours(variants: Iterable[ProductVariant]) -> list[ProductVariant]:
     seen: dict[str, ProductVariant] = {}
     for v in variants:
-        seen.setdefault(v.colour_slug, v)
+        seen.setdefault(v.colour.slug, v)
     return list(seen.values())
+
+
+def size_sort_key(size: str) -> tuple[int, float, str]:
+    """Letters in their usual order, then numbers in numeric order (decision 0006, #4), then anything else."""
+    if size in SIZE_ORDER:
+        return (0, SIZE_ORDER.index(size), size)
+    try:
+        return (1, float(size), size)
+    except ValueError:
+        return (2, 0.0, size)
+
+
+def product_detail(slug: str) -> Product | None:
+    return with_card_data(published().filter(slug=slug)).prefetch_related("collections").first()

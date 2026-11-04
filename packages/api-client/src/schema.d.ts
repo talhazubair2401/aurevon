@@ -218,6 +218,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/catalog/products/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["catalog_product"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/products/{slug}/availability": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Fresh price and stock per variant (MTS §8 Availability; A-15). Never cached. */
+    get: operations["catalog_product_availability"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/cms/banners/{key}": {
     parameters: {
       query?: never;
@@ -1337,6 +1371,9 @@ export interface components {
       previous: string | null;
       results: components["schemas"]["AuditLogOut"][];
     };
+    Availability: {
+      variants: components["schemas"]["VariantAvailability"][];
+    };
     Banner: {
       key: string;
       content: {
@@ -1654,6 +1691,35 @@ export interface components {
       name: string;
       hex: string;
     };
+    ProductDetail: {
+      slug: string;
+      name: string;
+      department: components["schemas"]["DepartmentEnum"];
+      category: components["schemas"]["CategoryRef"];
+      price_min: components["schemas"]["Money"];
+      price_max: components["schemas"]["Money"];
+      colours: components["schemas"]["ProductColour"][];
+      sizes: string[];
+      image: components["schemas"]["ProductCardImage"] | null;
+      is_new: boolean;
+      is_featured: boolean;
+      description: string;
+      fabric: string;
+      care: string;
+      fit_note: string;
+      style_number: string;
+      images: components["schemas"]["ProductImage"][];
+      variants: components["schemas"]["Variant"][];
+      size_chart: components["schemas"]["SizeChartRow"][];
+      collections: components["schemas"]["CollectionCard"][];
+    };
+    ProductImage: {
+      url: string | null;
+      demo_art: string | null;
+      colour: string | null;
+      tone: string;
+      alt: string;
+    };
     ProductPage: {
       next: string | null;
       previous: string | null;
@@ -1754,6 +1820,12 @@ export interface components {
       session: components["schemas"]["StaffSessionInfoOut"];
       recovery_codes: string[];
     };
+    SizeChartRow: {
+      name: string;
+      values: {
+        [key: string]: string;
+      };
+    };
     /**
      * @description * `manual` - manual
      *     * `slug_change` - slug_change
@@ -1851,6 +1923,19 @@ export interface components {
      * @enum {string}
      */
     TypeEnum: "heading" | "paragraph" | "list";
+    Variant: {
+      sku: string;
+      size: string;
+      colour: string;
+      price: components["schemas"]["Money"];
+    };
+    VariantAvailability: {
+      sku: string;
+      size: string;
+      colour: string;
+      price: components["schemas"]["Money"];
+      available: boolean;
+    };
   };
   responses: never;
   parameters: never;
@@ -2105,6 +2190,8 @@ export interface operations {
         locale?: "en" | "ur";
         price_max?: number;
         price_min?: number;
+        /** @description Search words (English or Urdu) */
+        q?: string;
         /** @description Comma-separated sizes */
         size?: string;
       };
@@ -2137,6 +2224,8 @@ export interface operations {
         locale?: "en" | "ur";
         price_max?: number;
         price_min?: number;
+        /** @description Search words (English or Urdu) */
+        q?: string;
         /** @description Comma-separated sizes */
         size?: string;
         sort?: "featured" | "newest" | "price_asc" | "price_desc";
@@ -2153,6 +2242,50 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ProductPage"];
+        };
+      };
+    };
+  };
+  catalog_product: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductDetail"];
+        };
+      };
+    };
+  };
+  catalog_product_availability: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Availability"];
         };
       };
     };

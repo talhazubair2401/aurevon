@@ -413,6 +413,14 @@
                     },
                     {
                         "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Search words (English or Urdu)"
+                    },
+                    {
+                        "in": "query",
                         "name": "size",
                         "schema": {
                             "type": "string"
@@ -521,6 +529,14 @@
                     },
                     {
                         "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Search words (English or Urdu)"
+                    },
+                    {
+                        "in": "query",
                         "name": "size",
                         "schema": {
                             "type": "string"
@@ -553,6 +569,85 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ProductPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/catalog/products/{slug}": {
+            "get": {
+                "operationId": "catalog_product",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/catalog/products/{slug}/availability": {
+            "get": {
+                "operationId": "catalog_product_availability",
+                "description": "Fresh price and stock per variant (MTS §8 Availability; A-15). Never cached.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Availability"
                                 }
                             }
                         },
@@ -3243,6 +3338,20 @@
                     "results"
                 ]
             },
+            "Availability": {
+                "type": "object",
+                "properties": {
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VariantAvailability"
+                        }
+                    }
+                },
+                "required": [
+                    "variants"
+                ]
+            },
             "Banner": {
                 "type": "object",
                 "properties": {
@@ -4373,6 +4482,146 @@
                     "slug"
                 ]
             },
+            "ProductDetail": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "$ref": "#/components/schemas/DepartmentEnum"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryRef"
+                    },
+                    "price_min": {
+                        "$ref": "#/components/schemas/Money"
+                    },
+                    "price_max": {
+                        "$ref": "#/components/schemas/Money"
+                    },
+                    "colours": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductColour"
+                        }
+                    },
+                    "sizes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ProductCardImage"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "is_new": {
+                        "type": "boolean"
+                    },
+                    "is_featured": {
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "fabric": {
+                        "type": "string"
+                    },
+                    "care": {
+                        "type": "string"
+                    },
+                    "fit_note": {
+                        "type": "string"
+                    },
+                    "style_number": {
+                        "type": "string"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductImage"
+                        }
+                    },
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Variant"
+                        }
+                    },
+                    "size_chart": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SizeChartRow"
+                        }
+                    },
+                    "collections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CollectionCard"
+                        }
+                    }
+                },
+                "required": [
+                    "care",
+                    "category",
+                    "collections",
+                    "colours",
+                    "department",
+                    "description",
+                    "fabric",
+                    "fit_note",
+                    "image",
+                    "images",
+                    "is_featured",
+                    "is_new",
+                    "name",
+                    "price_max",
+                    "price_min",
+                    "size_chart",
+                    "sizes",
+                    "slug",
+                    "style_number",
+                    "variants"
+                ]
+            },
+            "ProductImage": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "demo_art": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "colour": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tone": {
+                        "type": "string"
+                    },
+                    "alt": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "alt",
+                    "colour",
+                    "demo_art",
+                    "tone",
+                    "url"
+                ]
+            },
             "ProductPage": {
                 "type": "object",
                 "properties": {
@@ -4747,6 +4996,24 @@
                     "session"
                 ]
             },
+            "SizeChartRow": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "values": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "values"
+                ]
+            },
             "SourceEnum": {
                 "enum": [
                     "manual",
@@ -5076,6 +5343,56 @@
                 ],
                 "type": "string",
                 "description": "* `heading` - heading\n* `paragraph` - paragraph\n* `list` - list"
+            },
+            "Variant": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "$ref": "#/components/schemas/Money"
+                    }
+                },
+                "required": [
+                    "colour",
+                    "price",
+                    "size",
+                    "sku"
+                ]
+            },
+            "VariantAvailability": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "$ref": "#/components/schemas/Money"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "available",
+                    "colour",
+                    "price",
+                    "size",
+                    "sku"
+                ]
             }
         },
         "securitySchemes": {

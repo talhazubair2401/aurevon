@@ -20,6 +20,8 @@ urlpatterns: list[URLPattern | URLResolver] = [
     *customer_urlpatterns,
     # Public storefront reads (MTS §8): catalogue and published content.
     path("catalog/products", catalog.ProductListView.as_view(), name="catalog-products"),
+    path("catalog/products/<slug:slug>", catalog.ProductDetailView.as_view(), name="catalog-product"),
+    path("catalog/products/<slug:slug>/availability", catalog.AvailabilityView.as_view(), name="catalog-availability"),
     path("catalog/facets", catalog.FacetsView.as_view(), name="catalog-facets"),
     path("catalog/categories", catalog.CategoryListView.as_view(), name="catalog-categories"),
     path("catalog/collections", catalog.CollectionListView.as_view(), name="catalog-collections"),

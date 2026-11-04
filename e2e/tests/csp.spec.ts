@@ -14,6 +14,8 @@ const PAGES = [
   "/ur/collections/heritage-edit",
   "/en/pages/about",
   "/ur/pages/returns",
+  "/en/products/relaxed-chino",
+  "/ur/search?q=kurta",
   "/staff/sign-in",
   "/staff/forgot-password",
   "/staff/enroll",

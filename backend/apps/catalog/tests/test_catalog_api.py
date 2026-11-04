@@ -94,7 +94,8 @@ def test_facets_do_not_hide_their_own_options(client: Client) -> None:
     facets = get(client, "/api/v1/catalog/facets", department="women")
     assert {d["value"]: d["count"] for d in facets["departments"]} == {"men": 12, "women": 12}
     assert all(c["department"] == "women" for c in facets["categories"])
-    assert [s["value"] for s in facets["sizes"]] == ["XS", "S", "M", "L", "XL"]
+    # Letters first in their usual order, then numeric waist sizes (decision 0006, #4).
+    assert [s["value"] for s in facets["sizes"]] == ["XS", "S", "M", "L", "XL", "26", "28", "30", "32", "34"]
     assert facets["price"] == {"min": "9800.00", "max": "48500.00", "currency": "PKR"}
 
 

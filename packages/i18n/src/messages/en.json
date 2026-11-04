@@ -47,7 +47,27 @@
   "product": {
     "new": "New",
     "colours": "{count, plural, one {# colour} other {# colours}}",
-    "illustrationNote": "Illustration — product photography coming soon"
+    "illustrationNote": "Illustration — product photography coming soon",
+    "breadcrumbShop": "Shop All",
+    "colour": "Colour: {name}",
+    "size": "Size",
+    "sizeChart": "Size chart (cm)",
+    "measurement": "Measurement",
+    "details": "Details",
+    "fabric": "Fabric",
+    "care": "Care",
+    "fit": "Fit",
+    "styleNumber": "Style no. {number}",
+    "inStock": "In stock",
+    "soldOut": "Sold out",
+    "chooseSize": "Choose a size",
+    "addToBag": "Add to bag",
+    "bagSoon": "The bag opens soon.",
+    "unavailableSize": "{size}, sold out",
+    "inCollections": "Part of",
+    "gallery": "Images",
+    "sizeOption": "Size {size}",
+    "colourOption": "{name}"
   },
   "shop": {
     "title": "Shop All",
@@ -111,5 +131,15 @@
     "updated": "Last updated {date}",
     "englishOnly": "This page is available in English only for now.",
     "policy": "Policy"
+  },
+  "search": {
+    "title": "Search",
+    "label": "Search the store",
+    "placeholder": "Kurtas, tailoring, colours…",
+    "submit": "Search",
+    "results": "{count, plural, one {# result} other {# results}} for “{q}”",
+    "empty": "Nothing matches “{q}”.",
+    "emptyHint": "Check the spelling, or try fewer words.",
+    "prompt": "Search by name, category or colour."
   }
 }

@@ -19,6 +19,7 @@ from apps.catalog.models import (
     Category,
     Collection,
     CollectionItem,
+    Colour,
     Department,
     Product,
     ProductImage,
@@ -28,6 +29,21 @@ from apps.catalog.models import (
 )
 from apps.cms import demo as cms_demo
 from apps.cms.models import Banner, HomepageSection, NavigationItem, Page, SEORecord
+from apps.inventory import services as inventory
+from apps.inventory.models import InventoryItem, MovementReason, StockMovement
+
+COLOUR_CODES = {
+    "ivory": "IVR",
+    "black": "BLK",
+    "camel": "CML",
+    "chocolate": "CHC",
+    "sand": "SND",
+    "olive": "OLV",
+    "midnight": "MDN",
+    "stone-grey": "STG",
+    "rose-dust": "RSD",
+    "sage": "SGE",
+}
 
 COLOURS: dict[str, tuple[str, str, str]] = {
     "ivory": ("Ivory", "ہاتھی دانت", "#F2EDE4"),
@@ -41,6 +57,36 @@ COLOURS: dict[str, tuple[str, str, str]] = {
     "rose-dust": ("Rose Dust", "گلابی خاک", "#C9A79F"),
     "sage": ("Sage", "سیج سبز", "#A3AC94"),
 }
+
+# Letter sizes for most categories, numeric waist sizes for trousers (decision 0006, #4).
+LETTERS_W = ["XS", "S", "M", "L", "XL"]
+LETTERS_M = ["S", "M", "L", "XL", "XXL"]
+WAIST_W = ["26", "28", "30", "32", "34"]
+WAIST_M = ["30", "32", "34", "36", "38"]
+CATEGORY_CODES = {
+    "women-dresses": "WDR",
+    "women-kurtas": "WKU",
+    "women-outerwear": "WOU",
+    "women-trousers": "WTR",
+    "women-skirts": "WSK",
+    "men-shirts": "MSH",
+    "men-kurtas": "MKU",
+    "men-knitwear": "MKN",
+    "men-tailoring": "MTL",
+    "men-trousers": "MTR",
+}
+
+
+def _chart(sizes: list[str], measures: list[tuple[str, str, int, int]]) -> list[dict[str, Any]]:
+    """Demo size chart in cm: each measurement starts at `start` and grows by `step` per size."""
+    return [
+        {"name": {"en": en, "ur": ur}, "values": {s: str(start + step * i) for i, s in enumerate(sizes)}}
+        for en, ur, start, step in measures
+    ]
+
+
+TOPS = [("Chest", "سینہ", 82, 6), ("Length", "لمبائی", 96, 2), ("Shoulder", "کندھا", 36, 1)]
+BOTTOMS = [("Waist", "کمر", 66, 5), ("Hip", "کولہے", 92, 5), ("Inseam", "اندرونی لمبائی", 76, 1)]
 
 CATEGORIES = [
     ("women-dresses", Department.WOMEN, "Dresses", "ڈریسز"),
@@ -418,6 +464,9 @@ PRODUCTS: list[tuple[Any, ...]] = [
 ]
 
 DESCRIPTION_EN = "Demo product for review. Final copy, materials and care arrive with the launch catalogue (P-12)."
+FABRIC_EN = "Demo: fabric details arrive with the launch catalogue."
+CARE_EN = "Demo: care instructions arrive with the launch catalogue."
+FIT_EN = "Demo: true to size. Check the size chart for measurements."
 DESCRIPTION_UR = "جائزے کے لیے نمونہ پروڈکٹ۔ حتمی تفصیل لانچ کیٹلاگ کے ساتھ آئے گی۔"
 
 HOME_SECTIONS: list[tuple[str, int, dict[str, Any]]] = [
@@ -511,6 +560,19 @@ SHOP_BANNER = {
 }
 
 
+def category_sizes(slug: str, product_sizes: list[str] | None = None) -> list[str]:
+    """The category's size list; for a product, its letter sizes mapped onto the category's list."""
+    if slug.endswith("trousers"):
+        full = WAIST_W if slug.startswith("women") else WAIST_M
+    else:
+        full = LETTERS_W if slug.startswith("women") else LETTERS_M
+    if product_sizes is None:
+        return full
+    if full[0][0].isdigit():  # numeric category: the demo picks the first sizes, as many as listed
+        return full[: max(len(product_sizes), 3)]
+    return [s for s in product_sizes if s in full] or full
+
+
 class Command(BaseCommand):
     help = "Create or update the demo catalogue and storefront content (local and staging only)."
 
@@ -524,8 +586,31 @@ class Command(BaseCommand):
     def _seed(self) -> None:
         cats = {}
         for position, (slug, dept, en, ur) in enumerate(CATEGORIES):
+            sizes = category_sizes(slug)
+            measures = BOTTOMS if slug.endswith(("trousers", "skirts")) else TOPS
             cats[slug], _ = Category.objects.update_or_create(
-                slug=slug, defaults={"department": dept, "name_en": en, "name_ur": ur, "position": position}
+                slug=slug,
+                defaults={
+                    "department": dept,
+                    "name_en": en,
+                    "name_ur": ur,
+                    "position": position,
+                    "code": CATEGORY_CODES[slug],
+                    "sizes": sizes,
+                    "size_chart": _chart(sizes, measures),
+                },
+            )
+        colour_rows = {}
+        for position, (slug, (cen, cur, chex)) in enumerate(COLOURS.items()):
+            colour_rows[slug], _ = Colour.objects.update_or_create(
+                slug=slug,
+                defaults={
+                    "code": COLOUR_CODES[slug],
+                    "name_en": cen,
+                    "name_ur": cur,
+                    "hex": chex,
+                    "position": position,
+                },
             )
         cols = {}
         for position, (slug, en, ur, den, dur, art, tone) in enumerate(COLLECTIONS):
@@ -545,6 +630,7 @@ class Command(BaseCommand):
         now = timezone.now()
         for position, row in enumerate(PRODUCTS):
             slug, dept, cat, art, en, ur, price, colours, sizes, featured, collections, age = row
+            sizes = category_sizes(cat, sizes)
             product, _ = Product.objects.update_or_create(
                 slug=slug,
                 defaults={
@@ -554,29 +640,54 @@ class Command(BaseCommand):
                     "is_featured": featured,
                     "position": position,
                     "published_at": now - timedelta(days=age),
+                    "base_price": Decimal(price),
+                },
+                create_defaults={
+                    "department": dept,
+                    "category": cats[cat],
+                    "status": ProductStatus.PUBLISHED,
+                    "is_featured": featured,
+                    "position": position,
+                    "published_at": now - timedelta(days=age),
+                    "base_price": Decimal(price),
+                    "style_number": services.next_style_number(),
                 },
             )
-            for locale, name, desc in (("en", en, DESCRIPTION_EN), ("ur", ur, DESCRIPTION_UR)):
+            for locale, name, desc, fabric, care, fit in (
+                ("en", en, DESCRIPTION_EN, FABRIC_EN, CARE_EN, FIT_EN),
+                ("ur", ur, DESCRIPTION_UR, "", "", ""),
+            ):
                 ProductTranslation.objects.update_or_create(
-                    product=product, locale=locale, defaults={"name": name, "description": desc}
+                    product=product,
+                    locale=locale,
+                    defaults={"name": name, "description": desc, "fabric": fabric, "care": care, "fit_note": fit},
                 )
-            sku_base = "".join(part[0] for part in slug.split("-")).upper()
+            wanted = []
             for ci, colour in enumerate(colours):
-                cen, cur, chex = COLOURS[colour]
                 for si, size in enumerate(sizes):
-                    ProductVariant.objects.update_or_create(
+                    variant, _ = ProductVariant.objects.update_or_create(
                         product=product,
                         size=size,
-                        colour_slug=colour,
-                        defaults={
-                            "sku": f"AV-{sku_base}-{position:02d}-{colour[:3].upper()}-{size}",
-                            "colour_name_en": cen,
-                            "colour_name_ur": cur,
-                            "colour_hex": chex,
+                        colour=colour_rows[colour],
+                        defaults={"price": Decimal(price), "position": ci * 10 + si, "is_active": True},
+                        create_defaults={
+                            "sku": services.sku_for(cats[cat], product.style_number, colour_rows[colour], size),
                             "price": Decimal(price),
                             "position": ci * 10 + si,
                         },
                     )
+                    wanted.append(variant.pk)
+            # Demo only: variants no longer in the demo list go, with their (demo) stock records.
+            stale = ProductVariant.objects.filter(product=product).exclude(pk__in=wanted)
+            StockMovement.objects.filter(item__variant__in=stale).delete()
+            InventoryItem.objects.filter(variant__in=stale).delete()
+            stale.delete()
+            inventory.ensure_items(wanted)
+            for index, variant_id in enumerate(wanted):
+                # Deterministic demo stock: most variants in stock, a few sold out, so both states show.
+                quantity = 0 if (position + index) % 7 == 3 else 2 + (position * 3 + index) % 9
+                if quantity and not StockMovement.objects.filter(item__variant_id=variant_id).exists():
+                    inventory.receive(variant_id, quantity, MovementReason.DEMO, actor_label="seed_demo_catalog")
             ProductImage.objects.filter(product=product).delete()
             for ci, colour in enumerate(colours):
                 ProductImage.objects.create(
@@ -591,6 +702,7 @@ class Command(BaseCommand):
             for col in collections:
                 CollectionItem.objects.get_or_create(collection=cols[col], product=product)
             services.refresh_price_range(product)
+            services.refresh_search(product)
 
         for key, position, content in HOME_SECTIONS:
             HomepageSection.objects.update_or_create(

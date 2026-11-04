@@ -11,6 +11,7 @@ from rest_framework.pagination import CursorPagination
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from apps.inventory import selectors as inventory
 from common.api import PublicAPIView, request_locale
 from common.exceptions import ApiProblem
 
@@ -57,6 +58,7 @@ def parse_filters(request: Request) -> selectors.ProductFilters:
         colours=_list_param(request, "colour"),
         price_min=_decimal(request, "price_min"),
         price_max=_decimal(request, "price_max"),
+        query=(request.query_params.get("q") or "").strip()[:100],
     )
 
 
@@ -69,6 +71,7 @@ FILTER_PARAMS = [
     OpenApiParameter("colour", OpenApiTypes.STR, description="Comma-separated colour slugs"),
     OpenApiParameter("price_min", OpenApiTypes.DECIMAL),
     OpenApiParameter("price_max", OpenApiTypes.DECIMAL),
+    OpenApiParameter("q", OpenApiTypes.STR, description="Search words (English or Urdu)"),
 ]
 
 
@@ -223,6 +226,93 @@ class CollectionDetailView(PublicAPIView):
         if collection is None:
             raise ApiProblem(404, "not-found", "No such collection.")
         return Response(presenters.collection(collection, locale))
+
+
+class ProductImageSerializer(serializers.Serializer[Any]):
+    url = serializers.CharField(allow_null=True)
+    demo_art = serializers.CharField(allow_null=True)
+    colour = serializers.CharField(allow_null=True)
+    tone = serializers.CharField()
+    alt = serializers.CharField()
+
+
+class VariantSerializer(serializers.Serializer[Any]):
+    sku = serializers.CharField()
+    size = serializers.CharField()
+    colour = serializers.CharField()
+    price = MoneySerializer()
+
+
+class SizeChartRowSerializer(serializers.Serializer[Any]):
+    name = serializers.CharField()
+    values = serializers.DictField(child=serializers.CharField())
+
+
+class ProductDetailSerializer(ProductCardSerializer):
+    description = serializers.CharField(allow_blank=True)
+    fabric = serializers.CharField(allow_blank=True)
+    care = serializers.CharField(allow_blank=True)
+    fit_note = serializers.CharField(allow_blank=True)
+    style_number = serializers.CharField()
+    images = ProductImageSerializer(many=True)
+    variants = VariantSerializer(many=True)
+    size_chart = SizeChartRowSerializer(many=True)
+    collections = CollectionCardSerializer(many=True)
+
+
+class VariantAvailabilitySerializer(serializers.Serializer[Any]):
+    sku = serializers.CharField()
+    size = serializers.CharField()
+    colour = serializers.CharField()
+    price = MoneySerializer()
+    available = serializers.BooleanField()
+
+
+class AvailabilitySerializer(serializers.Serializer[Any]):
+    variants = VariantAvailabilitySerializer(many=True)
+
+
+class ProductDetailView(PublicAPIView):
+    @extend_schema(
+        tags=["catalogue"],
+        operation_id="catalog_product",
+        parameters=[OpenApiParameter("locale", OpenApiTypes.STR, enum=["en", "ur"])],
+        responses=ProductDetailSerializer,
+    )
+    def get(self, request: Request, slug: str) -> Response:
+        locale = request_locale(request)
+        product = selectors.product_detail(slug)
+        if product is None:
+            raise ApiProblem(404, "not-found", "No such product.")
+        return Response(presenters.product_detail(product, locale))
+
+
+class AvailabilityView(PublicAPIView):
+    """Fresh price and stock per variant (MTS §8 Availability; A-15). Never cached."""
+
+    @extend_schema(tags=["catalogue"], operation_id="catalog_product_availability", responses=AvailabilitySerializer)
+    def get(self, request: Request, slug: str) -> Response:
+        product = selectors.product_detail(slug)
+        if product is None:
+            raise ApiProblem(404, "not-found", "No such product.")
+        variants = list(product.variants.all())
+        stock = inventory.available(v.pk for v in variants)
+        response = Response(
+            {
+                "variants": [
+                    {
+                        "sku": v.sku,
+                        "size": v.size,
+                        "colour": v.colour.slug,
+                        "price": {"amount": f"{v.price:.2f}", "currency": v.currency},
+                        "available": stock[v.pk] > 0,
+                    }
+                    for v in variants
+                ]
+            }
+        )
+        response["Cache-Control"] = "no-store"
+        return response
 
 
 def cards(products: list[Any], locale: str) -> list[dict[str, Any]]:

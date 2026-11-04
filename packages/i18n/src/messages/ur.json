@@ -47,7 +47,27 @@
   "product": {
     "new": "نیا",
     "colours": "{count, plural, one {# رنگ} other {# رنگ}}",
-    "illustrationNote": "خاکہ — مصنوعات کی تصاویر جلد"
+    "illustrationNote": "خاکہ — مصنوعات کی تصاویر جلد",
+    "breadcrumbShop": "تمام مصنوعات",
+    "colour": "رنگ: {name}",
+    "size": "سائز",
+    "sizeChart": "سائز چارٹ (سینٹی میٹر)",
+    "measurement": "پیمائش",
+    "details": "تفصیلات",
+    "fabric": "کپڑا",
+    "care": "دیکھ بھال",
+    "fit": "فٹنگ",
+    "styleNumber": "اسٹائل نمبر {number}",
+    "inStock": "دستیاب",
+    "soldOut": "ختم",
+    "chooseSize": "سائز منتخب کریں",
+    "addToBag": "بیگ میں شامل کریں",
+    "bagSoon": "بیگ جلد دستیاب ہوگا۔",
+    "unavailableSize": "{size}، ختم",
+    "inCollections": "کلیکشن",
+    "gallery": "تصاویر",
+    "sizeOption": "سائز {size}",
+    "colourOption": "{name}"
   },
   "shop": {
     "title": "تمام مصنوعات",
@@ -111,5 +131,15 @@
     "updated": "آخری تبدیلی {date}",
     "englishOnly": "یہ صفحہ فی الحال صرف انگریزی میں دستیاب ہے۔",
     "policy": "پالیسی"
+  },
+  "search": {
+    "title": "تلاش",
+    "label": "اسٹور میں تلاش کریں",
+    "placeholder": "کرتے، سلائی، رنگ…",
+    "submit": "تلاش",
+    "results": "“{q}” کے {count, plural, one {# نتائج} other {# نتائج}}",
+    "empty": "“{q}” سے کچھ نہیں ملا۔",
+    "emptyHint": "ہجے چیک کریں، یا کم الفاظ آزمائیں۔",
+    "prompt": "نام، زمرے یا رنگ سے تلاش کریں۔"
   }
 }

@@ -15,6 +15,7 @@ export interface ShopState {
   price_max?: string;
   sort: Sort;
   cursor?: string;
+  q?: string;
 }
 
 type Params = Record<string, string | string[] | undefined>;
@@ -40,6 +41,7 @@ export function parseShopState(params: Params): ShopState {
   const priceMin = one(params.price_min);
   const priceMax = one(params.price_max);
   const cursor = one(params.cursor);
+  const q = (Array.isArray(params.q) ? params.q[0] : params.q)?.trim().slice(0, 100);
   return {
     ...(department === "women" || department === "men" ? { department } : {}),
     ...(category && SLUG.test(category) ? { category } : {}),
@@ -50,6 +52,7 @@ export function parseShopState(params: Params): ShopState {
     ...(priceMax && PRICE.test(priceMax) ? { price_max: priceMax } : {}),
     sort: (SORTS as readonly string[]).includes(sort ?? "") ? (sort as Sort) : "featured",
     ...(cursor && cursor.length < 400 ? { cursor } : {}),
+    ...(q ? { q } : {}),
   };
 }
 
@@ -65,6 +68,7 @@ export function toSearch(state: Partial<ShopState>): string {
   if (state.price_max) q.set("price_max", state.price_max);
   if (state.sort && state.sort !== "featured") q.set("sort", state.sort);
   if (state.cursor) q.set("cursor", state.cursor);
+  if (state.q) q.set("q", state.q);
   const s = q.toString();
   return s ? `?${s}` : "";
 }

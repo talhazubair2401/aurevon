@@ -4,6 +4,8 @@ import { expect, test } from "@playwright/test";
 // account, bag) aren't linked until they exist (apps/storefront/lib/features.ts).
 
 const PAGES = [
+  "/en/products/relaxed-chino",
+  "/ur/search?q=kurta",
   "/en",
   "/ur",
   "/en/shop",
@@ -34,14 +36,16 @@ test("every internal link on the main pages opens a working page", async ({ page
 test("unbuilt header utilities are shown but don't link anywhere", async ({ page }) => {
   await page.goto("/en");
   const header = page.getByRole("banner");
-  for (const name of ["Search", "Account", "Bag"]) {
+  await expect(header.getByRole("link", { name: "Search" })).toHaveAttribute("href", "/en/search");
+  for (const name of ["Account", "Bag"]) {
     await expect(header.getByRole("img", { name: `${name}: coming soon` })).toBeVisible();
     await expect(header.getByRole("link", { name })).toHaveCount(0);
   }
 });
 
-test("product cards are not links until product pages exist (M5)", async ({ page }) => {
+test("product cards open their product pages (M5)", async ({ page }) => {
   await page.goto("/en/shop");
-  await expect(page.locator("main article").first()).toBeVisible();
-  await expect(page.locator("main a[href*='/products/']")).toHaveCount(0);
+  await page.locator("main article").first().getByRole("link").click();
+  await expect(page).toHaveURL(/\/en\/products\/[a-z0-9-]+$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });

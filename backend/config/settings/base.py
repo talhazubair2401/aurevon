@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     # Django admin is deliberately not installed: no business operation depends on it (MTS v2.1 R-06).
     "django.contrib.contenttypes",
     "django.contrib.auth",
+    "django.contrib.postgres",
     "rest_framework",
     "drf_spectacular",
     "common",
@@ -23,6 +24,7 @@ INSTALLED_APPS = [
     "apps.notifications",
     "apps.cms",
     "apps.catalog",
+    "apps.inventory",
     "apps.accounts",
 ]
 

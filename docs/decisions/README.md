@@ -15,6 +15,7 @@ decisions made since then are recorded here and in the numbered records; the nex
 | D-12 | Owner recovery: two Owners before launch, 24-hour assisted recovery, sealed break-glass | 0003 | 4 Nov 2026 | APPROVED |
 | P-19 | Functional colours, charcoal focus, Inter, Nastaliq + Naskh for Urdu, registration palette, interim wordmark | 0004 | 4 Nov 2026 | APPROVED (A-04 files still to supply) |
 | D-08 | CSP with a per-request nonce and `'strict-dynamic'`, both apps; HTML never publicly cached | 0005 | 4 Nov 2026 | APPROVED, implemented |
+| P-12 | Launch catalogue rules: departments, categories, letter and numeric sizes per category, colours, SKUs, prices, product fields, images, CSV import, stock | 0006 | 4 Nov 2026 | APPROVED |
 
 ## Still open (unchanged from MTS v2.1 §18 unless noted)
 
@@ -25,7 +26,6 @@ decisions made since then are recorded here and in the numbered records; the nex
 | P-08 | Email and SMS/OTP providers | M8 (email), M11 (SMS) |
 | P-10 | Cloud provider, region, CDN, budget, monitoring | Staging |
 | P-11 | Tax, invoicing, privacy, data residency | M8 |
-| P-12 | Launch catalogue | M5 |
 | P-13 | Shipping zones and fees | M10 |
 | P-14 | Returns policy | M12 |
 | P-15 | Guest checkout | M7 |

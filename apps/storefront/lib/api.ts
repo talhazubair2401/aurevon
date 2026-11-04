@@ -48,6 +48,7 @@ export interface ShopQuery {
   price_max?: string;
   sort?: "featured" | "newest" | "price_asc" | "price_desc";
   cursor?: string;
+  q?: string;
 }
 
 /** Query parameters without the unset ones (the generated types forbid explicit undefined). */
@@ -74,6 +75,7 @@ function filterParams(q: ShopQuery) {
     colour: q.colour?.length ? q.colour.join(",") : undefined,
     price_min: number(q.price_min),
     price_max: number(q.price_max),
+    q: q.q,
   };
 }
 
@@ -159,6 +161,28 @@ export async function getCollection(slug: string, locale: Locale): Promise<Colle
   const result = await api.GET("/api/v1/catalog/collections/{slug}", {
     params: { path: { slug }, query: { locale } },
     next: { revalidate: CATALOGUE_SECONDS, tags: ["catalogue"] },
+  });
+  if (result.response.status === 404) return null;
+  return unwrap(result);
+}
+
+export type ProductDetail = components["schemas"]["ProductDetail"];
+export type Availability = components["schemas"]["Availability"];
+
+export async function getProduct(slug: string, locale: Locale): Promise<ProductDetail | null> {
+  const result = await api.GET("/api/v1/catalog/products/{slug}", {
+    params: { path: { slug }, query: { locale } },
+    next: { revalidate: CATALOGUE_SECONDS, tags: ["catalogue"] },
+  });
+  if (result.response.status === 404) return null;
+  return unwrap(result);
+}
+
+/** Price and stock per variant, read fresh on every view (MTS §3, A-15): never from a cache. */
+export async function getAvailability(slug: string): Promise<Availability | null> {
+  const result = await api.GET("/api/v1/catalog/products/{slug}/availability", {
+    params: { path: { slug } },
+    cache: "no-store",
   });
   if (result.response.status === 404) return null;
   return unwrap(result);
