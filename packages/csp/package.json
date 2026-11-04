@@ -1,0 +1,20 @@
+{
+  "name": "@aurevon/csp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Content Security Policy for the storefront and staff app: per-request nonce with strict-dynamic (decision 0005, D-08)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@aurevon/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  }
+}

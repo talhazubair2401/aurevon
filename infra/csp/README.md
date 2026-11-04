@@ -1,9 +1,12 @@
-# Content Security Policy (MTS v2.1 §12, A-26, V-05)
+# Content Security Policy (MTS v2.1 §12, A-26; decision 0005)
 
-`*-baseline.txt` are the MTS §12 baselines **without** nonces or hashes. The proxy sends them as
-`Content-Security-Policy-Report-Only`, and `e2e/tests/csp.spec.ts` records every violation the production
-builds produce. Those results decide D-08 (nonce-based vs hash-based) before M4. The policy switches to
-enforcing mode only once a run shows zero violations.
+The policies are no longer static files. Each Next.js app builds its enforcing policy per request, with a fresh
+nonce, from `packages/csp` (`buildPolicy`). The proxy never sets or replaces it; it only enforces the caching
+rules and a script-free fallback (see `docs/runbooks/csp-and-caching.md`).
 
-The proxy reads the policies from the environment (`STOREFRONT_CSP`, `STAFF_CSP`), set in `infra/compose.yaml`
-from these files' contents. Keep them in sync when editing.
+V-05 records in this folder:
+
+- `V-05-run-1.md` (M1) and `V-05-run-2.md` (M3): report-only baselines; evidence for D-08.
+- `V-05-run-3.md` (D-08): the enforcing nonce policy against the production builds.
+
+Next runs: M5, M6 (with the 3D viewer and `webAssembly: true`), M14.

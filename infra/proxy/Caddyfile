@@ -3,9 +3,20 @@
 #   /staff/*   -> staff dashboard (never cached, never indexed)
 #   /*         -> storefront
 # /health/* and Django admin are not routed (internal only).
+#
+# CSP (decision 0005, D-08): each Next.js app sets its own enforcing policy with a per-request nonce. This proxy
+# never sets or replaces that policy. It only:
+#   - forces HTML and every other non-asset response to be uncacheable, so no nonce is ever stored or reused;
+#   - leaves content-hashed build assets (/_next/static) with their long-term immutable caching;
+#   - adds a strict, script-free fallback policy to any response that arrived without one.
+# A production CDN must follow the same rules (docs/runbooks/csp-and-caching.md).
 {
 	admin off
 	auto_https off
+}
+
+(fallback_csp) {
+	header ?Content-Security-Policy "default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
 }
 
 :8080 {
@@ -18,17 +29,29 @@
 		reverse_proxy api:8000
 	}
 
-	@staff path /staff /staff/*
-	handle @staff {
-		header >Cache-Control "no-store"
+	@staffAssets path /staff/_next/static/*
+	handle @staffAssets {
 		header >X-Robots-Tag "noindex, nofollow"
-		header >Referrer-Policy "same-origin"
-		header Content-Security-Policy-Report-Only "{$STAFF_CSP}"
 		reverse_proxy staff:3001
 	}
 
+	@staff path /staff /staff/*
+	handle @staff {
+		header >Cache-Control "private, no-store, max-age=0"
+		header >X-Robots-Tag "noindex, nofollow"
+		header >Referrer-Policy "same-origin"
+		import fallback_csp
+		reverse_proxy staff:3001
+	}
+
+	@storefrontAssets path /_next/static/*
+	handle @storefrontAssets {
+		reverse_proxy storefront:3000
+	}
+
 	handle {
-		header Content-Security-Policy-Report-Only "{$STOREFRONT_CSP}"
+		header >Cache-Control "private, no-store, max-age=0"
+		import fallback_csp
 		reverse_proxy storefront:3000
 	}
 }

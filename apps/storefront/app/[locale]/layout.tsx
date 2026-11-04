@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -12,10 +13,8 @@ import { SiteHeader } from "@/components/shell/SiteHeader";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SkipLink } from "@aurevon/ui";
 
-// Locale pages are statically generated (MTS §3); dynamic rendering is not forced here, pending D-08.
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+// Every page renders per request so it carries that request's CSP nonce (decision 0005, D-08). Reading the
+// request headers opts the whole tree out of static generation; Next.js then stamps the nonce on its scripts.
 
 export const viewport: Viewport = { themeColor: colors.offWhite };
 
@@ -33,6 +32,7 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
+  await headers();
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "shell" });
   const fontVars = [displayFont, uiFont, urduReadingFont, urduUiFont]
