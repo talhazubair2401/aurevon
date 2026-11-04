@@ -254,12 +254,26 @@ test("Owner creates, prices and publishes a product", async ({ browser, page }) 
   }
   await expect(owner.getByText("Prices saved.")).toBeVisible();
 
+  await owner.getByLabel("Image file").setInputFiles("fixtures/product-photo.jpg");
+  await owner.getByLabel("Colour", { exact: true }).selectOption("ivory");
+  await owner.getByLabel("Description for screen readers (English)").fill("E2E kurta, front");
+  await owner.getByRole("button", { name: "Upload image" }).click();
+  await expect(owner.getByText("Image added.")).toBeVisible();
+
   expect((await page.goto("/en/products/e2e-linen-kurta"))!.status()).toBe(404);
   await owner.getByRole("button", { name: "Publish", exact: true }).click();
   await expect(owner.getByText("Published. The store shows it now.")).toBeVisible();
   await page.goto("/en/products/e2e-linen-kurta");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("E2E Linen Kurta");
   await expect(page.getByText(/Rs\s?11,800/).first()).toBeVisible();
+  const photo = page.getByRole("img", { name: "E2E kurta, front" }).first();
+  await expect(photo).toBeVisible();
+  const src = (await photo.getAttribute("src"))!;
+  expect(src).toMatch(/^\/media\/products\/[0-9a-f]+-page\.webp$/);
+  const media = await page.request.get(src);
+  expect(media.status()).toBe(200);
+  expect(media.headers()["content-type"]).toBe("image/webp");
+  expect(media.headers()["cache-control"]).toContain("immutable");
 
   await owner.getByRole("button", { name: "Archive" }).click();
   await expect(owner.getByText("Moved to archived.")).toBeVisible();

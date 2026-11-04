@@ -28,7 +28,17 @@ export async function ProductCard({ product, locale }: { product: Card; locale: 
     <article className={styles.card}>
       <Wrapper slug={product.slug}>
         <div className={styles.media}>
-          {image?.demo_art ? (
+          {image?.url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- served pre-sized from object storage (M5)
+            <img
+              src={image.url}
+              alt={image.alt}
+              className={styles.photo}
+              loading="lazy"
+              width={800}
+              height={1000}
+            />
+          ) : image?.demo_art ? (
             <div className={styles.art}>
               <GarmentArt kind={image.demo_art as ArtKind} colour={image.tone} />
             </div>

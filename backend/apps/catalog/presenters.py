@@ -18,7 +18,8 @@ def product_card(product: Product, locale: str) -> dict[str, Any]:
     variants = list(product.variants.all())
     colours = selectors.unique_colours(variants)
     images = list(product.images.all())
-    image = images[0] if images else None
+    # A real photograph comes first; the illustrated stand-ins only when there is none (decision 0006, #9).
+    image = next((i for i in images if i.url), images[0] if images else None)
     first_colour = colours[0] if colours else None
     sizes = sorted({v.size for v in variants}, key=selectors.size_sort_key)
     return {
@@ -36,7 +37,7 @@ def product_card(product: Product, locale: str) -> dict[str, Any]:
         "image": None
         if image is None
         else {
-            "url": image.url or None,
+            "url": (image.thumb_url or image.url) or None,
             "demo_art": image.demo_art or None,
             "tone": first_colour.colour.hex if first_colour else "#E5E0DB",
             "alt": _pick(image.alt_en, image.alt_ur, locale),

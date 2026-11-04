@@ -78,6 +78,18 @@ SITE_URL = env("SITE_URL", default="http://localhost:8080").rstrip("/")
 # The worker calls the storefront's internal endpoint with this shared secret; unset, pages refresh within a minute.
 STOREFRONT_INTERNAL_URL = env("STOREFRONT_INTERNAL_URL", default="").rstrip("/")
 STOREFRONT_REVALIDATE_SECRET = env("STOREFRONT_REVALIDATE_SECRET", default="")
+# Product images and other media (MTS §14 object storage). Served publicly under /media/ through the proxy or CDN.
+MEDIA_STORAGE = env("MEDIA_STORAGE", default="local")  # "s3" (MinIO locally, P-10 provider) or "local"
+MEDIA_ROOT = env("MEDIA_ROOT", default=str(BASE_DIR / "media"))
+MEDIA_URL = "/media/"
+MEDIA_BUCKET = env("MEDIA_BUCKET", default="aurevon-media")
+S3_ENDPOINT_URL = env("S3_ENDPOINT_URL", default="")
+S3_ACCESS_KEY = env("S3_ACCESS_KEY", default="")
+S3_SECRET_KEY = env("S3_SECRET_KEY", default="")
+S3_REGION = env("S3_REGION", default="")
+# Uploads are read into memory to be checked and re-encoded; product photos stay well under this.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 16 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 16 * 1024 * 1024
 DISPLAY_TIME_ZONE = "Asia/Karachi"  # times shown to people (MTS §5); storage stays UTC
 
 # Encrypts authenticator secrets at rest. Required in production; derived from SECRET_KEY elsewhere.

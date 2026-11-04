@@ -22,6 +22,14 @@
     var(--av-color-stone);
 }
 
+.photo {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
 .art {
   position: absolute;
   inset: 10% 14% 6%;

@@ -16,6 +16,10 @@ x-backend-env: &backend-env
   # Publishing CMS content refreshes the storefront's cache at once (decision 0005). Local value, not a secret.
   STOREFRONT_INTERNAL_URL: http://storefront:3000
   STOREFRONT_REVALIDATE_SECRET: local-development-revalidate-key
+  # Product images: a shared volume served by the proxy at /media/ locally; S3-compatible object storage in
+  # production (P-10). MinIO no longer publishes official images, so it isn't used here.
+  MEDIA_STORAGE: local
+  MEDIA_ROOT: /media
 
 services:
   postgres:
@@ -64,6 +68,8 @@ services:
     image: aurevon-backend:local
     build: { context: .., dockerfile: infra/docker/api.Dockerfile }
     environment: *backend-env
+    volumes:
+      - media-data:/media
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
@@ -84,6 +90,8 @@ services:
     pull_policy: never
     command: ["celery", "-A", "config", "worker", "--loglevel", "INFO"]
     environment: *backend-env
+    volumes:
+      - media-data:/media
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
@@ -137,10 +145,12 @@ services:
       - "8080:8080"
     volumes:
       - ./proxy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - media-data:/srv/media:ro
     depends_on:
       api: { condition: service_healthy }
       storefront: { condition: service_started }
       staff: { condition: service_started }
 
 volumes:
+  media-data:
   postgres-data:

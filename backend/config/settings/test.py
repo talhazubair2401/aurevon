@@ -16,3 +16,4 @@ CELERY_TASK_EAGER_PROPAGATES = True
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "aurevon-tests"}}
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 SITE_URL = "https://aurevon.test"
+MEDIA_STORAGE = "local"

@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import serializers, status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -21,8 +22,8 @@ from apps.audit.services import Actor
 from apps.inventory import selectors as inventory
 from common.exceptions import ApiProblem
 
-from .. import editing, importing
-from ..models import Category, Colour, Product, ProductStatus
+from .. import editing, images, importing
+from ..models import Category, Colour, Product, ProductImage, ProductStatus
 
 TAG = ["staff catalogue"]
 
@@ -87,6 +88,22 @@ class ProductSummaryOut(serializers.Serializer[Any]):
     updated_at = serializers.DateTimeField()
 
 
+class ImageOut(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    url = serializers.CharField()
+    thumb_url = serializers.CharField()
+    colour = serializers.CharField()
+    alt_en = serializers.CharField()
+    alt_ur = serializers.CharField()
+
+
+class ImageIn(serializers.Serializer[Any]):
+    file = serializers.FileField()
+    colour = serializers.CharField(allow_blank=True, required=False)
+    alt_en = serializers.CharField(max_length=200)
+    alt_ur = serializers.CharField(max_length=200, allow_blank=True, required=False)
+
+
 class ProductOut(serializers.Serializer[Any]):
     id = serializers.UUIDField()
     slug = serializers.CharField()
@@ -100,6 +117,7 @@ class ProductOut(serializers.Serializer[Any]):
     copy = serializers.JSONField()
     variant_list = VariantOut(many=True)
     publish_problems = serializers.ListField(child=serializers.CharField())
+    images = ImageOut(many=True)
     updated_at = serializers.DateTimeField()
 
 
@@ -253,6 +271,17 @@ def product_out(p: Product) -> dict[str, Any]:
             for v in variants
         ],
         "publish_problems": editing.publish_problems(p),
+        "images": [
+            {
+                "id": i.pk,
+                "url": i.url,
+                "thumb_url": i.thumb_url,
+                "colour": i.colour_slug,
+                "alt_en": i.alt_en,
+                "alt_ur": i.alt_ur,
+            }
+            for i in p.images.exclude(url="").order_by("position")
+        ],
         "updated_at": p.updated_at,
     }
 
@@ -371,3 +400,45 @@ class ImportView(_CatalogView):
             raise ApiProblem(403, "step-up-required", "Confirm with your authenticator code to import prices.")
         report = importing.run(serializer.validated_data["csv"].encode(), self.actor(), apply=apply, request=request)
         return Response(report.__dict__)
+
+
+class ProductImagesView(_CatalogView):
+    """Uploads go through the API so every file is checked and re-encoded before it is stored (MTS §12)."""
+
+    required_permission = Perm.CATALOG_EDIT
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(
+        tags=TAG,
+        request={"multipart/form-data": ImageIn},
+        responses={201: ProductOut},
+        operation_id="staff_catalog_image_add",
+    )
+    def post(self, request: Request, product_id: str) -> Response:
+        serializer = ImageIn(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        product = Product.objects.get(pk=product_id)
+        images.add_image(
+            product,
+            data["file"].read(),
+            data.get("colour", ""),
+            data["alt_en"],
+            data.get("alt_ur", ""),
+            self.actor(),
+            request,
+        )
+        return Response(product_out(product), status=status.HTTP_201_CREATED)
+
+
+class ProductImageView(_CatalogView):
+    required_permission = Perm.CATALOG_EDIT
+
+    @extend_schema(tags=TAG, responses={200: ProductOut}, operation_id="staff_catalog_image_remove")
+    def delete(self, request: Request, product_id: str, image_id: str) -> Response:
+        image = ProductImage.objects.filter(product_id=product_id, pk=image_id).exclude(url="").first()
+        if image is None:
+            raise ApiProblem(404, "not-found", "No such image.")
+        product = image.product
+        images.remove_image(image, self.actor(), request)
+        return Response(product_out(product))

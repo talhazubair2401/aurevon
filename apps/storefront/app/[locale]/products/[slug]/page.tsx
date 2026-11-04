@@ -75,7 +75,10 @@ export default async function ProductPage({
   const prices = colourVariants.map((v) => Number(v.price.amount));
   const low = colourVariants.find((v) => Number(v.price.amount) === Math.min(...prices));
   const high = colourVariants.find((v) => Number(v.price.amount) === Math.max(...prices));
-  const images = product.images.filter((i) => i.colour === colour.slug);
+  // This colour's images, photographs first; images without a colour belong to every colour.
+  const images = product.images
+    .filter((i) => i.colour === colour.slug || !i.colour)
+    .sort((a, b) => Number(Boolean(b.url)) - Number(Boolean(a.url)));
   const shown = images[0] ?? product.images[0];
   const base = `/products/${product.slug}`;
   const href = (c: string, s?: string) =>
@@ -120,7 +123,17 @@ export default async function ProductPage({
       <div className={styles.layout}>
         <section className={styles.gallery} aria-label={t("gallery")}>
           <div className={styles.stage}>
-            {shown?.demo_art ? (
+            {shown?.url ? (
+              // eslint-disable-next-line @next/next/no-img-element -- served pre-sized from object storage (M5)
+              <img
+                src={shown.url}
+                alt={shown.alt}
+                className={styles.photo}
+                width={1600}
+                height={2000}
+                fetchPriority="high"
+              />
+            ) : shown?.demo_art ? (
               <div className={styles.stageArt} role="img" aria-label={shown.alt}>
                 <GarmentArt kind={shown.demo_art as ArtKind} colour={shown.tone} />
               </div>
@@ -129,7 +142,9 @@ export default async function ProductPage({
           {colours.length > 1 ? (
             <ul className={styles.thumbs}>
               {colours.map((c) => {
-                const image = product.images.find((i) => i.colour === c.slug);
+                const image =
+                  product.images.find((i) => i.colour === c.slug && i.url) ??
+                  product.images.find((i) => i.colour === c.slug);
                 return (
                   <li key={c.slug}>
                     <Link
@@ -139,7 +154,17 @@ export default async function ProductPage({
                       aria-label={image?.alt ?? c.name}
                       aria-current={c.slug === colour.slug ? "true" : undefined}
                     >
-                      {image?.demo_art ? (
+                      {image?.url ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- pre-sized thumbnail
+                        <img
+                          src={image.url}
+                          alt=""
+                          className={styles.photo}
+                          loading="lazy"
+                          width={160}
+                          height={200}
+                        />
+                      ) : image?.demo_art ? (
                         <span className={styles.stageArt} aria-hidden="true">
                           <GarmentArt kind={image.demo_art as ArtKind} colour={image.tone} />
                         </span>

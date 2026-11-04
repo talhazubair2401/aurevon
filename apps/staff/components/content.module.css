@@ -207,3 +207,26 @@
 .cm {
   inline-size: 4.5rem;
 }
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.thumbItem {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+}
+
+.thumbImg {
+  inline-size: 7.5rem;
+  block-size: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid var(--av-divider);
+}

@@ -35,6 +35,19 @@
 		respond 404
 	}
 
+	# Product images (M5): processed, content-addressed files, so they are cached for good. Locally a shared
+	# volume; in production the CDN serves them from object storage under the same path (MTS §2).
+	handle_path /media/* {
+		@read method GET HEAD
+		handle @read {
+			root * /srv/media
+			header Cache-Control "public, max-age=31536000, immutable"
+			header X-Content-Type-Options nosniff
+			file_server
+		}
+		respond 405
+	}
+
 	@staffAssets path /staff/_next/static/*
 	handle @staffAssets {
 		header >X-Robots-Tag "noindex, nofollow"

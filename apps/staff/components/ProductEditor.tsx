@@ -272,6 +272,8 @@ export function ProductEditor({
         <Message message={variantsMsg} />
       </section>
 
+      <ImagesPanel product={product} onSaved={onSaved} canEdit={canEdit} colours={pickedColours} />
+
       <section className={ui.panel} aria-labelledby="prices-title">
         <h2 id="prices-title" className={ui.subtitle}>
           Prices (PKR)
@@ -403,5 +405,171 @@ export function ProductEditor({
         </section>
       )}
     </>
+  );
+}
+
+/** Photographs (decision 0006, #9): 4:5 portrait, at least 1600 x 2000 px, front, back and detail per colour.
+ * The server checks and re-encodes every file; a photo replaces the illustration for its colour. */
+function ImagesPanel({
+  product,
+  onSaved,
+  canEdit,
+  colours,
+}: {
+  product: Product;
+  onSaved: (p: Product) => void;
+  canEdit: boolean;
+  colours: string[];
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [colour, setColour] = useState(colours[0] ?? "");
+  const [altEn, setAltEn] = useState("");
+  const [altUr, setAltUr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<Msg>(null);
+  const path = { params: { path: { product_id: product.id } } };
+
+  const upload = async () => {
+    if (!file) return;
+    setBusy(true);
+    setMessage(null);
+    const form = new FormData();
+    form.append("file", file);
+    form.append("colour", colour);
+    form.append("alt_en", altEn);
+    form.append("alt_ur", altUr);
+    try {
+      const updated = await call(() =>
+        api.POST("/api/v1/staff/catalog/products/{product_id}/images", {
+          ...path,
+          body: {} as never,
+          bodySerializer: () => form,
+        }),
+      );
+      onSaved(updated);
+      setFile(null);
+      setAltEn("");
+      setAltUr("");
+      setMessage({ ok: true, text: "Image added." });
+    } catch (e) {
+      setMessage({ ok: false, text: errorMessage(e) });
+    } finally {
+      setBusy(false);
+    }
+  };
+  const remove = async (id: string) => {
+    setMessage(null);
+    try {
+      onSaved(
+        await call(() =>
+          api.DELETE("/api/v1/staff/catalog/products/{product_id}/images/{image_id}", {
+            params: { path: { product_id: product.id, image_id: id } },
+          }),
+        ),
+      );
+    } catch (e) {
+      setMessage({ ok: false, text: errorMessage(e) });
+    }
+  };
+
+  return (
+    <section className={ui.panel} aria-labelledby="images-title">
+      <h2 id="images-title" className={ui.subtitle}>
+        Images
+      </h2>
+      <p className={ui.muted}>
+        JPEG, PNG or WebP, 4:5 portrait, at least 1600 x 2000 px. Front, back and detail for each
+        colour. Until a colour has a photo, the store shows the illustration.
+      </p>
+      {product.images.length > 0 && (
+        <ul className={c.thumbs}>
+          {product.images.map((img) => (
+            <li key={img.id} className={c.thumbItem}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- staff preview of a stored file */}
+              <img
+                src={img.thumb_url}
+                alt={img.alt_en}
+                className={c.thumbImg}
+                width={120}
+                height={150}
+              />
+              <span className={ui.muted}>{img.colour || "All colours"}</span>
+              {canEdit && (
+                <button
+                  className={c.small}
+                  onClick={() => void remove(img.id)}
+                  aria-label={`Remove image: ${img.alt_en}`}
+                >
+                  Remove
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {canEdit && (
+        <div className={c.shared}>
+          <div className={ui.field}>
+            <label htmlFor="img-file">Image file</label>
+            <input
+              id="img-file"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+          <div className={ui.field}>
+            <label htmlFor="img-colour">Colour</label>
+            <select
+              id="img-colour"
+              className={ui.select}
+              value={colour}
+              onChange={(e) => setColour(e.target.value)}
+            >
+              {colours.map((col) => (
+                <option key={col} value={col}>
+                  {col}
+                </option>
+              ))}
+              <option value="">All colours</option>
+            </select>
+          </div>
+          <div className={ui.field}>
+            <label htmlFor="img-alt-en">Description for screen readers (English)</label>
+            <input
+              id="img-alt-en"
+              className={ui.input}
+              maxLength={200}
+              value={altEn}
+              onChange={(e) => setAltEn(e.target.value)}
+            />
+          </div>
+          <div className={ui.field}>
+            <label htmlFor="img-alt-ur">Description for screen readers (Urdu)</label>
+            <input
+              id="img-alt-ur"
+              className={ui.input}
+              maxLength={200}
+              lang="ur"
+              dir="rtl"
+              value={altUr}
+              onChange={(e) => setAltUr(e.target.value)}
+            />
+          </div>
+        </div>
+      )}
+      {canEdit && (
+        <div className={c.actions}>
+          <button
+            className={ui.button}
+            disabled={!file || !altEn || busy}
+            onClick={() => void upload()}
+          >
+            {busy ? "Uploading…" : "Upload image"}
+          </button>
+        </div>
+      )}
+      <Message message={message} />
+    </section>
   );
 }

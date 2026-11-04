@@ -13,3 +13,5 @@ cryptography==50.0.2  # encrypts authenticator secrets at rest
 segno==1.6.6  # QR codes for authenticator set-up, rendered locally
 # Imported by kombu's Redis transport but not declared by kombu; without it the worker and scheduler fail to start.
 packaging==26.3
+pillow==13.0.0  # product images: checked by content, re-encoded without metadata (MTS §12 uploads)
+boto3==1.43.123  # object storage (S3 API): MinIO locally, the P-10 provider in production

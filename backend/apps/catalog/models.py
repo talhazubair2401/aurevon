@@ -195,7 +195,9 @@ class ProductImage(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    url = models.URLField(blank=True)
+    url = models.CharField(max_length=300, blank=True)  # "/media/products/<hash>.webp", served via the CDN
+    thumb_url = models.CharField(max_length=300, blank=True)
+    storage_key = models.CharField(max_length=200, blank=True)  # for removal from object storage
     demo_art = models.CharField(max_length=20, choices=DemoArt.choices, blank=True)
     colour_slug = models.SlugField(max_length=40, blank=True)
     alt_en = models.CharField(max_length=200)

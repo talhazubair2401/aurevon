@@ -25,7 +25,7 @@ warn_unused_ignores = true
 exclude = ["/migrations/"]
 
 [[tool.mypy.overrides]]
-module = ["environ.*", "celery.*", "pythonjsonlogger.*", "factory.*", "kombu.*"]
+module = ["environ.*", "celery.*", "pythonjsonlogger.*", "factory.*", "kombu.*", "boto3.*", "botocore.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
@@ -46,7 +46,7 @@ markers = ["real_on_commit: keep transaction.on_commit deferred (email is sent o
 exclude_dirs = ["tests", ".venv"]
 
 [tool.importlinter]
-root_packages = ["config", "common", "apps"]
+root_packages = ["config", "common", "apps", "integrations"]
 
 [[tool.importlinter.contracts]]
 name = "Shared code never depends on business apps"

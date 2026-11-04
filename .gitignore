@@ -34,3 +34,4 @@ Thumbs.db
 
 # local Redis snapshots
 dump.rdb
+backend/media/

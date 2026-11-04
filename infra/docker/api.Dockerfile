@@ -7,7 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 WORKDIR /app
-RUN groupadd --system app && useradd --system --gid app --home /app app
+RUN groupadd --system app && useradd --system --gid app --home /app app \
+    && mkdir -p /media && chown app:app /media  # local product images (compose volume); S3 in production
 
 COPY backend/requirements.txt ./
 # Generous retries and timeouts so slow or unstable connections finish instead of failing.

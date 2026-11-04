@@ -993,6 +993,39 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/catalog/products/{product_id}/images": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Uploads go through the API so every file is checked and re-encoded before it is stored (MTS §12). */
+    post: operations["staff_catalog_image_add"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/images/{image_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["staff_catalog_image_remove"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/catalog/products/{product_id}/prices": {
     parameters: {
       query?: never;
@@ -1726,6 +1759,22 @@ export interface components {
       collections?: components["schemas"]["CollectionCard"][];
       products?: components["schemas"]["ProductCard"][];
     };
+    ImageInRequest: {
+      /** Format: binary */
+      file: string;
+      colour?: string;
+      alt_en: string;
+      alt_ur?: string;
+    };
+    ImageOut: {
+      /** Format: uuid */
+      id: string;
+      url: string;
+      thumb_url: string;
+      colour: string;
+      alt_en: string;
+      alt_ur: string;
+    };
     ImportErrorOut: {
       row: number;
       message: string;
@@ -1962,6 +2011,7 @@ export interface components {
       copy: unknown;
       variant_list: components["schemas"]["VariantOut"][];
       publish_problems: string[];
+      images: components["schemas"]["ImageOut"][];
       /** Format: date-time */
       updated_at: string;
     };
@@ -3677,6 +3727,53 @@ export interface operations {
         };
       };
     };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_image_add: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["ImageInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_image_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        image_id: string;
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
     responses: {
       200: {
         headers: {

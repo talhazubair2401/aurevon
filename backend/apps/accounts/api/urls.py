@@ -75,6 +75,8 @@ staff_urlpatterns: list[URLPattern] = [
     path("catalog/products/<uuid:product_id>/variants", catalog.ProductVariantsView.as_view()),
     path("catalog/products/<uuid:product_id>/prices", catalog.ProductPricesView.as_view()),
     path("catalog/products/<uuid:product_id>/status", catalog.ProductStatusView.as_view()),
+    path("catalog/products/<uuid:product_id>/images", catalog.ProductImagesView.as_view()),
+    path("catalog/products/<uuid:product_id>/images/<uuid:image_id>", catalog.ProductImageView.as_view()),
     path("catalog/import/template", catalog.ImportTemplateView.as_view()),
     path("catalog/import", catalog.ImportView.as_view()),
 ]

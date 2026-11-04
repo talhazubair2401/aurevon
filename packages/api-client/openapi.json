@@ -2436,6 +2436,98 @@
                 }
             }
         },
+        "/api/v1/staff/catalog/products/{product_id}/images": {
+            "post": {
+                "operationId": "staff_catalog_image_add",
+                "description": "Uploads go through the API so every file is checked and re-encoded before it is stored (MTS §12).",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ImageInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/images/{image_id}": {
+            "delete": {
+                "operationId": "staff_catalog_image_remove",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "image_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/catalog/products/{product_id}/prices": {
             "put": {
                 "operationId": "staff_catalog_prices_set",
@@ -4588,6 +4680,63 @@
                     "key"
                 ]
             },
+            "ImageInRequest": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "alt_en": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "alt_ur": {
+                        "type": "string",
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "alt_en",
+                    "file"
+                ]
+            },
+            "ImageOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "thumb_url": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "alt_en": {
+                        "type": "string"
+                    },
+                    "alt_ur": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "alt_en",
+                    "alt_ur",
+                    "colour",
+                    "id",
+                    "thumb_url",
+                    "url"
+                ]
+            },
             "ImportErrorOut": {
                 "type": "object",
                 "properties": {
@@ -5471,6 +5620,12 @@
                             "type": "string"
                         }
                     },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImageOut"
+                        }
+                    },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time"
@@ -5483,6 +5638,7 @@
                     "copy",
                     "department",
                     "id",
+                    "images",
                     "is_featured",
                     "publish_problems",
                     "slug",
