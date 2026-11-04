@@ -219,6 +219,53 @@ test("Owner creates, publishes, edits and renames a content page", async ({ brow
   await expect(owner.getByRole("cell", { name: "cms.page.publish" }).first()).toBeVisible();
 });
 
+/*
+ * M5 catalogue journey: a new product is a draft with a style number, gets colours and sizes (SKUs and stock
+ * records), a price, is published and appears on the store with its own page.
+ */
+test("Owner creates, prices and publishes a product", async ({ browser, page }) => {
+  test.setTimeout(120_000);
+  const owner = await signInOwner(browser);
+  await owner
+    .getByRole("navigation", { name: "Staff" })
+    .getByRole("link", { name: "Catalogue" })
+    .click();
+  await owner.getByRole("link", { name: "New product" }).click();
+  await owner.getByLabel("Address: /products/…").fill("e2e-linen-kurta");
+  await owner.getByLabel("Category").selectOption({ label: "Women · Kurtas" });
+  await owner.locator("#copy-en-name").fill("E2E Linen Kurta");
+  await owner.getByRole("button", { name: "Create draft" }).click();
+  await expect(owner.getByRole("heading", { name: "Colours and sizes" })).toBeVisible();
+
+  await owner.getByRole("checkbox", { name: "Ivory" }).check();
+  await owner.getByRole("checkbox", { name: "S", exact: true }).check();
+  await owner.getByRole("checkbox", { name: "M", exact: true }).check();
+  await owner.getByRole("button", { name: "Save colours and sizes" }).click();
+  await expect(owner.getByText("Colours and sizes saved.")).toBeVisible();
+  await expect(owner.getByRole("cell", { name: /^AV-WKU-\d{4}-IVR-M$/ })).toBeVisible();
+
+  await owner.getByLabel("Base price, for every variant without its own").fill("11800");
+  await owner.getByRole("button", { name: "Save prices" }).click();
+  const stepUp = owner.getByRole("dialog");
+  if (await stepUp.isVisible().catch(() => false)) {
+    await freshStep(ownerSecret);
+    await stepUp.getByLabel("Authenticator code").fill(totp(ownerSecret));
+    await stepUp.getByRole("button", { name: "Confirm" }).click();
+  }
+  await expect(owner.getByText("Prices saved.")).toBeVisible();
+
+  expect((await page.goto("/en/products/e2e-linen-kurta"))!.status()).toBe(404);
+  await owner.getByRole("button", { name: "Publish", exact: true }).click();
+  await expect(owner.getByText("Published. The store shows it now.")).toBeVisible();
+  await page.goto("/en/products/e2e-linen-kurta");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("E2E Linen Kurta");
+  await expect(page.getByText(/Rs\s?11,800/).first()).toBeVisible();
+
+  await owner.getByRole("button", { name: "Archive" }).click();
+  await expect(owner.getByText("Moved to archived.")).toBeVisible();
+  expect((await page.goto("/en/products/e2e-linen-kurta"))!.status()).toBe(404);
+});
+
 test("a customer session is never accepted by the staff API", async ({ request }) => {
   const email = `shopper-${Date.now()}@aurevon.test`;
   await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });

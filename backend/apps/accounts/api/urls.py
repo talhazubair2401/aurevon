@@ -3,6 +3,7 @@
 from django.urls import URLPattern, path
 
 from apps.audit.api.views import AuditLogView
+from apps.catalog.api import staff as catalog
 from apps.cms.api import staff as cms
 from apps.cms.api.views import SettingsView, SettingView
 
@@ -64,6 +65,18 @@ staff_urlpatterns: list[URLPattern] = [
     path("seo/<str:key>", cms.SeoView.as_view()),
     path("redirects", cms.RedirectsView.as_view()),
     path("redirects/<uuid:redirect_id>", cms.RedirectView.as_view()),
+    # Catalogue (M5; MTS §8 "Staff: catalogue"; decision 0006).
+    path("catalog/colours", catalog.ColoursView.as_view()),
+    path("catalog/colours/<slug:slug>", catalog.ColourView.as_view()),
+    path("catalog/categories", catalog.CategoriesView.as_view()),
+    path("catalog/categories/<slug:slug>", catalog.CategoryView.as_view()),
+    path("catalog/products", catalog.ProductsView.as_view()),
+    path("catalog/products/<uuid:product_id>", catalog.ProductView.as_view()),
+    path("catalog/products/<uuid:product_id>/variants", catalog.ProductVariantsView.as_view()),
+    path("catalog/products/<uuid:product_id>/prices", catalog.ProductPricesView.as_view()),
+    path("catalog/products/<uuid:product_id>/status", catalog.ProductStatusView.as_view()),
+    path("catalog/import/template", catalog.ImportTemplateView.as_view()),
+    path("catalog/import", catalog.ImportView.as_view()),
 ]
 
 customer_urlpatterns: list[URLPattern] = [

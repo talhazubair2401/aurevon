@@ -2002,6 +2002,578 @@
                 }
             }
         },
+        "/api/v1/staff/catalog/categories": {
+            "get": {
+                "operationId": "staff_catalog_categories",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CategoryOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_catalog_category_create",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryOutRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/categories/{slug}": {
+            "put": {
+                "operationId": "staff_catalog_category_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryOutRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/colours": {
+            "get": {
+                "operationId": "staff_catalog_colours",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ColourOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_catalog_colour_create",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ColourOutRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ColourOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/colours/{slug}": {
+            "put": {
+                "operationId": "staff_catalog_colour_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ColourOutRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ColourOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/import": {
+            "post": {
+                "operationId": "staff_catalog_import",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ImportInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ImportOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/import/template": {
+            "get": {
+                "operationId": "staff_catalog_import_template",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products": {
+            "get": {
+                "operationId": "staff_catalog_products",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "archived",
+                                "draft",
+                                "published"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductSummaryOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_catalog_product_create",
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}": {
+            "get": {
+                "operationId": "staff_catalog_product",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "staff_catalog_product_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/prices": {
+            "put": {
+                "operationId": "staff_catalog_prices_set",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/status": {
+            "post": {
+                "operationId": "staff_catalog_status_set",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/variants": {
+            "put": {
+                "operationId": "staff_catalog_variants_set",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/cms/banners": {
             "get": {
                 "operationId": "staff_cms_banners",
@@ -3391,6 +3963,102 @@
                     "slug"
                 ]
             },
+            "CategoryOut": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "type": "string"
+                    },
+                    "name_en": {
+                        "type": "string"
+                    },
+                    "name_ur": {
+                        "type": "string"
+                    },
+                    "sizes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "size_chart": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SizeChartRowOut"
+                        }
+                    },
+                    "products": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "code",
+                    "department",
+                    "name_en",
+                    "name_ur",
+                    "products",
+                    "size_chart",
+                    "sizes",
+                    "slug"
+                ]
+            },
+            "CategoryOutRequest": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "code": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "department": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name_en": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name_ur": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "sizes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    "size_chart": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SizeChartRowOutRequest"
+                        }
+                    },
+                    "products": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "code",
+                    "department",
+                    "name_en",
+                    "name_ur",
+                    "products",
+                    "size_chart",
+                    "sizes",
+                    "slug"
+                ]
+            },
             "CategoryRef": {
                 "type": "object",
                 "properties": {
@@ -3505,6 +4173,73 @@
                     "count",
                     "hex",
                     "name",
+                    "slug"
+                ]
+            },
+            "ColourOut": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name_en": {
+                        "type": "string"
+                    },
+                    "name_ur": {
+                        "type": "string"
+                    },
+                    "hex": {
+                        "type": "string"
+                    },
+                    "in_use": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "code",
+                    "hex",
+                    "in_use",
+                    "name_en",
+                    "name_ur",
+                    "slug"
+                ]
+            },
+            "ColourOutRequest": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "code": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name_en": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "name_ur": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "hex": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "in_use": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "code",
+                    "hex",
+                    "in_use",
+                    "name_en",
+                    "name_ur",
                     "slug"
                 ]
             },
@@ -3851,6 +4586,73 @@
                 "required": [
                     "content",
                     "key"
+                ]
+            },
+            "ImportErrorOut": {
+                "type": "object",
+                "properties": {
+                    "row": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message",
+                    "row"
+                ]
+            },
+            "ImportInRequest": {
+                "type": "object",
+                "properties": {
+                    "csv": {
+                        "type": "string",
+                        "maxLength": 2097152
+                    },
+                    "apply": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "csv"
+                ]
+            },
+            "ImportOut": {
+                "type": "object",
+                "properties": {
+                    "rows": {
+                        "type": "integer"
+                    },
+                    "created": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "updated": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "errors": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImportErrorOut"
+                        }
+                    },
+                    "applied": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "applied",
+                    "created",
+                    "errors",
+                    "rows",
+                    "updated"
                 ]
             },
             "InviteInRequest": {
@@ -4622,6 +5424,74 @@
                     "url"
                 ]
             },
+            "ProductOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "style_number": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "category_sizes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "department": {
+                        "type": "string"
+                    },
+                    "base_price": {
+                        "type": "string"
+                    },
+                    "is_featured": {
+                        "type": "boolean"
+                    },
+                    "copy": {},
+                    "variant_list": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VariantOut"
+                        }
+                    },
+                    "publish_problems": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "base_price",
+                    "category",
+                    "category_sizes",
+                    "copy",
+                    "department",
+                    "id",
+                    "is_featured",
+                    "publish_problems",
+                    "slug",
+                    "status",
+                    "style_number",
+                    "updated_at",
+                    "variant_list"
+                ]
+            },
             "ProductPage": {
                 "type": "object",
                 "properties": {
@@ -4644,6 +5514,55 @@
                     "next",
                     "previous",
                     "results"
+                ]
+            },
+            "ProductSummaryOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StatusEnum"
+                    },
+                    "style_number": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "type": "string"
+                    },
+                    "base_price": {
+                        "type": "string"
+                    },
+                    "variants": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "base_price",
+                    "category",
+                    "department",
+                    "id",
+                    "name",
+                    "slug",
+                    "status",
+                    "style_number",
+                    "updated_at",
+                    "variants"
                 ]
             },
             "RecoveryCodesOut": {
@@ -5014,6 +5933,49 @@
                     "values"
                 ]
             },
+            "SizeChartRowOut": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "values": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "values"
+                ]
+            },
+            "SizeChartRowOutRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "values": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "values"
+                ]
+            },
             "SourceEnum": {
                 "enum": [
                     "manual",
@@ -5221,6 +6183,15 @@
                     "stepped_up_until"
                 ]
             },
+            "StatusEnum": {
+                "enum": [
+                    "draft",
+                    "published",
+                    "archived"
+                ],
+                "type": "string",
+                "description": "* `draft` - draft\n* `published` - published\n* `archived` - archived"
+            },
             "StepUpOut": {
                 "type": "object",
                 "properties": {
@@ -5390,6 +6361,41 @@
                     "available",
                     "colour",
                     "price",
+                    "size",
+                    "sku"
+                ]
+            },
+            "VariantOut": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    },
+                    "price_overridden": {
+                        "type": "boolean"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "available",
+                    "colour",
+                    "is_active",
+                    "price",
+                    "price_overridden",
                     "size",
                     "sku"
                 ]

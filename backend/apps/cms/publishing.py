@@ -378,3 +378,8 @@ def delete_redirect(redirect: Redirect, actor: Actor, request: HttpRequest | Non
     )
     redirect.delete()
     _refresh_after_commit()
+
+
+def add_slug_redirect(from_path: str, to_path: str) -> Redirect:
+    """For other modules renaming a live page (e.g. a product's address): old links keep working."""
+    return _redirect_internal(from_path, to_path, RedirectSource.SLUG_CHANGE)

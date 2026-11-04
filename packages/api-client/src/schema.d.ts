@@ -865,6 +865,182 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/catalog/categories": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_catalog_categories"];
+    put?: never;
+    post: operations["staff_catalog_category_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/categories/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_catalog_category_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/colours": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_catalog_colours"];
+    put?: never;
+    post: operations["staff_catalog_colour_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/colours/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_catalog_colour_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/import": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_catalog_import"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/import/template": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_catalog_import_template"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_catalog_products"];
+    put?: never;
+    post: operations["staff_catalog_product_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_catalog_product"];
+    put: operations["staff_catalog_product_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/prices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_catalog_prices_set"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_catalog_status_set"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/variants": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_catalog_variants_set"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/cms/banners": {
     parameters: {
       query?: never;
@@ -1386,6 +1562,26 @@ export interface components {
       name: string;
       count: number;
     };
+    CategoryOut: {
+      slug: string;
+      code: string;
+      department: string;
+      name_en: string;
+      name_ur: string;
+      sizes: string[];
+      size_chart: components["schemas"]["SizeChartRowOut"][];
+      products: number;
+    };
+    CategoryOutRequest: {
+      slug: string;
+      code: string;
+      department: string;
+      name_en: string;
+      name_ur: string;
+      sizes: string[];
+      size_chart: components["schemas"]["SizeChartRowOutRequest"][];
+      products: number;
+    };
     CategoryRef: {
       slug: string;
       department: components["schemas"]["DepartmentEnum"];
@@ -1414,6 +1610,22 @@ export interface components {
       name: string;
       hex: string;
       count: number;
+    };
+    ColourOut: {
+      slug: string;
+      code: string;
+      name_en: string;
+      name_ur: string;
+      hex: string;
+      in_use: boolean;
+    };
+    ColourOutRequest: {
+      slug: string;
+      code: string;
+      name_en: string;
+      name_ur: string;
+      hex: string;
+      in_use: boolean;
     };
     ConfirmInRequest: {
       token: string;
@@ -1513,6 +1725,22 @@ export interface components {
       };
       collections?: components["schemas"]["CollectionCard"][];
       products?: components["schemas"]["ProductCard"][];
+    };
+    ImportErrorOut: {
+      row: number;
+      message: string;
+    };
+    ImportInRequest: {
+      csv: string;
+      /** @default false */
+      apply: boolean;
+    };
+    ImportOut: {
+      rows: number;
+      created: string[];
+      updated: string[];
+      errors: components["schemas"]["ImportErrorOut"][];
+      applied: boolean;
     };
     InviteInRequest: {
       /** Format: email */
@@ -1720,10 +1948,41 @@ export interface components {
       tone: string;
       alt: string;
     };
+    ProductOut: {
+      /** Format: uuid */
+      id: string;
+      slug: string;
+      status: components["schemas"]["StatusEnum"];
+      style_number: string;
+      category: string;
+      category_sizes: string[];
+      department: string;
+      base_price: string;
+      is_featured: boolean;
+      copy: unknown;
+      variant_list: components["schemas"]["VariantOut"][];
+      publish_problems: string[];
+      /** Format: date-time */
+      updated_at: string;
+    };
     ProductPage: {
       next: string | null;
       previous: string | null;
       results: components["schemas"]["ProductCard"][];
+    };
+    ProductSummaryOut: {
+      /** Format: uuid */
+      id: string;
+      slug: string;
+      name: string;
+      status: components["schemas"]["StatusEnum"];
+      style_number: string;
+      category: string;
+      department: string;
+      base_price: string;
+      variants: number;
+      /** Format: date-time */
+      updated_at: string;
     };
     RecoveryCodesOut: {
       recovery_codes: string[];
@@ -1826,6 +2085,22 @@ export interface components {
         [key: string]: string;
       };
     };
+    SizeChartRowOut: {
+      name: {
+        [key: string]: string;
+      };
+      values: {
+        [key: string]: string;
+      };
+    };
+    SizeChartRowOutRequest: {
+      name: {
+        [key: string]: string;
+      };
+      values: {
+        [key: string]: string;
+      };
+    };
     /**
      * @description * `manual` - manual
      *     * `slug_change` - slug_change
@@ -1888,6 +2163,13 @@ export interface components {
       stepped_up_until: string | null;
       mfa_reenrollment_required: boolean;
     };
+    /**
+     * @description * `draft` - draft
+     *     * `published` - published
+     *     * `archived` - archived
+     * @enum {string}
+     */
+    StatusEnum: "draft" | "published" | "archived";
     StepUpOut: {
       /** Format: date-time */
       stepped_up_until: string;
@@ -1935,6 +2217,15 @@ export interface components {
       colour: string;
       price: components["schemas"]["Money"];
       available: boolean;
+    };
+    VariantOut: {
+      sku: string;
+      size: string;
+      colour: string;
+      price: string;
+      price_overridden: boolean;
+      is_active: boolean;
+      available: number;
     };
   };
   responses: never;
@@ -3122,6 +3413,358 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StepUpOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_categories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CategoryOut"][];
+        };
+      };
+    };
+  };
+  staff_catalog_category_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CategoryOutRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CategoryOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_category_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CategoryOutRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CategoryOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_colours: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ColourOut"][];
+        };
+      };
+    };
+  };
+  staff_catalog_colour_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ColourOutRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ColourOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_colour_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ColourOutRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ColourOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_import: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ImportInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_import_template: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+    };
+  };
+  staff_catalog_products: {
+    parameters: {
+      query?: {
+        q?: string;
+        status?: "archived" | "draft" | "published";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductSummaryOut"][];
+        };
+      };
+    };
+  };
+  staff_catalog_product_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_product: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_product_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_prices_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_status_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_variants_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
         };
       };
     };

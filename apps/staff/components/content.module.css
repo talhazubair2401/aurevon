@@ -199,3 +199,11 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.8rem;
 }
+
+.chartWrap {
+  overflow-x: auto;
+}
+
+.cm {
+  inline-size: 4.5rem;
+}

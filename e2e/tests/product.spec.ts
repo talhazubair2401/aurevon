@@ -81,7 +81,8 @@ test.describe("search", () => {
     await page.getByLabel("Search the store").fill("kurta");
     await page.getByRole("button", { name: "Search" }).click();
     await expect(page).toHaveURL(/\/en\/search\?q=kurta/);
-    await expect(page.getByRole("status")).toHaveText("5 results for “kurta”");
+    await expect(page.getByRole("status")).toHaveText(/^\d+ results for “kurta”$/);
+    await expect(page.getByRole("heading", { name: "Chikankari Kurta" })).toBeVisible();
     await page.goto("/ur/search?q=کرتا");
     expect(await page.locator("main article").count()).toBeGreaterThan(0);
   });
