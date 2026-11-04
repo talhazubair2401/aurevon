@@ -174,7 +174,11 @@ export function ProductSection({
         linkLabel={content.link_label}
         linkHref={content.link_href}
       />
-      <ul className={layout === "grid" ? styles.grid : styles.row}>
+      {/* A sideways-scrolling row must be reachable by keyboard (WCAG 2.1.1), cards or not. */}
+      <ul
+        className={layout === "grid" ? styles.grid : styles.row}
+        {...(layout === "row" ? { tabIndex: 0, "aria-labelledby": id } : {})}
+      >
         {products.map((p) => (
           <li key={p.slug}>
             <ProductCard product={p} locale={locale} />

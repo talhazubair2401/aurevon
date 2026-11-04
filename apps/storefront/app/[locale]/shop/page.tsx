@@ -10,6 +10,7 @@ import { MobileFilters, SortSelect } from "@/components/shop/ShopControls";
 import styles from "@/components/shop/Shop.module.css";
 import { Link } from "@/i18n/navigation";
 import { getBanner, getFacets, getProducts, getSeo } from "@/lib/api";
+import { routeReady } from "@/lib/features";
 import { pageMetadata } from "@/lib/seo";
 import { cursorFrom, parseShopState, toSearch, withoutCursor } from "@/lib/shop-query";
 
@@ -98,17 +99,27 @@ export default async function ShopPage({ params, searchParams }: PageProps<"/[lo
           <ul className={styles.hangers} aria-label={t("galleryLabel")}>
             {gallery.map((p) => (
               <li key={p.slug} className={styles.hanger}>
-                <Link
-                  href={`/products/${p.slug}`}
-                  className={styles.hangerLink}
-                  aria-label={p.name}
-                >
-                  <GarmentArt
-                    kind={p.image!.demo_art as ArtKind}
-                    colour={p.image!.tone}
-                    stage="dark"
-                  />
-                </Link>
+                {routeReady.products ? (
+                  <Link
+                    href={`/products/${p.slug}`}
+                    className={styles.hangerLink}
+                    aria-label={p.name}
+                  >
+                    <GarmentArt
+                      kind={p.image!.demo_art as ArtKind}
+                      colour={p.image!.tone}
+                      stage="dark"
+                    />
+                  </Link>
+                ) : (
+                  <div className={styles.hangerLink} role="img" aria-label={p.name}>
+                    <GarmentArt
+                      kind={p.image!.demo_art as ArtKind}
+                      colour={p.image!.tone}
+                      stage="dark"
+                    />
+                  </div>
+                )}
               </li>
             ))}
           </ul>

@@ -99,6 +99,11 @@
   cursor: pointer;
 }
 
+/* A utility not built yet (lib/features.ts): same look, not interactive. */
+.iconSoon {
+  cursor: default;
+}
+
 .desktopOnly {
   display: none;
   margin-inline-end: var(--av-space-3);

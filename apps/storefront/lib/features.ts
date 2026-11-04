@@ -1,0 +1,10 @@
+/**
+ * Routes that later milestones build (MTS §16). Until a route exists, the storefront doesn't link to it, so
+ * no control leads to a "not found" page. Switch each on in the milestone that builds the page.
+ */
+export const routeReady = {
+  products: false, // product detail: M5
+  search: false, // search: M5 (R-07)
+  account: false, // account pages: M7
+  cart: false, // bag and checkout: M7
+} as const;

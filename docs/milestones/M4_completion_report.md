@@ -155,6 +155,11 @@ staff content journey. The first run on `b45575c` failed one formatting check on
 6. **Local verification:** Docker is still unavailable in my workspace, so the stack ran as local processes
    behind Caddy and Mailpit, the same way as M1. CI runs the Docker stack.
 
+7. **Routes from later milestones aren't linked yet** (`apps/storefront/lib/features.ts`): the search,
+   account and bag icons are shown but inactive ("coming soon"), and product cards aren't links until the
+   product page exists (M5; search M5; account and bag M7). An end-to-end check crawls every internal link
+   on the main pages and fails on any broken one.
+
 ## 7. Next
 
 **M5 Catalogue and product detail** needs **P-12, the launch catalogue** (products, sizes, colours, SKUs,

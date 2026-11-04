@@ -16,7 +16,8 @@
     "bag": "بیگ",
     "language": "زبان",
     "switchTo": "یہ صفحہ {language} میں پڑھیں",
-    "copyright": "© {year} AureVon۔ جملہ حقوق محفوظ ہیں۔"
+    "copyright": "© {year} AureVon۔ جملہ حقوق محفوظ ہیں۔",
+    "comingSoon": "{label}: جلد دستیاب"
   },
   "nav": {
     "shopAll": "تمام مصنوعات",

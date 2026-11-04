@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
 import { getNavigation } from "@/lib/api";
+import { routeReady } from "@/lib/features";
 import { safeHref, utilityLinks } from "./navigation";
 import styles from "./Shell.module.css";
 
@@ -52,15 +53,35 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
           <div className={styles.desktopOnly}>
             <LanguageSwitcher locale={locale} />
           </div>
-          <Link href={utilityLinks.search} className={styles.iconLink} aria-label={t("search")}>
-            <Icon name="search" />
-          </Link>
-          <Link href={utilityLinks.account} className={styles.iconLink} aria-label={t("account")}>
-            <Icon name="account" />
-          </Link>
-          <Link href={utilityLinks.bag} className={styles.iconLink} aria-label={t("bag")}>
-            <Icon name="bag" />
-          </Link>
+          {(
+            [
+              ["search", "search", routeReady.search],
+              ["account", "account", routeReady.account],
+              ["bag", "bag", routeReady.cart],
+            ] as const
+          ).map(([key, icon, ready]) =>
+            ready ? (
+              <Link
+                key={key}
+                href={utilityLinks[key]}
+                className={styles.iconLink}
+                aria-label={t(key)}
+              >
+                <Icon name={icon} />
+              </Link>
+            ) : (
+              // Not built yet (lib/features.ts): shown, but leads nowhere rather than to "not found".
+              <span
+                key={key}
+                className={`${styles.iconLink} ${styles.iconSoon}`}
+                role="img"
+                aria-label={t("comingSoon", { label: t(key) })}
+                title={t("comingSoon", { label: t(key) })}
+              >
+                <Icon name={icon} />
+              </span>
+            ),
+          )}
         </div>
       </div>
     </header>

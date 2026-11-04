@@ -4,7 +4,19 @@ import { Price } from "@aurevon/ui";
 import { Link } from "@/i18n/navigation";
 import type { ProductCard as Card } from "@/lib/api";
 import { GarmentArt, type ArtKind } from "../art/GarmentArt";
+import { routeReady } from "@/lib/features";
 import styles from "./ProductCard.module.css";
+
+/** Links to the product page once it exists (M5); until then the card is not a link (lib/features.ts). */
+function Wrapper({ slug, children }: { slug: string; children: React.ReactNode }) {
+  return routeReady.products ? (
+    <Link href={`/products/${slug}`} className={styles.link}>
+      {children}
+    </Link>
+  ) : (
+    <div className={styles.link}>{children}</div>
+  );
+}
 
 /** A product in a grid or row: 4:5 image, name, category, price, colours. Links to its product page (M5). */
 export async function ProductCard({ product, locale }: { product: Card; locale: Locale }) {
@@ -14,7 +26,7 @@ export async function ProductCard({ product, locale }: { product: Card; locale: 
 
   return (
     <article className={styles.card}>
-      <Link href={`/products/${product.slug}`} className={styles.link}>
+      <Wrapper slug={product.slug}>
         <div className={styles.media}>
           {image?.demo_art ? (
             <div className={styles.art}>
@@ -44,7 +56,7 @@ export async function ProductCard({ product, locale }: { product: Card; locale: 
             ) : null}
           </p>
         </div>
-      </Link>
+      </Wrapper>
       <ul className={styles.swatches} aria-label={t("colours", { count: product.colours.length })}>
         {product.colours.map((c) => (
           <li key={c.slug} title={c.name}>

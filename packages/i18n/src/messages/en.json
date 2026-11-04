@@ -16,7 +16,8 @@
     "bag": "Bag",
     "language": "Language",
     "switchTo": "Read this page in {language}",
-    "copyright": "© {year} AureVon. All rights reserved."
+    "copyright": "© {year} AureVon. All rights reserved.",
+    "comingSoon": "{label}: coming soon"
   },
   "nav": {
     "shopAll": "Shop All",
