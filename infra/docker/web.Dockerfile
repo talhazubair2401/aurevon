@@ -9,6 +9,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages ./packages
 COPY e2e/package.json ./e2e/package.json
 COPY apps/${APP} ./apps/${APP}
+# Generous retries and timeouts so slow or unstable connections finish instead of failing.
+ENV npm_config_fetch_retries=10 \
+    npm_config_fetch_retry_maxtimeout=120000 \
+    npm_config_fetch_timeout=300000
 RUN pnpm install --frozen-lockfile --filter "@aurevon/${APP}..."
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter "@aurevon/${APP}" build

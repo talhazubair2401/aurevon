@@ -45,7 +45,9 @@ services:
       - "8025:8025"
 
   migrate:
-    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    # Built once by the api service; migrate, worker and scheduler reuse the same image.
+    image: aurevon-backend:local
+    pull_policy: never
     # Migrations, then the demo catalogue and storefront content (local only; never production).
     command:
       ["sh", "-c", "python manage.py migrate --noinput && python manage.py seed_demo_catalog"]
@@ -56,6 +58,7 @@ services:
       postgres: { condition: service_healthy }
 
   api:
+    image: aurevon-backend:local
     build: { context: .., dockerfile: infra/docker/api.Dockerfile }
     environment: *backend-env
     depends_on:
@@ -74,7 +77,8 @@ services:
       retries: 20
 
   worker:
-    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    image: aurevon-backend:local
+    pull_policy: never
     command: ["celery", "-A", "config", "worker", "--loglevel", "INFO"]
     environment: *backend-env
     depends_on:
@@ -82,7 +86,8 @@ services:
       redis: { condition: service_healthy }
 
   scheduler:
-    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    image: aurevon-backend:local
+    pull_policy: never
     command:
       [
         "celery",

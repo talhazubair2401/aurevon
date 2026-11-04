@@ -10,7 +10,8 @@ WORKDIR /app
 RUN groupadd --system app && useradd --system --gid app --home /app app
 
 COPY backend/requirements.txt ./
-RUN pip install -r requirements.txt
+# Generous retries and timeouts so slow or unstable connections finish instead of failing.
+RUN pip install --retries 10 --timeout 120 -r requirements.txt
 
 COPY backend/ ./
 USER app
