@@ -4,7 +4,7 @@
 **Baseline:** MTS v2.1, decision record 0004 (P-19)
 **Commit:** `cb613ca` on `main` (plus this report and the V-05 run 2 record)
 **CI:** all four jobs passed on the first run
-**Status:** M3 is complete within the limits of decision 0004, item 5. This report is awaiting your approval.
+**Status:** APPROVED by the product owner on 4 November 2026. The provisional header, navigation, footer and homepage are accepted as temporary until the A-04 references are supplied.
 
 ## 1. Decisions recorded
 
