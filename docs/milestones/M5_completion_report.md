@@ -24,7 +24,7 @@ CSV import), `6245ac4` (product images) · **CI:** all four jobs green on `6245a
   illustration for its colour.
 
 ## Tests
-Backend 189 (36 new) · end-to-end 144 on desktop and phone (product page, search, staff catalogue journey with
+Backend 188 (26 new) · end-to-end 144 on desktop and phone (product page, search, staff catalogue journey with
 upload, link crawl) · CSP V-05 run 5: zero violations (`infra/csp/V-05-run-5.md`).
 
 ## Choices made in implementation
