@@ -3,7 +3,7 @@
 **Date:** 4 November 2026
 **Baseline:** MTS v2.1, decisions 0004 (P-19) and 0005 (D-08), A-04 descriptions (approved 4 Nov as the reference)
 **Commits:** `15fc0fd` (slice 1: homepage, Shop All, catalogue reads), `b45575c` (slice 2: this report's scope)
-**CI:** see section 4
+**CI:** all four jobs passed on `6a2252c` (run 41836976186)
 **Status:** M4 is complete. This report is awaiting your approval before M5 starts.
 
 ## 1. What was built
@@ -126,7 +126,9 @@ was needed. Details: `infra/csp/V-05-run-4.md`.
 
 ## 4. CI
 
-All four jobs run on `b45575c`; the result is recorded in the project status after the run completes.
+All four jobs passed on `6a2252c`, including the Docker Compose stack with the full end-to-end suite and the
+staff content journey. The first run on `b45575c` failed one formatting check on a Markdown record; fixed in
+`6a2252c`, no code change.
 
 ## 5. Choices made in implementation (not new architecture)
 
