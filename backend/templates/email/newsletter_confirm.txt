@@ -1,0 +1,9 @@
+{% autoescape off %}Subject: Confirm your AureVon newsletter subscription
+
+Someone, hopefully you, asked to receive the AureVon newsletter at this address.
+Confirm here (the link works for {{ hours }} hours):
+{{ link }}
+
+If this wasn't you, ignore this email and you won't hear from us.
+
+— {{ site_name }}{% endautoescape %}

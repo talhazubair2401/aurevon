@@ -133,6 +133,108 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/catalog/categories": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["catalog_categories"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/collections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["catalog_collections"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/facets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["catalog_facets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/products": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["catalog_products_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/banners/{key}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["cms_banner"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cms/home": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    get: operations["cms_home"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/me/sessions": {
     parameters: {
       query?: never;
@@ -176,6 +278,40 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["me_sessions_revoke_others"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/newsletter/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    post: operations["newsletter_confirm"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/newsletter/subscribe": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
+    post: operations["newsletter_subscribe"];
     delete?: never;
     options?: never;
     head?: never;
@@ -795,6 +931,23 @@ export interface components {
       previous: string | null;
       results: components["schemas"]["AuditLogOut"][];
     };
+    Banner: {
+      key: string;
+      content: {
+        [key: string]: unknown;
+      };
+    };
+    CategoryFacet: {
+      slug: string;
+      department: components["schemas"]["DepartmentEnum"];
+      name: string;
+      count: number;
+    };
+    CategoryRef: {
+      slug: string;
+      department: components["schemas"]["DepartmentEnum"];
+      name: string;
+    };
     ChallengeOut: {
       challenge: string;
       expires_in: number;
@@ -805,6 +958,26 @@ export interface components {
     };
     CodeInRequest: {
       code: string;
+    };
+    CollectionCard: {
+      slug: string;
+      name: string;
+      description: string;
+      demo_art: string | null;
+      tone: string;
+    };
+    ColourFacet: {
+      slug: string;
+      name: string;
+      hex: string;
+      count: number;
+    };
+    ConfirmInRequest: {
+      token: string;
+    };
+    CountFacet: {
+      value: string;
+      count: number;
     };
     CustomerAccountOut: {
       /** Format: uuid */
@@ -833,6 +1006,12 @@ export interface components {
       /** @default false */
       remember: boolean;
     };
+    /**
+     * @description * `women` - women
+     *     * `men` - men
+     * @enum {string}
+     */
+    DepartmentEnum: "women" | "men";
     EmailInRequest: {
       /** Format: email */
       email: string;
@@ -842,16 +1021,56 @@ export interface components {
       email: string;
       password: string;
     };
+    Facets: {
+      departments: components["schemas"]["CountFacet"][];
+      categories: components["schemas"]["CategoryFacet"][];
+      sizes: components["schemas"]["CountFacet"][];
+      colours: components["schemas"]["ColourFacet"][];
+      price: components["schemas"]["PriceFacet"];
+    };
+    Home: {
+      sections: components["schemas"]["HomeSection"][];
+    };
+    HomeSection: {
+      key: components["schemas"]["KeyEnum"];
+      content: {
+        [key: string]: unknown;
+      };
+      collections?: components["schemas"]["CollectionCard"][];
+      products?: components["schemas"]["ProductCard"][];
+    };
     InviteInRequest: {
       /** Format: email */
       email: string;
       full_name: string;
       role: string;
     };
+    /**
+     * @description * `hero` - hero
+     *     * `collections` - collections
+     *     * `featured_products` - featured_products
+     *     * `new_arrivals` - new_arrivals
+     *     * `brand_story` - brand_story
+     * @enum {string}
+     */
+    KeyEnum: "hero" | "collections" | "featured_products" | "new_arrivals" | "brand_story";
+    /**
+     * @description * `en` - en
+     *     * `ur` - ur
+     * @enum {string}
+     */
+    LocaleEnum: "en" | "ur";
     MfaVerifyInRequest: {
       challenge: string;
       code?: string;
       recovery_code?: string;
+    };
+    Money: {
+      amount: string;
+      currency: string;
+    };
+    NewsletterOut: {
+      status: string;
     };
     OwnRecoveryOut: {
       status: string;
@@ -867,6 +1086,40 @@ export interface components {
       otpauth_uri: string;
       /** @description The otpauth URI as an inline SVG QR code. */
       qr_svg: string;
+    };
+    PriceFacet: {
+      min: string | null;
+      max: string | null;
+      currency: string;
+    };
+    ProductCard: {
+      slug: string;
+      name: string;
+      department: components["schemas"]["DepartmentEnum"];
+      category: components["schemas"]["CategoryRef"];
+      price_min: components["schemas"]["Money"];
+      price_max: components["schemas"]["Money"];
+      colours: components["schemas"]["ProductColour"][];
+      sizes: string[];
+      image: components["schemas"]["ProductCardImage"] | null;
+      is_new: boolean;
+      is_featured: boolean;
+    };
+    ProductCardImage: {
+      url: string | null;
+      demo_art: string | null;
+      tone: string;
+      alt: string;
+    };
+    ProductColour: {
+      slug: string;
+      name: string;
+      hex: string;
+    };
+    ProductPage: {
+      next: string | null;
+      previous: string | null;
+      results: components["schemas"]["ProductCard"][];
     };
     RecoveryCodesOut: {
       recovery_codes: string[];
@@ -984,6 +1237,15 @@ export interface components {
     StepUpOut: {
       /** Format: date-time */
       stepped_up_until: string;
+    };
+    SubscribeInRequest: {
+      /** Format: email */
+      email: string;
+      /** @default en */
+      locale: components["schemas"]["LocaleEnum"];
+      /** @default storefront */
+      source: string;
+      consent: boolean;
     };
     SuspendInRequest: {
       reason: string;
@@ -1178,6 +1440,155 @@ export interface operations {
       };
     };
   };
+  catalog_categories: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CategoryRef"][];
+        };
+      };
+    };
+  };
+  catalog_collections: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CollectionCard"][];
+        };
+      };
+    };
+  };
+  catalog_facets: {
+    parameters: {
+      query?: {
+        category?: string;
+        collection?: string;
+        /** @description Comma-separated colour slugs */
+        colour?: string;
+        department?: "men" | "women";
+        locale?: "en" | "ur";
+        price_max?: number;
+        price_min?: number;
+        /** @description Comma-separated sizes */
+        size?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Facets"];
+        };
+      };
+    };
+  };
+  catalog_products_list: {
+    parameters: {
+      query?: {
+        category?: string;
+        collection?: string;
+        /** @description Comma-separated colour slugs */
+        colour?: string;
+        cursor?: string;
+        department?: "men" | "women";
+        limit?: number;
+        locale?: "en" | "ur";
+        price_max?: number;
+        price_min?: number;
+        /** @description Comma-separated sizes */
+        size?: string;
+        sort?: "featured" | "newest" | "price_asc" | "price_desc";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductPage"];
+        };
+      };
+    };
+  };
+  cms_banner: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Banner"];
+        };
+      };
+    };
+  };
+  cms_home: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Home"];
+        };
+      };
+    };
+  };
   me_sessions: {
     parameters: {
       query?: never;
@@ -1232,6 +1643,52 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["RevokedOut"];
+        };
+      };
+    };
+  };
+  newsletter_confirm: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ConfirmInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NewsletterOut"];
+        };
+      };
+    };
+  };
+  newsletter_subscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SubscribeInRequest"];
+      };
+    };
+    responses: {
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NewsletterOut"];
         };
       };
     };

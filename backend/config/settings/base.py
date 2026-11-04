@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "apps.audit",
     "apps.notifications",
     "apps.cms",
+    "apps.catalog",
     "apps.accounts",
 ]
 
@@ -67,6 +68,9 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", 
 TRUSTED_PROXY_COUNT = env.int("TRUSTED_PROXY_COUNT", default=0)
 
 # Public base URL used in emailed links.
+# Demo catalogue (manage.py seed_demo_catalog) may run only where this is true: local and review stacks.
+ALLOW_DEMO_DATA = env.bool("ALLOW_DEMO_DATA", default=False)
+
 SITE_URL = env("SITE_URL", default="http://localhost:8080").rstrip("/")
 DISPLAY_TIME_ZONE = "Asia/Karachi"  # times shown to people (MTS §5); storage stays UTC
 

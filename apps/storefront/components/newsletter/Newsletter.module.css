@@ -1,0 +1,65 @@
+.newsletter {
+  inline-size: 100%;
+  margin-block-start: var(--av-space-24);
+  border-block: var(--av-border-width) solid var(--av-divider);
+  background: var(--av-surface-raised);
+}
+
+.inner {
+  display: grid;
+  gap: var(--av-space-8);
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-16) var(--av-gutter);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .inner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--av-space-16);
+  }
+}
+
+.copy {
+  display: grid;
+  gap: var(--av-space-3);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h2);
+  font-weight: 400;
+}
+
+.body {
+  margin: 0;
+  max-inline-size: 30rem;
+  color: var(--av-text-muted);
+}
+
+.form {
+  display: grid;
+  gap: var(--av-space-4);
+}
+
+.row {
+  display: grid;
+  gap: var(--av-space-3);
+  align-items: end;
+}
+
+@media (min-width: 40rem) {
+  .row {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.email {
+  min-inline-size: 0;
+}
+
+.submit {
+  min-block-size: var(--av-tap-target);
+}

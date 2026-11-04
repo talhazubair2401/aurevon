@@ -194,7 +194,6 @@
 
 /* Footer */
 .footer {
-  margin-block-start: var(--av-space-16);
   border-block-start: var(--av-border-width) solid var(--av-divider);
 }
 

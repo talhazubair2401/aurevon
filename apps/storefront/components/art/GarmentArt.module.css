@@ -1,0 +1,45 @@
+.art {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+}
+
+.float .garment {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: sway 7s var(--av-easing) infinite alternate;
+}
+
+.float .shadow {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: breathe 7s var(--av-easing) infinite alternate;
+}
+
+@keyframes sway {
+  from {
+    transform: translateY(0) rotate(-0.8deg);
+  }
+  to {
+    transform: translateY(-6px) rotate(0.8deg);
+  }
+}
+
+@keyframes breathe {
+  from {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(0.88);
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float .garment,
+  .float .shadow {
+    animation: none;
+  }
+}

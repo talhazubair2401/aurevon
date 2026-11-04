@@ -221,6 +221,383 @@
                 }
             }
         },
+        "/api/v1/catalog/categories": {
+            "get": {
+                "operationId": "catalog_categories",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CategoryRef"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/catalog/collections": {
+            "get": {
+                "operationId": "catalog_collections",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CollectionCard"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/catalog/facets": {
+            "get": {
+                "operationId": "catalog_facets",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "colour",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated colour slugs"
+                    },
+                    {
+                        "in": "query",
+                        "name": "department",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "men",
+                                "women"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_max",
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_min",
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated sizes"
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Facets"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/catalog/products": {
+            "get": {
+                "operationId": "catalog_products_list",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "collection",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "colour",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated colour slugs"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cursor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "department",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "men",
+                                "women"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_max",
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "price_min",
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "size",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Comma-separated sizes"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "featured",
+                                "newest",
+                                "price_asc",
+                                "price_desc"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "catalogue"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/banners/{key}": {
+            "get": {
+                "operationId": "cms_banner",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Banner"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cms/home": {
+            "get": {
+                "operationId": "cms_home",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "content"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Home"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/me/sessions": {
             "get": {
                 "operationId": "me_sessions",
@@ -296,6 +673,74 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/RevokedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/newsletter/confirm": {
+            "post": {
+                "operationId": "newsletter_confirm",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "tags": [
+                    "newsletter"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConfirmInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NewsletterOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/newsletter/subscribe": {
+            "post": {
+                "operationId": "newsletter_subscribe",
+                "description": "Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8).",
+                "tags": [
+                    "newsletter"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubscribeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NewsletterOut"
                                 }
                             }
                         },
@@ -1658,6 +2103,64 @@
                     "results"
                 ]
             },
+            "Banner": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    }
+                },
+                "required": [
+                    "content",
+                    "key"
+                ]
+            },
+            "CategoryFacet": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "$ref": "#/components/schemas/DepartmentEnum"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "department",
+                    "name",
+                    "slug"
+                ]
+            },
+            "CategoryRef": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "$ref": "#/components/schemas/DepartmentEnum"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "department",
+                    "name",
+                    "slug"
+                ]
+            },
             "ChallengeOut": {
                 "type": "object",
                 "properties": {
@@ -1703,6 +2206,85 @@
                 },
                 "required": [
                     "code"
+                ]
+            },
+            "CollectionCard": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "demo_art": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tone": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "demo_art",
+                    "description",
+                    "name",
+                    "slug",
+                    "tone"
+                ]
+            },
+            "ColourFacet": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "hex": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "hex",
+                    "name",
+                    "slug"
+                ]
+            },
+            "ConfirmInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "CountFacet": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "value"
                 ]
             },
             "CustomerAccountOut": {
@@ -1798,6 +2380,14 @@
                     "password"
                 ]
             },
+            "DepartmentEnum": {
+                "enum": [
+                    "women",
+                    "men"
+                ],
+                "type": "string",
+                "description": "* `women` - women\n* `men` - men"
+            },
             "EmailInRequest": {
                 "type": "object",
                 "properties": {
@@ -1832,6 +2422,87 @@
                     "password"
                 ]
             },
+            "Facets": {
+                "type": "object",
+                "properties": {
+                    "departments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CountFacet"
+                        }
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryFacet"
+                        }
+                    },
+                    "sizes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CountFacet"
+                        }
+                    },
+                    "colours": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ColourFacet"
+                        }
+                    },
+                    "price": {
+                        "$ref": "#/components/schemas/PriceFacet"
+                    }
+                },
+                "required": [
+                    "categories",
+                    "colours",
+                    "departments",
+                    "price",
+                    "sizes"
+                ]
+            },
+            "Home": {
+                "type": "object",
+                "properties": {
+                    "sections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/HomeSection"
+                        }
+                    }
+                },
+                "required": [
+                    "sections"
+                ]
+            },
+            "HomeSection": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "$ref": "#/components/schemas/KeyEnum"
+                    },
+                    "content": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "collections": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CollectionCard"
+                        }
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductCard"
+                        }
+                    }
+                },
+                "required": [
+                    "content",
+                    "key"
+                ]
+            },
             "InviteInRequest": {
                 "type": "object",
                 "properties": {
@@ -1858,6 +2529,25 @@
                     "role"
                 ]
             },
+            "KeyEnum": {
+                "enum": [
+                    "hero",
+                    "collections",
+                    "featured_products",
+                    "new_arrivals",
+                    "brand_story"
+                ],
+                "type": "string",
+                "description": "* `hero` - hero\n* `collections` - collections\n* `featured_products` - featured_products\n* `new_arrivals` - new_arrivals\n* `brand_story` - brand_story"
+            },
+            "LocaleEnum": {
+                "enum": [
+                    "en",
+                    "ur"
+                ],
+                "type": "string",
+                "description": "* `en` - en\n* `ur` - ur"
+            },
             "MfaVerifyInRequest": {
                 "type": "object",
                 "properties": {
@@ -1877,6 +2567,32 @@
                 },
                 "required": [
                     "challenge"
+                ]
+            },
+            "Money": {
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "amount",
+                    "currency"
+                ]
+            },
+            "NewsletterOut": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
                 ]
             },
             "OwnRecoveryOut": {
@@ -1923,6 +2639,157 @@
                     "otpauth_uri",
                     "qr_svg",
                     "secret"
+                ]
+            },
+            "PriceFacet": {
+                "type": "object",
+                "properties": {
+                    "min": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "max": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "currency": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "currency",
+                    "max",
+                    "min"
+                ]
+            },
+            "ProductCard": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "department": {
+                        "$ref": "#/components/schemas/DepartmentEnum"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryRef"
+                    },
+                    "price_min": {
+                        "$ref": "#/components/schemas/Money"
+                    },
+                    "price_max": {
+                        "$ref": "#/components/schemas/Money"
+                    },
+                    "colours": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductColour"
+                        }
+                    },
+                    "sizes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ProductCardImage"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "is_new": {
+                        "type": "boolean"
+                    },
+                    "is_featured": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "category",
+                    "colours",
+                    "department",
+                    "image",
+                    "is_featured",
+                    "is_new",
+                    "name",
+                    "price_max",
+                    "price_min",
+                    "sizes",
+                    "slug"
+                ]
+            },
+            "ProductCardImage": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "demo_art": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tone": {
+                        "type": "string"
+                    },
+                    "alt": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "alt",
+                    "demo_art",
+                    "tone",
+                    "url"
+                ]
+            },
+            "ProductColour": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "hex": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "hex",
+                    "name",
+                    "slug"
+                ]
+            },
+            "ProductPage": {
+                "type": "object",
+                "properties": {
+                    "next": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductCard"
+                        }
+                    }
+                },
+                "required": [
+                    "next",
+                    "previous",
+                    "results"
                 ]
             },
             "RecoveryCodesOut": {
@@ -2345,6 +3212,38 @@
                 },
                 "required": [
                     "stepped_up_until"
+                ]
+            },
+            "SubscribeInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "locale": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LocaleEnum"
+                            }
+                        ],
+                        "default": "en"
+                    },
+                    "source": {
+                        "type": "string",
+                        "minLength": 1,
+                        "default": "storefront",
+                        "pattern": "^[a-z_]{1,40}$"
+                    },
+                    "consent": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "consent",
+                    "email"
                 ]
             },
             "SuspendInRequest": {

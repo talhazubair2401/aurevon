@@ -1,21 +1,18 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Wordmark } from "@aurevon/ui";
-import styles from "./page.module.css";
+import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { isLocale, type Locale } from "@aurevon/i18n";
+import { renderSection } from "@/components/home/HomeSections";
+import { getHome } from "@/lib/api";
 
-// Shell placeholder. The approved homepage (A-04) is built in M4 from the reference files; nothing here
-// stands in for its design (decision 0004, item 5).
+/**
+ * Homepage (A-04, Modern Heritage Luxury): Hero, Collections, Featured Products, New Arrivals, Brand Story,
+ * then the site footer. Sections, their order and copy come from the CMS (GET /cms/home).
+ */
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
+  // Validate before any API call: unknown paths like /missing.png arrive here as the locale.
+  if (!isLocale(locale)) notFound();
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "meta" });
-  const home = await getTranslations({ locale, namespace: "home" });
-
-  return (
-    <section className={styles.placeholder} aria-labelledby="home-title">
-      <Wordmark as="h1" size="lg" id="home-title" />
-      <p className={styles.tagline}>{t("tagline")}</p>
-      <hr className={styles.rule} />
-      <p className={styles.note}>{home("placeholderNote")}</p>
-    </section>
-  );
+  const home = await getHome(locale as Locale);
+  return <>{home.sections.map((section) => renderSection(section, locale as Locale))}</>;
 }

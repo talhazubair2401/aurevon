@@ -5,6 +5,9 @@ from django.urls import URLPattern, URLResolver, include, path, re_path
 from drf_spectacular.views import SpectacularAPIView
 
 from apps.accounts.api.urls import customer_urlpatterns, staff_urlpatterns
+from apps.catalog.api import views as catalog
+from apps.cms.api import public as cms
+from apps.notifications.api import views as newsletter
 from common.csp_reports import csp_report
 from common.views import ApiIndexView, api_not_found
 
@@ -15,6 +18,15 @@ urlpatterns: list[URLPattern | URLResolver] = [
     # Staff API: only the staff session cookie is honoured here (MTS v2.1 A-22, §9).
     path("staff/", include(staff_urlpatterns)),
     *customer_urlpatterns,
+    # Public storefront reads (MTS §8): catalogue and published content.
+    path("catalog/products", catalog.ProductListView.as_view(), name="catalog-products"),
+    path("catalog/facets", catalog.FacetsView.as_view(), name="catalog-facets"),
+    path("catalog/categories", catalog.CategoryListView.as_view(), name="catalog-categories"),
+    path("catalog/collections", catalog.CollectionListView.as_view(), name="catalog-collections"),
+    path("cms/home", cms.HomeView.as_view(), name="cms-home"),
+    path("cms/banners/<slug:key>", cms.BannerView.as_view(), name="cms-banner"),
+    path("newsletter/subscribe", newsletter.NewsletterSubscribeView.as_view(), name="newsletter-subscribe"),
+    path("newsletter/confirm", newsletter.NewsletterConfirmView.as_view(), name="newsletter-confirm"),
 ]
 
 if settings.API_SCHEMA_PUBLIC:

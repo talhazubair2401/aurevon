@@ -30,7 +30,8 @@
     "terms": "Terms of sale"
   },
   "home": {
-    "placeholderNote": "The approved homepage design is built in M4, once the A-04 reference files are supplied."
+    "explore": "Explore",
+    "collectionsHeading": "Collections"
   },
   "notFound": {
     "title": "Page not found",
@@ -41,5 +42,57 @@
     "title": "Something went wrong",
     "body": "Please try again. If it keeps happening, contact us.",
     "retry": "Try again"
+  },
+  "product": {
+    "new": "New",
+    "colours": "{count, plural, one {# colour} other {# colours}}",
+    "illustrationNote": "Illustration — product photography coming soon"
+  },
+  "shop": {
+    "title": "Shop All",
+    "subtitle": "Considered pieces for women and men.",
+    "all": "All",
+    "women": "Women",
+    "men": "Men",
+    "department": "Department",
+    "filters": "Filters",
+    "category": "Category",
+    "size": "Size",
+    "colour": "Colour",
+    "price": "Price (PKR)",
+    "priceMin": "Minimum price",
+    "priceMax": "Maximum price",
+    "apply": "Apply",
+    "clearAll": "Clear all",
+    "sortBy": "Sort by",
+    "sortFeatured": "Featured",
+    "sortNewest": "Newest",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "results": "{count, plural, one {# piece} other {# pieces}}",
+    "loadMore": "Load more",
+    "showResults": "Show results",
+    "closeFilters": "Close filters",
+    "emptyTitle": "Nothing matches these filters",
+    "emptyBody": "Try removing a filter or two.",
+    "galleryLabel": "Featured pieces",
+    "pagination": "More pieces",
+    "previous": "Previous"
+  },
+  "newsletter": {
+    "title": "Join the AureVon list",
+    "body": "New collections, private previews and stories from the atelier. A few emails a month, never more.",
+    "email": "Email address",
+    "consent": "I'd like to receive AureVon emails. I can unsubscribe at any time.",
+    "submit": "Subscribe",
+    "sending": "Subscribing…",
+    "sent": "Almost there. Check your inbox and confirm your subscription.",
+    "error": "Something went wrong. Please try again.",
+    "invalidEmail": "Enter a valid email address.",
+    "consentRequired": "Tick the box to agree to receive emails.",
+    "confirming": "Confirming your subscription…",
+    "confirmed": "You're subscribed. Welcome to AureVon.",
+    "confirmFailed": "This link is invalid or has expired. Please subscribe again.",
+    "confirmTitle": "Newsletter"
   }
 }

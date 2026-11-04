@@ -42,6 +42,7 @@
   font: inherit;
   font-family: var(--av-font-ui);
   font-size: var(--av-text-body);
+  line-height: 1.25;
 }
 
 .control:hover {

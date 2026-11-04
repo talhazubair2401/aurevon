@@ -26,7 +26,10 @@ for (const [locale, dir] of [
       await expect(page.getByRole("banner")).toHaveCount(1);
       await expect(page.getByRole("main")).toHaveCount(1);
       await expect(page.getByRole("contentinfo")).toHaveCount(1);
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText("AUREVON");
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+      await expect(page.getByRole("banner").getByRole("link", { name: /AureVon/ })).toContainText(
+        "AUREVON",
+      );
     });
 
     test("has no automatically detectable WCAG 2.2 AA violations", async ({ page }) => {
@@ -84,10 +87,14 @@ test("Urdu text uses Nastaliq for reading and Naskh for controls; the wordmark s
       .first()
       .evaluate((el) => getComputedStyle(el).fontFamily);
   // next/font names each self-hosted family after its variable in app/fonts.ts.
-  expect(await family("main p")).toMatch(/^urduReadingFont/);
+  expect(await family("body")).toMatch(/^urduReadingFont/);
   expect(await family("header nav a")).toMatch(/^urduUiFont/);
-  expect(await family("h1")).toMatch(/^displayFont/);
-  await expect(page.locator("h1")).toHaveAttribute("dir", "ltr");
+  const wordmark = page
+    .getByRole("banner")
+    .getByRole("link", { name: /AureVon/ })
+    .locator("[lang=en]");
+  expect(await wordmark.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/^displayFont/);
+  await expect(wordmark).toHaveAttribute("dir", "ltr");
 });
 
 test("Urdu fonts are not downloaded on English pages", async ({ page }) => {
