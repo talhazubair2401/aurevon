@@ -9,3 +9,5 @@ celery==5.6.3
 gunicorn==26.2.0
 python-json-logger==4.2.0
 argon2-cffi==25.1.0
+# Imported by kombu's Redis transport but not declared by kombu; without it the worker and scheduler fail to start.
+packaging==26.3
