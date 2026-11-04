@@ -1,0 +1,50 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "AureVon API",
+        "version": "1.0.0",
+        "description": "AureVon storefront and staff API. MTS v2.1 §8."
+    },
+    "paths": {
+        "/api/v1/": {
+            "get": {
+                "operationId": "api_index",
+                "description": "Identifies the API. Public, so clients and the proxy can confirm routing.",
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiIndex"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiIndex": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "version"
+                ]
+            }
+        }
+    }
+}

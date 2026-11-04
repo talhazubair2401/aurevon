@@ -1,0 +1,16 @@
+{
+  "name": "@aurevon/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "End-to-end tests against the running stack behind the routing proxy (MTS v2.1 §13)",
+  "scripts": {
+    "test": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@aurevon/config": "workspace:*",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3"
+  }
+}

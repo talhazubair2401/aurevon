@@ -1,0 +1,11 @@
+# Runtime dependencies (pinned). Upgrade deliberately; see docs/runbooks.
+Django==5.2.19
+djangorestframework==3.18.3
+drf-spectacular==0.30.0
+django-environ==0.14.0
+psycopg[binary]==3.3.7
+redis==8.1.0
+celery==5.6.3
+gunicorn==26.2.0
+python-json-logger==4.2.0
+argon2-cffi==25.1.0

@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AureVon 3D Viewer v2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: product-detail split — dark 3D gallery stage left, quiet editorial product panel right; on phones the stage is followed by title, price and colours. */
+:root {
+  /* MTS v1.0 §3.2 tokens */
+  --offwhite: #F9F8F6;
+  --charcoal: #121212;
+  --stone: #E5E0DB;
+  --brown: #3B2F2F;
+  --gold: #C2A676;
+
+  --bg: var(--offwhite);
+  --fg: var(--charcoal);
+  --muted: #6B625C;
+  --line: var(--stone);
+  --surface: #FFFFFF;
+  --btn-bg: var(--charcoal);
+  --btn-fg: var(--offwhite);
+  --note-bg: #F1EDE8;
+  --swatch-ring: rgba(18,18,18,.22);
+  --ok: #2F6B45;
+  --warn: #8A5A12;
+  --bad: #9A2E2E;
+
+  --stage-top: #3B2F2F;
+  --stage-bottom: #121212;
+  --stage-fg: #F3EEE7;
+  --stage-muted: #B9AEA3;
+  --stage-chip: rgba(18,18,18,.55);
+  --stage-chip-line: rgba(194,166,118,.35);
+
+  --display: "Playfair Display", "Iowan Old Style", Georgia, serif;
+  --ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141312; --fg: #F3EFEA; --muted: #A79D94; --line: #2E2A27;
+    --surface: #1B1918; --btn-bg: #F3EFEA; --btn-fg: #121212; --note-bg: #1E1B19;
+    --swatch-ring: rgba(243,239,234,.28);
+    --ok: #7FC096; --warn: #D9A85A; --bad: #E08A8A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141312; --fg: #F3EFEA; --muted: #A79D94; --line: #2E2A27;
+  --surface: #1B1918; --btn-bg: #F3EFEA; --btn-fg: #121212; --note-bg: #1E1B19;
+  --swatch-ring: rgba(243,239,234,.28);
+  --ok: #7FC096; --warn: #D9A85A; --bad: #E08A8A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--ui); font-size: 15px; line-height: 1.55; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header.top { border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; flex-wrap: wrap; }
+.wordmark { font-family: var(--display); font-size: 26px; letter-spacing: .14em; font-weight: 500; }
+.proto-tag { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); padding: 5px 10px; border-radius: 999px; }
+
+main .wrap { padding-block: 28px 56px; }
+.crumbs { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+
+/* Desktop: stage spans the left column; product blocks stack on the right in their original order. */
+.pdp { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); grid-template-rows: auto auto auto 1fr; column-gap: 48px; row-gap: 22px; align-items: start; }
+.viewer-col { grid-column: 1; grid-row: 1 / span 4; min-width: 0; }
+.p-head { grid-column: 2; grid-row: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+.p-desc { grid-column: 2; grid-row: 2; min-width: 0; }
+.p-colour { grid-column: 2; grid-row: 3; min-width: 0; }
+.p-rest { grid-column: 2; grid-row: 4; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+/* Phones and small tablets: colours move up to sit directly under the title and price, closer to the 3D view. */
+@media (max-width: 900px) {
+  .pdp { grid-template-columns: minmax(0,1fr); grid-template-rows: none; row-gap: 22px; }
+  .viewer-col { grid-row: 1; margin-bottom: 6px; }
+  .p-head { grid-column: 1; grid-row: 2; gap: 12px; }
+  .p-colour { grid-column: 1; grid-row: 3; }
+  .p-desc { grid-column: 1; grid-row: 4; }
+  .p-rest { grid-column: 1; grid-row: 5; }
+}
+
+/* ---------- Stage ---------- */
+.stage {
+  position: relative; width: 100%; max-width: 100%; aspect-ratio: 4 / 5; max-height: 82vh;
+  border-radius: 4px; overflow: hidden; color: var(--stage-fg);
+  background: radial-gradient(120% 80% at 50% 18%, var(--stage-top) 0%, #221B1B 48%, var(--stage-bottom) 100%);
+}
+@media (max-width: 900px) { .stage { aspect-ratio: 4 / 4.6; max-height: none; } }
+.stage.kbd-focus { outline: 2px solid var(--gold); outline-offset: 3px; }
+#r3f { position: absolute; inset: 0; }
+#r3f canvas { display: block; outline: none; }
+.stage .overlay { position: absolute; pointer-events: none; }
+.stage .overlay > * { pointer-events: auto; }
+
+.chip {
+  background: var(--stage-chip); border: 1px solid var(--stage-chip-line); color: var(--stage-fg);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border-radius: 999px; padding: 7px 13px; font-size: 12px; letter-spacing: .04em; cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.chip:hover { border-color: var(--gold); }
+.chip[aria-pressed="true"] { background: rgba(194,166,118,.22); border-color: var(--gold); }
+
+.ov-top { top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; z-index: 3; }
+.badge3d { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 8px; pointer-events: none !important; }
+.badge3d::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+.ov-bottom { left: 14px; right: 14px; bottom: 14px; display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; flex-wrap: wrap; z-index: 3; }
+.group { display: flex; gap: 6px; flex-wrap: wrap; }
+.hint { font-size: 12px; color: var(--stage-muted); width: 100%; text-align: center; pointer-events: none !important; }
+
+/* Product image: shown while 3D loads, when it can't run, and when the shopper picks it. */
+.poster { inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; z-index: 2;
+  background: radial-gradient(120% 80% at 50% 18%, var(--stage-top) 0%, var(--stage-bottom) 100%); }
+.poster svg { width: min(62%, 300px); height: auto; }
+
+/* Loading status for the 3D view: sits over the product image, never blocks it. */
+.status { left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 4; width: max-content; max-width: calc(100% - 28px);
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
+  background: var(--stage-chip); border: 1px solid var(--stage-chip-line); border-radius: 22px; padding: 9px 14px;
+  font-size: 12.5px; letter-spacing: .02em; color: var(--stage-fg); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.status .bar { width: 64px; height: 2px; background: rgba(255,255,255,.14); border-radius: 2px; overflow: hidden; flex: none; }
+.status .bar i { display: block; height: 100%; width: 30%; background: var(--gold); transition: width .3s; }
+.status .msg { text-align: center; }
+
+.loader { inset: 0; display: grid; place-items: center; background: rgba(18,18,18,.45); z-index: 5; }
+.loader-inner { text-align: center; min-width: 200px; }
+.loader .bar { height: 2px; background: rgba(255,255,255,.12); margin-top: 12px; overflow: hidden; border-radius: 2px; }
+.loader .bar i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .2s; }
+.loader p { margin: 0; font-size: 13px; letter-spacing: .06em; }
+
+.dropzone { inset: 10px; border: 1.5px dashed var(--gold); border-radius: 4px; display: grid; place-items: center; background: rgba(18,18,18,.6); font-family: var(--display); font-size: 22px; z-index: 6; }
+
+/* ---------- Product panel ---------- */
+.eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(30px, 3.4vw, 42px); line-height: 1.12; margin: 6px 0 0; text-wrap: balance; }
+.price { font-size: 19px; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.price small { font-size: 12px; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+.desc { color: var(--muted); max-width: 52ch; margin: 0; }
+
+.opt-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; margin-bottom: 10px; }
+.opt-head b { font-weight: 600; letter-spacing: .02em; }
+.opt-head span { color: var(--muted); }
+
+.swatches { display: flex; gap: 12px; flex-wrap: wrap; }
+.swatch { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); padding: 3px; background: transparent; cursor: pointer; }
+.swatch i { display: block; width: 100%; height: 100%; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--swatch-ring); }
+.swatch[aria-checked="true"] { border: 1.5px solid var(--fg); }
+
+.sizes { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
+.size { height: 46px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-size: 13px; letter-spacing: .06em; border-radius: 2px; }
+.size:hover:not(:disabled) { border-color: var(--fg); }
+.size[aria-checked="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.size:disabled { color: var(--muted); cursor: not-allowed; text-decoration: line-through; opacity: .6; }
+
+.stock { font-size: 13px; display: flex; align-items: center; gap: 8px; min-height: 20px; }
+.stock .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.stock.ok { color: var(--ok); } .stock.low { color: var(--warn); } .stock.out { color: var(--bad); } .stock.none { color: var(--muted); }
+.sku { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; margin-left: auto; }
+
+.cta { height: 54px; width: 100%; border: 0; background: var(--btn-bg); color: var(--btn-fg); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+.cta:disabled { opacity: .45; cursor: not-allowed; }
+
+.details { border-top: 1px solid var(--line); margin: 0; }
+.details div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.details dt { color: var(--muted); } .details dd { margin: 0; text-align: right; }
+
+/* ---------- Asset check ---------- */
+.asset { background: var(--note-bg); border: 1px solid var(--line); border-radius: 4px; padding: 18px; }
+.asset h2 { font-family: var(--display); font-weight: 400; font-size: 20px; margin: 0 0 4px; }
+.asset p { margin: 0 0 12px; font-size: 13px; color: var(--muted); }
+.asset table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.asset td { padding: 7px 0; border-top: 1px solid var(--line); }
+.asset td:nth-child(2) { text-align: right; }
+.asset-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.btn2 { border: 1px solid var(--fg); background: transparent; padding: 9px 14px; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; border-radius: 2px; display: inline-flex; align-items: center; }
+.btn2:hover { background: var(--fg); color: var(--bg); }
+.err { color: var(--bad); font-size: 13px; margin-top: 10px; }
+
+/* Touch screens: every control reaches a 44 × 44 px target. */
+@media (pointer: coarse) {
+  .chip { min-height: 44px; min-width: 44px; padding: 0 15px; }
+  .swatch { width: 44px; height: 44px; }
+  .swatches { gap: 10px; }
+  .btn2 { min-height: 44px; }
+  .status .chip { min-height: 44px; }
+}
+
+/* ---------- Notes ---------- */
+.notes { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 32px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 32px; }
+@media (max-width: 900px) { .notes { grid-template-columns: minmax(0,1fr); gap: 22px; } }
+.notes h3 { font-family: var(--display); font-weight: 400; font-size: 19px; margin: 0 0 8px; }
+.notes ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13.5px; }
+.notes li { margin-bottom: 5px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); opacity: 0; background: var(--btn-bg); color: var(--btn-fg); padding: 12px 18px; font-size: 13px; border-radius: 2px; transition: opacity .25s, transform .25s; pointer-events: none; max-width: calc(100% - 32px); text-align: center; z-index: 20; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="wordmark">AUREVON</div>
+    <span class="proto-tag">M6 prototype v2 · React Three Fiber · demo data</span>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="crumbs">Women · Outerwear · Coats</div>
+
+    <div class="pdp">
+      <section class="viewer-col" aria-label="3D product viewer">
+        <div class="stage" id="stage">
+          <div id="r3f"></div>
+
+          <div class="overlay poster" id="poster">
+            <svg viewBox="0 0 200 260" aria-label="Heritage Wool Overcoat, front view" role="img">
+              <path d="M100 18 q0 -10 8 -10 q8 0 8 8 q0 6 -8 10" fill="none" stroke="#C2A676" stroke-width="3"/>
+              <path d="M100 26 L40 50 L160 50 Z" fill="none" stroke="#C2A676" stroke-width="3" stroke-linejoin="round"/>
+              <path id="fbCoat" d="M78 44 L52 52 Q40 58 38 74 L26 170 Q24 180 34 182 L46 182 L50 120 L46 236 Q46 244 56 244 L144 244 Q154 244 154 236 L150 120 L154 182 L166 182 Q176 180 174 170 L162 74 Q160 58 148 52 L122 44 L100 92 Z" fill="#B08A5E"/>
+              <path d="M100 92 L100 244" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>
+              <path d="M78 44 L92 110 L100 92 M122 44 L108 110 L100 92" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.5"/>
+              <rect x="50" y="146" width="100" height="9" fill="rgba(0,0,0,.22)"/>
+              <g fill="rgba(0,0,0,.35)"><circle cx="90" cy="124" r="3"/><circle cx="110" cy="124" r="3"/><circle cx="90" cy="172" r="3"/><circle cx="110" cy="172" r="3"/></g>
+            </svg>
+          </div>
+
+          <div class="overlay ov-top">
+            <span class="badge3d" id="modeLabel">Product image</span>
+            <div class="group">
+              <button class="chip" id="btnRotate" aria-pressed="true" type="button" hidden>Auto-rotate</button>
+              <button class="chip" id="btnMode" aria-pressed="false" type="button" hidden>Show image</button>
+            </div>
+          </div>
+          <div class="overlay ov-bottom" id="ovBottom" hidden>
+            <div class="group" role="group" aria-label="Camera views">
+              <button class="chip" data-view="front" type="button">Front</button>
+              <button class="chip" data-view="side" type="button">Side</button>
+              <button class="chip" data-view="back" type="button">Back</button>
+              <button class="chip" data-view="reset" type="button">Reset</button>
+            </div>
+            <div class="hint" id="hint">Drag to rotate · scroll or pinch to zoom</div>
+          </div>
+
+          <div class="overlay status" id="status" role="status">
+            <span class="bar" id="statusBar"><i id="statusBarFill"></i></span>
+            <span class="msg" id="statusMsg">Loading the 3D view…</span>
+            <button class="chip" id="btnRetry" type="button" hidden>Try again</button>
+          </div>
+
+          <div class="overlay loader" id="loader" hidden>
+            <div class="loader-inner">
+              <p id="loaderText">Preparing the model…</p>
+              <div class="bar"><i id="loaderBar"></i></div>
+            </div>
+          </div>
+          <div class="overlay dropzone" id="dropzone" hidden>Drop your .glb model</div>
+          <span class="sr" id="liveStage" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <div class="p-head">
+        <div>
+          <div class="eyebrow">Heritage Collection · Demo product</div>
+          <h1>The Heritage Wool Overcoat</h1>
+        </div>
+        <div class="price" id="price">PKR 48,500<small>Demo price · taxes and shipping at checkout</small></div>
+      </div>
+
+      <p class="desc p-desc">A double-breasted overcoat in brushed wool with a softly structured shoulder, notched lapels and a tie belt. This is a stand-in garment for testing the 3D viewer. Final catalogue, sizes and prices are still pending (P-12).</p>
+
+      <div class="p-colour">
+        <div class="opt-head"><b id="colourLabel">Colour</b><span id="colourName">Camel</span></div>
+        <div class="swatches" role="radiogroup" aria-labelledby="colourLabel" id="swatches"></div>
+      </div>
+
+      <div class="p-rest">
+        <div>
+          <div class="opt-head"><b id="sizeLabel">Size</b><span>Size guide pending</span></div>
+          <div class="sizes" role="radiogroup" aria-labelledby="sizeLabel" id="sizes"></div>
+        </div>
+
+        <div class="stock none" id="stock"><span class="dot"></span><span id="stockText">Select a size</span><span class="sku" id="sku"></span></div>
+
+        <button class="cta" id="addBtn" type="button" disabled>Select a size</button>
+
+        <dl class="details">
+          <div><dt>Material</dt><dd>Brushed wool blend (demo)</dd></div>
+          <div><dt>Fit</dt><dd>Relaxed, below-knee length</dd></div>
+          <div><dt>Delivery</dt><dd>Pakistan rules pending (P-13)</dd></div>
+        </dl>
+
+        <div class="asset" aria-labelledby="assetH">
+          <h2 id="assetH">Test your own 3D model</h2>
+          <p id="assetIntro">Drop a .glb file onto the viewer or choose one here. Draco and Meshopt compressed models are supported. The viewer reports the model's size and estimated memory use. No size or polygon limits have been approved yet (P-09).</p>
+          <table id="assetTable" hidden>
+            <tbody id="assetBody"></tbody>
+          </table>
+          <div class="asset-actions">
+            <label class="btn2" for="fileInput" tabindex="0" id="fileLabel">Choose .glb file</label>
+            <input type="file" id="fileInput" accept=".glb,model/gltf-binary" class="sr">
+            <button class="btn2" id="btnPlaceholder" type="button" hidden>Back to demo coat</button>
+          </div>
+          <div class="err" id="assetErr" role="alert" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="notes" aria-label="Prototype notes">
+      <div>
+        <h3>What changed in v2</h3>
+        <ul>
+          <li>The viewer is rebuilt on React Three Fiber, over the same three.js r160.</li>
+          <li>The product image shows first; 3D replaces it whenever it finishes loading, however long that takes.</li>
+          <li>Draco models load with decoder files hosted alongside this page.</li>
+          <li>Bad or unsupported files always end in a clear message.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Built to keep shopping safe</h3>
+        <ul>
+          <li>The 3D viewer runs in isolation. If it fails, product info, sizes and Add to bag still work (§6.3).</li>
+          <li>3D stops rendering whenever it isn't visible.</li>
+          <li>Swipe up or down on the viewer to scroll the page; swipe sideways to rotate.</li>
+          <li>Arrow keys rotate the 3D view once it has keyboard focus.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Still pending, not decided here</h3>
+        <ul>
+          <li>Real-device testing and a genuine garment model (P-09).</li>
+          <li>Frontend build tooling (P-01). React loads from a CDN for review only.</li>
+          <li>Catalogue, prices and stock (P-12). All figures shown are demo data.</li>
+          <li>Approved product page design (P-19).</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Product + variant logic: plain script, independent of the 3D viewer ---------- */
+(function () {
+  const COLOURS = [
+    { id: "camel",    name: "Camel",    hex: "#B08A5E", code: "CML" },
+    { id: "charcoal", name: "Charcoal", hex: "#34312F", code: "CHR" },
+    { id: "espresso", name: "Espresso", hex: "#4A3530", code: "ESP" },
+    { id: "stone",    name: "Stone",    hex: "#CFC6BB", code: "STN" }
+  ];
+  const SIZES = ["XS", "S", "M", "L", "XL"];
+  const STOCK = { // demo stock per colour × size
+    camel:    { XS: 4, S: 9, M: 12, L: 2, XL: 0 },
+    charcoal: { XS: 0, S: 6, M: 8, L: 7, XL: 3 },
+    espresso: { XS: 2, S: 1, M: 5, L: 0, XL: 0 },
+    stone:    { XS: 6, S: 4, M: 0, L: 3, XL: 1 }
+  };
+  const state = { colour: "camel", size: null };
+  const $ = (id) => document.getElementById(id);
+  const sw = $("swatches"), sz = $("sizes");
+
+  COLOURS.forEach((c) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "swatch"; b.setAttribute("role", "radio");
+    b.setAttribute("aria-label", c.name); b.dataset.id = c.id; b.id = "sw-" + c.id;
+    const dot = document.createElement("i"); dot.style.background = c.hex; b.appendChild(dot);
+    b.addEventListener("click", () => selectColour(c.id));
+    sw.appendChild(b);
+  });
+  SIZES.forEach((s) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "size"; b.setAttribute("role", "radio");
+    b.textContent = s; b.dataset.size = s; b.id = "sz-" + s;
+    b.addEventListener("click", () => { state.size = s; render(); });
+    sz.appendChild(b);
+  });
+
+  // Radio-group keyboard pattern: one tab stop per group, arrow keys move and select.
+  function roving(group, onPick) {
+    group.addEventListener("keydown", (e) => {
+      const keys = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+      if (!(e.key in keys)) return;
+      e.preventDefault();
+      const items = [...group.querySelectorAll('[role="radio"]')].filter((b) => !b.disabled);
+      if (!items.length) return;
+      let i = items.indexOf(document.activeElement);
+      i = (i + keys[e.key] + items.length) % items.length;
+      items[i].focus(); onPick(items[i]);
+    });
+  }
+  roving(sw, (b) => selectColour(b.dataset.id));
+  roving(sz, (b) => { state.size = b.dataset.size; render(); });
+
+  function selectColour(id) {
+    state.colour = id;
+    if (state.size && STOCK[id][state.size] === 0) state.size = null;
+    render();
+    const c = COLOURS.find((x) => x.id === id);
+    window.__aurevonColour = c;
+    window.dispatchEvent(new CustomEvent("aurevon:colour", { detail: c }));
+    const fb = document.getElementById("fbCoat"); if (fb) fb.setAttribute("fill", c.hex);
+  }
+
+  function render() {
+    const c = COLOURS.find((x) => x.id === state.colour);
+    $("colourName").textContent = c.name;
+    sw.querySelectorAll(".swatch").forEach((b) => {
+      const on = b.dataset.id === state.colour;
+      b.setAttribute("aria-checked", String(on)); b.tabIndex = on ? 0 : -1;
+    });
+    let sizeTab = false;
+    sz.querySelectorAll(".size").forEach((b) => {
+      const n = STOCK[state.colour][b.dataset.size];
+      b.disabled = n === 0;
+      const on = b.dataset.size === state.size;
+      b.setAttribute("aria-checked", String(on));
+      b.setAttribute("aria-label", b.dataset.size + (n === 0 ? ", sold out" : ""));
+      b.tabIndex = on ? 0 : -1; if (on) sizeTab = true;
+    });
+    if (!sizeTab) { const first = sz.querySelector(".size:not(:disabled)"); if (first) first.tabIndex = 0; }
+    const st = $("stock"), txt = $("stockText"), add = $("addBtn");
+    if (!state.size) {
+      st.className = "stock none"; txt.textContent = "Select a size"; $("sku").textContent = "";
+      add.disabled = true; add.textContent = "Select a size"; return;
+    }
+    const n = STOCK[state.colour][state.size];
+    $("sku").textContent = "SKU AV-OC-" + c.code + "-" + state.size;
+    if (n === 0) { st.className = "stock out"; txt.textContent = "Sold out"; add.disabled = true; add.textContent = "Sold out"; }
+    else if (n <= 2) { st.className = "stock low"; txt.textContent = "Only " + n + " left"; add.disabled = false; add.textContent = "Add to bag"; }
+    else { st.className = "stock ok"; txt.textContent = "In stock"; add.disabled = false; add.textContent = "Add to bag"; }
+  }
+
+  let tt;
+  window.aurevonToast = function (msg) {
+    const t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2800);
+  };
+  $("addBtn").addEventListener("click", () => {
+    const c = COLOURS.find((x) => x.id === state.colour);
+    window.aurevonToast("Added: " + c.name + ", size " + state.size + ". Prototype only, no cart yet.");
+  });
+  $("fileLabel").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("fileInput").click(); } });
+
+  // Restore the shopper's selection after "Try again" reloads the page (the browser caches failed module downloads, so a reload is the only reliable retry).
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem("aurevon-v2-selection") || "null"); sessionStorage.removeItem("aurevon-v2-selection"); } catch (e) { saved = null; }
+  selectColour(saved && STOCK[saved.colour] ? saved.colour : "camel");
+  if (saved && saved.size && STOCK[state.colour][saved.size] > 0) { state.size = saved.size; render(); }
+  window.__aurevonSelection = () => ({ colour: state.colour, size: state.size });
+})();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+  "react": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
+  "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/client/+esm",
+  "@react-three/fiber": "https://cdn.jsdelivr.net/npm/@react-three/fiber@8.17.10/+esm",
+  "htm": "https://cdn.jsdelivr.net/npm/htm@3.1.1/+esm",
+  "https://cdn.jsdelivr.net/npm/three@0.169.0/+esm": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "https://cdn.jsdelivr.net/npm/react@18.0.0/+esm": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
+  "https://cdn.jsdelivr.net/npm/react@18.2.0/+esm": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm"
+} }
+</script>
+
+<script type="module">
+/* ======================================================================
+   3D viewer state. Plain JS and loaded before React, so the product image,
+   loading status and shopping work even if the 3D libraries never arrive.
+   ====================================================================== */
+const $ = (id) => document.getElementById(id);
+const stage = $("stage");
+const TEST = new URLSearchParams(location.search).has("test");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coarse = matchMedia("(pointer: coarse)").matches;
+
+const store = {
+  s: {
+    phase: "loading",        // loading | ready | failed | unavailable | lost
+    userChoseImage: false,   // the shopper asked for the image instead of 3D
+    canvasMounted: false,
+    visible: true, pageVisible: !document.hidden,
+    autoRotate: !reduceMotion,
+    colour: (window.__aurevonColour && window.__aurevonColour.hex) || "#B08A5E",
+    model: null, modelName: null,
+    attempt: 0, slow: 0, progress: 0,
+    t0: performance.now(), readyAt: null,
+  },
+  subs: new Set(),
+  get: () => store.s,
+  set(patch) { store.s = { ...store.s, ...patch }; store.subs.forEach((f) => f()); paint(); },
+  subscribe: (f) => { store.subs.add(f); return () => store.subs.delete(f); },
+};
+const is3D = (s = store.s) => s.phase === "ready" && !s.userChoseImage;
+// Render only when the 3D view is actually on screen (D3). During warm-up it renders under the image so the first frame is ready.
+const shouldRender = (s = store.s) => s.canvasMounted && s.pageVisible && s.visible && (s.phase === "loading" || is3D(s));
+
+function paint() {
+  const s = store.s, on = is3D(s);
+  $("poster").hidden = on;
+  $("ovBottom").hidden = !on;
+  $("btnRotate").hidden = !on;
+  $("btnRotate").setAttribute("aria-pressed", String(s.autoRotate));
+  $("btnMode").hidden = s.phase !== "ready";
+  $("btnMode").textContent = on ? "Show image" : "Show 3D";
+  $("btnMode").setAttribute("aria-pressed", String(!on));
+  $("modeLabel").textContent = on ? (s.model ? "Your model · 3D" : "Interactive 3D") : "Product image";
+
+  const st = $("status"), msg = $("statusMsg"), bar = $("statusBar"), retry = $("btnRetry");
+  retry.hidden = true; bar.hidden = false;
+  if (s.phase === "loading") {
+    st.hidden = false;
+    msg.textContent = s.slow >= 2 ? "Slow connection. The 3D view will appear here when it's ready."
+      : s.slow === 1 ? "Still loading the 3D view. You can keep shopping meanwhile."
+      : "Loading the 3D view…";
+    $("statusBarFill").style.width = Math.max(8, Math.round(s.progress * 100)) + "%";
+  } else if (s.phase === "failed") {
+    st.hidden = false; bar.hidden = true; retry.hidden = false;
+    msg.textContent = "The 3D view couldn't load. Check your connection and try again.";
+  } else if (s.phase === "lost") {
+    st.hidden = false; bar.hidden = true; retry.hidden = false;
+    msg.textContent = "The 3D view stopped responding.";
+  } else if (s.phase === "unavailable") {
+    st.hidden = false; bar.hidden = true;
+    msg.textContent = "3D isn't available on this device. Everything else on the page works as normal.";
+  } else {
+    st.hidden = true;
+  }
+}
+
+// Visibility tracking feeds the render switch
+new IntersectionObserver((en) => store.set({ visible: en[0].isIntersecting })).observe(stage);
+document.addEventListener("visibilitychange", () => store.set({ pageVisible: !document.hidden }));
+window.addEventListener("aurevon:colour", (e) => {
+  store.set({ colour: e.detail.hex });
+  if (is3D() && !store.s.model) $("liveStage").textContent = "3D coat shown in " + e.detail.name;
+});
+
+$("btnRotate").addEventListener("click", () => store.set({ autoRotate: !store.s.autoRotate }));
+$("btnMode").addEventListener("click", () => {
+  const toImage = is3D();
+  store.set({ userChoseImage: toImage });
+  $("liveStage").textContent = toImage ? "Showing the product image" : "Showing the 3D view";
+});
+
+function webglOK() {
+  try { const c = document.createElement("canvas"); return !!(c.getContext("webgl2") || c.getContext("webgl")); }
+  catch (e) { return false; }
+}
+
+/* ---------------- Loading strategy (D4) ----------------
+   The product image is the starting state, not a fallback after a timer.
+   3D loads in the background and takes over whenever it's ready.
+   Slow loads only change the message; a real network failure offers a retry. */
+let slowTimers = [];
+async function boot() {
+  slowTimers.forEach(clearTimeout);
+  store.set({ phase: "loading", slow: 0, progress: 0, t0: performance.now() });
+  if (!webglOK()) { store.set({ phase: "unavailable" }); return; }
+  slowTimers = [
+    setTimeout(() => store.s.phase === "loading" && store.set({ slow: 1 }), 8000),
+    setTimeout(() => store.s.phase === "loading" && store.set({ slow: 2 }), 25000),
+  ];
+  const specs = ["react", "react-dom/client", "@react-three/fiber", "three", "htm",
+    "three/addons/controls/OrbitControls.js", "three/addons/loaders/GLTFLoader.js",
+    "three/addons/loaders/DRACOLoader.js", "three/addons/environments/RoomEnvironment.js",
+    "three/addons/libs/meshopt_decoder.module.js"];
+  // The Meshopt decoder compiles WebAssembly as soon as it is imported; skip it where the page's security policy blocks WebAssembly.
+  const wasmOK = (() => { try { new WebAssembly.Module(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])); return true; } catch (e) { return false; } })();
+  if (!wasmOK) specs.pop();
+  let done = 0;
+  try {
+    const mods = await Promise.all(specs.map((s, i) => import(s).then((m) => {
+      done++; store.set({ progress: 0.85 * done / specs.length }); return m;
+    })));
+    start(mods);
+  } catch (err) {
+    console.error("[viewer] 3D libraries failed to load", err);
+    slowTimers.forEach(clearTimeout);
+    store.set({ phase: "failed" });
+  }
+}
+$("btnRetry").addEventListener("click", () => {
+  if (store.s.phase === "failed") {
+    try { sessionStorage.setItem("aurevon-v2-selection", JSON.stringify(window.__aurevonSelection())); } catch (e) {}
+    location.reload();
+    return;
+  }
+  if (store.s.phase === "lost") { store.set({ phase: "loading", attempt: store.s.attempt + 1, canvasMounted: false }); return; }
+  if (window.__viewerStarted) { store.set({ phase: "loading", attempt: store.s.attempt + 1 }); return; }
+  boot();
+});
+
+paint();
+boot();
+
+/* ======================================================================
+   The viewer itself: React Three Fiber over three.js r160.
+   ====================================================================== */
+let root = null;
+function start([React, ReactDOM, FIBER, THREE, HTM, { OrbitControls }, { GLTFLoader }, { DRACOLoader }, { RoomEnvironment }, { MeshoptDecoder } = {}]) {
+  if (root) return;
+  window.__viewerStarted = true;
+  const { useEffect, useMemo, useRef, useSyncExternalStore, createElement } = React;
+  const { Canvas, useFrame, useThree } = FIBER;
+  const html = HTM.default.bind(createElement);
+  const FLOOR = -1.55;
+  const HOME = new THREE.Vector3(0, 0.55, 7.9);
+  const api = { camera: null, controls: null, gl: null, scene: null, anim: null };
+  const useStore = () => useSyncExternalStore(store.subscribe, store.get);
+
+  /* ---------- Placeholder garment (same geometry as v1) ---------- */
+  function buildCoat() {
+    const group = new THREE.Group();
+    const wool = new THREE.MeshPhysicalMaterial({ color: 0xB08A5E, roughness: 0.88, metalness: 0, sheen: 1, sheenRoughness: 0.6, sheenColor: new THREE.Color(0xf3e3cc), side: THREE.DoubleSide, envMapIntensity: 0.5 });
+    const trim = new THREE.MeshPhysicalMaterial({ color: 0x8c6c48, roughness: 0.8, sheen: 0.6, sheenColor: new THREE.Color(0xe8d6bd), side: THREE.DoubleSide, envMapIntensity: 0.5 });
+    const gold = new THREE.MeshStandardMaterial({ color: 0xC2A676, metalness: 1, roughness: 0.2, envMapIntensity: 1.6 });
+    const horn = new THREE.MeshStandardMaterial({ color: 0x2a1f1a, roughness: 0.35, metalness: 0.1 });
+    const DEPTH = 0.58;
+    const prof = [[0.16,1.2],[0.3,1.17],[0.46,1.1],[0.56,1.0],[0.59,0.86],[0.57,0.62],[0.52,0.36],[0.47,0.15],[0.5,-0.1],[0.56,-0.45],[0.63,-0.85],[0.69,-1.25],[0.7,-1.3]];
+    const body = new THREE.Mesh(new THREE.LatheGeometry(prof.map(p => new THREE.Vector2(p[0], p[1])), 96), wool);
+    body.scale.z = DEPTH; group.add(body);
+    const R = (y) => { for (let i = 0; i < prof.length-1; i++) { const [r1,y1] = prof[i], [r2,y2] = prof[i+1]; if (y <= y1 && y >= y2) return r1 + (r2-r1)*((y1-y)/(y1-y2)); } return 0.5; };
+    const surfZ = (x, y, off = 0.012) => DEPTH * Math.sqrt(Math.max(R(y)**2 - x*x, 0)) + off;
+    const hem = new THREE.Mesh(new THREE.TorusGeometry(0.695, 0.018, 8, 120), trim);
+    hem.rotation.x = Math.PI/2; hem.scale.y = DEPTH; hem.position.y = -1.28; group.add(hem);
+    [-1, 1].forEach((s) => {
+      const a = new THREE.Vector3(0.55*s, 0.98, 0), b = new THREE.Vector3(0.8*s, -0.42, 0.06);
+      const dir = new THREE.Vector3().subVectors(b, a); const len = dir.length();
+      const sl = new THREE.Mesh(new THREE.CylinderGeometry(0.175, 0.13, len, 40, 1, true), wool);
+      sl.position.copy(a).add(b).multiplyScalar(0.5);
+      sl.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir.clone().normalize());
+      sl.scale.z = 0.85; group.add(sl);
+      const cap = new THREE.Mesh(new THREE.SphereGeometry(0.18, 32, 16), wool); cap.position.copy(a); cap.scale.set(1, 0.8, 0.85); group.add(cap);
+      const cuff = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.022, 8, 40), trim);
+      cuff.position.copy(b).addScaledVector(dir.clone().normalize(), -0.08);
+      cuff.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1), dir.clone().normalize()); group.add(cuff);
+    });
+    const collar = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.055, 16, 60, Math.PI * 1.55), trim);
+    collar.rotation.set(Math.PI/2, 0, Math.PI*0.275 + Math.PI/2); collar.scale.y = 0.75; collar.position.y = 1.19; group.add(collar);
+    [-1, 1].forEach((s) => {
+      const sh = new THREE.Shape();
+      sh.moveTo(0, 0); sh.lineTo(0.2*s, 0.04); sh.lineTo(0.17*s, 0.12); sh.lineTo(0.24*s, 0.16); sh.lineTo(0.06*s, 0.62); sh.lineTo(0.0, 0.58); sh.closePath();
+      const lap = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.02, bevelEnabled: true, bevelSize: 0.008, bevelThickness: 0.008, bevelSegments: 2 }), trim);
+      lap.position.set(0.02*s, 0.5, surfZ(0.1, 0.75) - 0.01);
+      lap.rotation.set(-0.1, 0.32*s, 0); group.add(lap);
+    });
+    const seamPts = []; for (let y = 0.5; y >= -1.28; y -= 0.06) seamPts.push(new THREE.Vector3(0.05, y, surfZ(0.05, y, 0.004)));
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seamPts), 60, 0.005, 6), horn));
+    [0.42, 0.22, -0.32, -0.6].forEach((y) => [-0.15, 0.15].forEach((x) => {
+      const bt = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.014, 24), horn);
+      bt.rotation.x = Math.PI/2; bt.position.set(x, y, surfZ(x, y, 0.01)); group.add(bt);
+    }));
+    const belt = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.04, 10, 120), trim);
+    belt.rotation.x = Math.PI/2; belt.scale.y = DEPTH + 0.03; belt.position.y = 0.08; belt.scale.z = 1.6; group.add(belt);
+    const buckle = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.012, 8, 4), gold);
+    buckle.rotation.z = Math.PI/4; buckle.position.set(0, 0.08, surfZ(0, 0.08, 0.04)); group.add(buckle);
+    const tail = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.42, 0.02), trim);
+    tail.position.set(0.08, -0.14, surfZ(0.08, -0.14, 0.035)); tail.rotation.z = -0.12; group.add(tail);
+    [-1, 1].forEach((s) => {
+      const x = 0.34*s, y = -0.48;
+      const flap = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.07, 0.02), trim);
+      flap.position.set(x, y, surfZ(x, y, 0.008)); flap.rotation.y = Math.atan2(x, surfZ(x, y)) * 0.9; group.add(flap);
+    });
+    const hookCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 1.36, 0), new THREE.Vector3(0, 1.52, 0), new THREE.Vector3(0.04, 1.64, 0),
+      new THREE.Vector3(0.13, 1.69, 0), new THREE.Vector3(0.2, 1.62, 0), new THREE.Vector3(0.17, 1.53, 0)
+    ]);
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(hookCurve, 48, 0.014, 12), gold));
+    const barCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.62, 1.03, 0), new THREE.Vector3(-0.3, 1.2, 0), new THREE.Vector3(0, 1.36, 0),
+      new THREE.Vector3(0.3, 1.2, 0), new THREE.Vector3(0.62, 1.03, 0)
+    ]);
+    group.add(new THREE.Mesh(new THREE.TubeGeometry(barCurve, 80, 0.026, 14), gold));
+    const neck = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 12), gold); neck.position.set(0, 1.36, 0); group.add(neck);
+    return { group, wool, trim };
+  }
+  const coat = buildCoat();
+
+  /* ---------- Scene pieces ---------- */
+  function Environment() {
+    const { gl, scene } = useThree();
+    useEffect(() => {
+      const pm = new THREE.PMREMGenerator(gl);
+      const env = pm.fromScene(new RoomEnvironment(gl), 0.04).texture;
+      scene.environment = env;
+      return () => { scene.environment = null; env.dispose(); pm.dispose(); };
+    }, [gl, scene]);
+    return null;
+  }
+
+  function Stage() {
+    const shadowTex = useMemo(() => {
+      const c = document.createElement("canvas"); c.width = c.height = 256;
+      const g = c.getContext("2d"); const grd = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+      grd.addColorStop(0, "rgba(0,0,0,0.55)"); grd.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
+      return new THREE.CanvasTexture(c);
+    }, []);
+    const motes = useMemo(() => {
+      const N = 140, a = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) { a[i*3] = (Math.random()-0.5)*7; a[i*3+1] = Math.random()*4.2-1.6; a[i*3+2] = (Math.random()-0.5)*5-1; }
+      return a;
+    }, []);
+    const shadow = useRef(), dust = useRef();
+    useFrame(({ clock }) => {
+      if (reduceMotion) return;
+      const t = clock.elapsedTime;
+      shadow.current.scale.setScalar(1 - Math.sin(t * 0.9) * 0.03);
+      dust.current.rotation.y = t * 0.02; dust.current.position.y = Math.sin(t * 0.3) * 0.05;
+    });
+    return html`
+      <fog attach="fog" args=${[0x1a1414, 9, 18]} />
+      <hemisphereLight args=${[0xfff4e6, 0x2a201c, 0.55]} />
+      <directionalLight color=${0xfff1df} intensity=${2.2} position=${[2.5, 4, 4]} />
+      <directionalLight color=${0xe9dccb} intensity=${0.6} position=${[-4, 1.5, 2]} />
+      <pointLight color=${0xC2A676} intensity=${14} distance=${10} position=${[-2.4, 1.6, -2.2]} />
+      <pointLight color=${0xC2A676} intensity=${10} distance=${10} position=${[2.6, 0.4, -2.4]} />
+      <mesh position=${[0, FLOOR - 0.06, 0]}>
+        <cylinderGeometry args=${[1.35, 1.42, 0.12, 96]} />
+        <meshStandardMaterial color=${0x141110} roughness=${0.55} metalness=${0} envMapIntensity=${0.25} />
+      </mesh>
+      <mesh rotation=${[Math.PI / 2, 0, 0]} position=${[0, FLOOR + 0.002, 0]}>
+        <torusGeometry args=${[1.36, 0.012, 12, 160]} />
+        <meshStandardMaterial color=${0xC2A676} metalness=${1} roughness=${0.22} envMapIntensity=${1.4} />
+      </mesh>
+      <mesh ref=${shadow} rotation=${[-Math.PI / 2, 0, 0]} position=${[0, FLOOR + 0.004, 0]}>
+        <planeGeometry args=${[2.2, 2.2]} />
+        <meshBasicMaterial map=${shadowTex} transparent=${true} depthWrite=${false} />
+      </mesh>
+      <points ref=${dust}>
+        <bufferGeometry><bufferAttribute attach="attributes-position" args=${[motes, 3]} /></bufferGeometry>
+        <pointsMaterial color=${0xC2A676} size=${0.018} transparent=${true} opacity=${0.55} depthWrite=${false} />
+      </points>`;
+  }
+
+  function Garment() {
+    const s = useStore();
+    const float = useRef();
+    const target = useMemo(() => new THREE.Color(), []), trimTarget = useMemo(() => new THREE.Color(), []);
+    useFrame(({ clock }) => {
+      target.set(store.s.colour); trimTarget.set(store.s.colour).multiplyScalar(0.78);
+      coat.wool.color.lerp(target, 0.12); coat.trim.color.lerp(trimTarget, 0.12);
+      if (reduceMotion) return;
+      const t = clock.elapsedTime;
+      float.current.position.y = Math.sin(t * 0.9) * 0.045;
+      float.current.rotation.z = Math.sin(t * 0.55) * 0.012;
+    });
+    return html`<group ref=${float}><primitive object=${s.model || coat.group} /></group>`;
+  }
+
+  /* ---------- Camera controls: touch, mouse and keyboard ---------- */
+  function Controls() {
+    const { camera, gl, size } = useThree();
+    useEffect(() => {
+      camera.fov = size.width / size.height < 0.85 ? 36 : 32;
+      camera.updateProjectionMatrix();
+    }, [size, camera]);
+    useEffect(() => {
+      const c = new OrbitControls(camera, gl.domElement);
+      c.target.set(0, 0.05, 0);
+      c.enableDamping = true; c.dampingFactor = 0.06; c.enablePan = false;
+      c.minDistance = 3.2; c.maxDistance = 10.5;
+      c.minPolarAngle = Math.PI * 0.22; c.maxPolarAngle = Math.PI * 0.58;
+      c.autoRotateSpeed = 0.9;
+      // One finger: rotate. Two fingers: pinch to zoom and drag to tilt.
+      c.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE };
+      // OrbitControls blocks all browser touch gestures; hand vertical swipes back to the page so it can scroll.
+      gl.domElement.style.touchAction = "pan-y";
+      c.addEventListener("start", () => { api.anim = null; });
+      api.controls = c;
+
+      const el = gl.domElement;
+      el.tabIndex = 0;
+      el.setAttribute("role", "application");
+      el.setAttribute("aria-roledescription", "3D viewer");
+      el.setAttribute("aria-label", "3D view of the coat. Arrow keys rotate and tilt, plus and minus zoom, Home resets the view.");
+      const sph = new THREE.Spherical(), off = new THREE.Vector3();
+      const onKey = (e) => {
+        const map = { ArrowLeft: [-1, 0, 1], ArrowRight: [1, 0, 1], ArrowUp: [0, -1, 1], ArrowDown: [0, 1, 1], "+": [0, 0, 0.85], "=": [0, 0, 0.85], "-": [0, 0, 1 / 0.85], "_": [0, 0, 1 / 0.85] };
+        if (e.key === "Home") { e.preventDefault(); goView("reset"); return; }
+        const m = map[e.key]; if (!m) return;
+        e.preventDefault(); api.anim = null;
+        if (store.s.autoRotate) store.set({ autoRotate: false });
+        off.copy(camera.position).sub(c.target); sph.setFromVector3(off);
+        sph.theta += m[0] * Math.PI / 12;
+        sph.phi = THREE.MathUtils.clamp(sph.phi + m[1] * Math.PI / 18, c.minPolarAngle, c.maxPolarAngle);
+        sph.radius = THREE.MathUtils.clamp(sph.radius * m[2], c.minDistance, c.maxDistance);
+        camera.position.setFromSpherical(sph).add(c.target);
+      };
+      const onFocus = () => { if (el.matches(":focus-visible")) { stage.classList.add("kbd-focus"); $("hint").textContent = "Arrow keys rotate · + and − zoom · Home resets"; } };
+      const onBlur = () => { stage.classList.remove("kbd-focus"); setHint(); };
+      el.addEventListener("keydown", onKey); el.addEventListener("focus", onFocus); el.addEventListener("blur", onBlur);
+      return () => { el.removeEventListener("keydown", onKey); el.removeEventListener("focus", onFocus); el.removeEventListener("blur", onBlur); c.dispose(); api.controls = null; };
+    }, [camera, gl]);
+    useFrame((_, dt) => {
+      const c = api.controls; if (!c) return;
+      c.autoRotate = store.s.autoRotate;
+      if (api.anim) {
+        // Time-based, so a slow device takes the same 1.1 s as a fast one.
+        const A = api.anim, p = Math.min((performance.now() - A.start) / 1100, 1);
+        const e = p < 0.5 ? 4 * p ** 3 : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        let da = A.a1 - A.a0; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+        const a = A.a0 + da * e, r = A.r0 + (A.r1 - A.r0) * e;
+        camera.position.set(Math.sin(a) * r, A.y0 + (A.y1 - A.y0) * e, Math.cos(a) * r);
+        if (p >= 1) api.anim = null;
+      }
+      c.update(dt);
+    });
+    return null;
+  }
+  function goView(name) {
+    const cam = api.camera; if (!cam) return;
+    const flat = Math.hypot(HOME.x, HOME.z);
+    const ang = { front: 0, side: Math.PI / 2, back: Math.PI, reset: 0 }[name];
+    store.set({ autoRotate: name === "reset" ? !reduceMotion : false });
+    const A = { start: performance.now(), a0: Math.atan2(cam.position.x, cam.position.z), a1: ang, r0: Math.hypot(cam.position.x, cam.position.z), r1: flat, y0: cam.position.y, y1: HOME.y };
+    if (reduceMotion) { cam.position.set(Math.sin(ang) * flat, HOME.y, Math.cos(ang) * flat); api.anim = null; } else api.anim = A;
+  }
+  document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => goView(b.dataset.view)));
+  function setHint() { $("hint").textContent = coarse ? "Swipe sideways to rotate · pinch to zoom" : "Drag to rotate · scroll to zoom · arrow keys when focused"; }
+  setHint();
+
+  /* ---------- First-frame readiness ---------- */
+  function Warmup() {
+    const { gl, scene, camera } = useThree();
+    const frames = useRef(0);
+    useEffect(() => { gl.compile(scene, camera); }, [gl, scene, camera]);
+    useFrame(() => {
+      frames.current++;
+      if (frames.current === 2 && store.s.phase === "loading") {
+        slowTimers.forEach(clearTimeout);
+        store.set({ phase: "ready", progress: 1, readyAt: performance.now() });
+      }
+    });
+    return null;
+  }
+
+  function App() {
+    const s = useStore();
+    const onCreated = ({ gl, scene, camera }) => {
+      gl.toneMappingExposure = 1.05;
+      gl.setClearColor(0x000000, 0);
+      api.gl = gl; api.scene = scene; api.camera = camera;
+      gl.domElement.addEventListener("webglcontextlost", (e) => {
+        e.preventDefault();
+        console.warn("[viewer] WebGL context lost");
+        store.set({ phase: "lost", canvasMounted: false });
+      }, { once: true });
+      store.set({ canvasMounted: true });
+    };
+    if (s.phase === "lost") return null; // unmount the dead canvas; Try again mounts a fresh one
+    return html`
+      <${Canvas} key=${s.attempt}
+        frameloop=${shouldRender(s) || !s.canvasMounted ? "always" : "never"}
+        dpr=${[1, 2]}
+        gl=${{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        camera=${{ fov: 32, near: 0.1, far: 50, position: [HOME.x, HOME.y, HOME.z] }}
+        onCreated=${onCreated}>
+        <${Environment} />
+        <${Stage} />
+        <${Garment} />
+        <${Controls} />
+        <${Warmup} />
+      <//>`;
+  }
+
+  root = ReactDOM.createRoot($("r3f"));
+  root.render(html`<${App} />`);
+
+  /* ======================================================================
+     Model loading (D1): every path ends in the model or a clear message.
+     ====================================================================== */
+  const gltf = new GLTFLoader();
+  if (MeshoptDecoder) gltf.setMeshoptDecoder(MeshoptDecoder); // absent when WebAssembly is blocked; such files get a clear message below
+  const DECODER_PATH = new URL("draco/", location.href).href; // self-hosted, same origin as the page
+  let draco = null, dracoType = null;
+  const wasmAllowed = (() => {
+    // A Content-Security-Policy without 'wasm-unsafe-eval' blocks WebAssembly; the Draco WASM worker would then hang silently.
+    try { new WebAssembly.Module(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])); return true; } catch (e) { return false; }
+  })();
+  function useDraco(type) {
+    if (draco && dracoType === type) return draco;
+    if (draco) draco.dispose();
+    draco = new DRACOLoader(); draco.setDecoderPath(DECODER_PATH); draco.setDecoderConfig({ type }); dracoType = type;
+    gltf.setDRACOLoader(draco);
+    return draco;
+  }
+  const SUPPORTED_REQUIRED = new Set(["KHR_draco_mesh_compression", "EXT_meshopt_compression", "KHR_mesh_quantization", "KHR_texture_transform",
+    "KHR_materials_unlit", "KHR_materials_emissive_strength", "KHR_materials_clearcoat", "KHR_materials_iridescence", "KHR_materials_sheen",
+    "KHR_materials_transmission", "KHR_materials_volume", "KHR_materials_ior", "KHR_materials_specular", "KHR_materials_anisotropy",
+    "KHR_lights_punctual", "EXT_texture_webp", "EXT_texture_avif", "EXT_mesh_gpu_instancing"]);
+  const LIMITS = { parseMs: 60000, dracoStartMs: 30000 }; // time limits only, not asset limits
+
+  class ModelError extends Error { constructor(code, msg) { super(msg); this.code = code; } }
+  const MESSAGES = {
+    notglb: "That file isn't a .glb. Export the model as binary glTF (.glb) and try again.",
+    badheader: "This file isn't a valid .glb model. It may be damaged, or a different file renamed to .glb.",
+    truncated: "This file is incomplete. It may not have finished exporting or downloading. Export it again and retry.",
+    corrupt: "This .glb file is damaged and can't be read. Export it again and retry.",
+    basisu: "This model uses KTX2 (Basis) compressed textures, which this viewer doesn't support yet. Export it with JPEG, PNG or WebP textures.",
+    draco: wasmAllowed ? "This model uses Draco compression, and the Draco decoder couldn't start on this device. Re-export it with Meshopt compression or without compression." : "This model uses Draco compression, and the Draco decoder couldn't start on this device. Re-export it without compression.",
+    meshopt: "This model uses Meshopt compression, which needs WebAssembly, and WebAssembly is blocked on this page. Re-export it with Draco compression or without compression.",
+    timeout: "Preparing this model took longer than 60 seconds, so it was stopped. It may be too large for this device.",
+    empty: "This file has no visible 3D geometry.",
+    notready: "The 3D view is still loading. Try again once it appears.",
+    read: "Couldn't read the file. Try choosing it again.",
+  };
+
+  // Read the GLB container ourselves first, so damaged or unsupported files fail fast with a specific reason.
+  function inspectGlb(buf) {
+    if (buf.byteLength < 20) throw new ModelError("badheader", MESSAGES.badheader);
+    const dv = new DataView(buf);
+    if (dv.getUint32(0, true) !== 0x46546C67) throw new ModelError("badheader", MESSAGES.badheader);
+    const ver = dv.getUint32(4, true);
+    if (ver !== 2) throw new ModelError("version", "This model uses glTF version " + ver + ". Only glTF 2.0 models are supported.");
+    if (dv.getUint32(8, true) > buf.byteLength) throw new ModelError("truncated", MESSAGES.truncated);
+    const jsonLen = dv.getUint32(12, true);
+    if (dv.getUint32(16, true) !== 0x4E4F534A || 20 + jsonLen > buf.byteLength) throw new ModelError("corrupt", MESSAGES.corrupt);
+    let json;
+    try { json = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 20, jsonLen))); }
+    catch (e) { throw new ModelError("corrupt", MESSAGES.corrupt); }
+    const req = json.extensionsRequired || [];
+    if (req.includes("KHR_texture_basisu")) throw new ModelError("basisu", MESSAGES.basisu);
+    const unknown = req.filter((x) => !SUPPORTED_REQUIRED.has(x));
+    if (unknown.length) throw new ModelError("extension", "This model needs a glTF extension this viewer doesn't support: " + unknown.join(", ") + ".");
+    return json;
+  }
+
+  function withTimeout(promise, ms, code) {
+    let t;
+    return Promise.race([promise, new Promise((_, rej) => { t = setTimeout(() => rej(new ModelError(code, MESSAGES.timeout)), ms); })]).finally(() => clearTimeout(t));
+  }
+  // GLTFLoader reports some failures by throwing instead of calling onError (found in the P-09 validation), so catch both.
+  function parse(buf) {
+    return new Promise((resolve, reject) => {
+      try { gltf.parse(buf, "", resolve, reject); } catch (e) { reject(e); }
+    });
+  }
+
+  async function loadGlb(buf) {
+    const json = inspectGlb(buf);
+    const used = json.extensionsUsed || [];
+    if (!wasmAllowed && used.includes("EXT_meshopt_compression")) throw new ModelError("meshopt", MESSAGES.meshopt);
+    const isDraco = used.includes("KHR_draco_mesh_compression");
+    if (!isDraco) return { result: await withTimeout(parse(buf), LIMITS.parseMs, "timeout"), json, decoder: null };
+    const order = wasmAllowed ? ["wasm", "js"] : ["js"];
+    let lastErr;
+    for (const type of order) {
+      useDraco(type);
+      try {
+        const result = await withTimeout(parse(buf.slice(0)), type === "wasm" ? LIMITS.dracoStartMs : LIMITS.parseMs, "draco-timeout");
+        return { result, json, decoder: type };
+      } catch (e) {
+        lastErr = e;
+        console.warn("[viewer] Draco " + type + " decoder failed:", e && e.message);
+        if (draco) { draco.dispose(); draco = null; dracoType = null; } // stops any stuck worker
+      }
+    }
+    throw new ModelError("draco", MESSAGES.draco);
+  }
+
+  /* ---------- Resource cleanup when changing models ---------- */
+  function disposeObject(obj) {
+    obj.traverse((n) => {
+      if (n.geometry) n.geometry.dispose();
+      if (n.material) [].concat(n.material).forEach((m) => {
+        Object.values(m).forEach((v) => {
+          if (v && v.isTexture) {
+            const img = v.source && v.source.data;
+            v.dispose();
+            if (img && typeof img.close === "function") img.close(); // ImageBitmaps hold decoded pixels until closed
+          }
+        });
+        m.dispose();
+      });
+    });
+  }
+
+  function measure(file, obj, json, decoder, ms) {
+    let tris = 0, meshes = 0, texBytes = 0, geoBytes = 0; const tex = new Set(); let maxTex = 0;
+    obj.traverse((n) => {
+      if (!n.isMesh) return;
+      meshes++;
+      const g = n.geometry; tris += g.index ? g.index.count / 3 : g.attributes.position.count / 3;
+      Object.values(g.attributes).forEach((a) => { geoBytes += a.array.byteLength; });
+      if (g.index) geoBytes += g.index.array.byteLength;
+      [].concat(n.material).forEach((m) => Object.values(m).forEach((v) => {
+        if (v && v.isTexture && !tex.has(v)) {
+          tex.add(v); const im = v.image; const w = (im && im.width) || 0, h = (im && im.height) || 0;
+          maxTex = Math.max(maxTex, w, h); texBytes += w * h * 4 * 1.333;
+        }
+      }));
+    });
+    const used = json.extensionsUsed || [];
+    const comp = [used.includes("KHR_draco_mesh_compression") && "Draco (" + decoder + " decoder)", used.includes("EXT_meshopt_compression") && "Meshopt", used.includes("EXT_texture_webp") && "WebP textures"].filter(Boolean).join(", ") || "None";
+    const MB = (b) => (b / 1048576).toFixed(2) + " MB";
+    const rows = [
+      ["Download size", MB(file.size)], ["Compression", comp], ["Triangles", Math.round(tris).toLocaleString("en-PK")],
+      ["Largest texture", maxTex ? maxTex + " px" : "none"], ["Meshes / textures", meshes + " / " + tex.size],
+      ["Est. GPU memory", MB(texBytes + geoBytes)], ["Prepared in", (ms / 1000).toFixed(2) + " s"],
+    ];
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    $("assetBody").innerHTML = '<tr><td colspan="2"><b>' + esc(file.name) + "</b></td></tr>" + rows.map((r) => "<tr><td>" + r[0] + "</td><td>" + esc(r[1]) + "</td></tr>").join("");
+    $("assetTable").hidden = false;
+    return { tris, texMB: texBytes / 1048576, geoMB: geoBytes / 1048576, maxTex, comp };
+  }
+
+  function showErr(msg) { const e = $("assetErr"); e.textContent = msg || ""; e.hidden = !msg; }
+  function progress(p, text) { $("loader").hidden = false; $("loaderText").textContent = text; $("loaderBar").style.width = Math.round(p * 100) + "%"; }
+  let seq = 0;
+
+  async function handleFile(file) {
+    showErr("");
+    if (!file) return;
+    if (store.s.phase !== "ready") { showErr(MESSAGES.notready); return; }
+    if (!/\.glb$/i.test(file.name)) { showErr(MESSAGES.notglb); return; }
+    const my = ++seq, t0 = performance.now();
+    window.__lastLoad = { state: "loading", file: file.name };
+    try {
+      progress(0.1, "Reading " + file.name + "…");
+      const buf = await file.arrayBuffer().catch(() => { throw new ModelError("read", MESSAGES.read); });
+      if (my !== seq) return;
+      progress(0.5, "Preparing the model…");
+      const { result, json, decoder } = await loadGlb(buf);
+      if (my !== seq) { disposeObject(result.scene); return; } // a newer file replaced this one
+      const obj = result.scene;
+      const box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
+      if (!isFinite(size.y) || size.length() === 0) { disposeObject(obj); throw new ModelError("empty", MESSAGES.empty); }
+      const s = 2.9 / Math.max(size.y, size.x * 1.1, size.z * 1.1, 1e-6);
+      obj.position.sub(centre).multiplyScalar(s); obj.scale.setScalar(s);
+      const wrapper = new THREE.Group(); wrapper.add(obj);
+      wrapper.position.y = FLOOR + 0.12 + (size.y * s) / 2;
+      if (api.gl && api.gl.compileAsync) await api.gl.compileAsync(wrapper, api.camera, api.scene).catch(() => {});
+      const ms = performance.now() - t0;
+      const m = measure(file, obj, json, decoder, ms);
+      const prev = store.s.model;
+      store.set({ model: wrapper, modelName: file.name, userChoseImage: false });
+      if (prev) setTimeout(() => disposeObject(prev), 0); // after React has swapped it out
+      $("btnPlaceholder").hidden = false;
+      goView("reset");
+      window.aurevonToast("Showing your model: " + file.name);
+      window.__lastLoad = { state: "ok", file: file.name, ms: Math.round(ms), decoder, ...m };
+    } catch (e) {
+      if (my !== seq) return;
+      const msg = e instanceof ModelError ? e.message : "The model couldn't be loaded: " + ((e && e.message) || e);
+      showErr(msg);
+      window.__lastLoad = { state: "error", file: file.name, code: e && e.code, message: msg, raw: String(e && e.message || e), ms: Math.round(performance.now() - t0) };
+    } finally {
+      if (my === seq) $("loader").hidden = true;
+    }
+  }
+
+  $("fileInput").addEventListener("change", (e) => { handleFile(e.target.files[0]); e.target.value = ""; });
+  $("btnPlaceholder").addEventListener("click", () => {
+    seq++;
+    const prev = store.s.model;
+    store.set({ model: null, modelName: null });
+    if (prev) setTimeout(() => disposeObject(prev), 0);
+    $("btnPlaceholder").hidden = true; $("assetTable").hidden = true; showErr("");
+  });
+  let dragDepth = 0;
+  stage.addEventListener("dragenter", (e) => { e.preventDefault(); dragDepth++; $("dropzone").hidden = false; });
+  stage.addEventListener("dragleave", () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) $("dropzone").hidden = true; });
+  stage.addEventListener("dragover", (e) => e.preventDefault());
+  stage.addEventListener("drop", (e) => { e.preventDefault(); dragDepth = 0; $("dropzone").hidden = true; handleFile(e.dataTransfer.files[0]); });
+
+  if (TEST) window.__v2 = { store, api, THREE, wasmAllowed, get dracoType() { return dracoType; }, disposeObject };
+}
+if (TEST) window.__v2store = store;
+</script>
+
+</html>

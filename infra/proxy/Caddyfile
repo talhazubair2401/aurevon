@@ -1,0 +1,34 @@
+# Local and CI reverse proxy reproducing the approved routes (MTS v2.1 A-27, §2):
+#   /api/v1/*  -> Django API
+#   /staff/*   -> staff dashboard (never cached, never indexed)
+#   /*         -> storefront
+# /health/* and Django admin are not routed (internal only).
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	request_header X-Request-ID {http.request.uuid}
+	header -Server
+
+	@api path /api/v1 /api/v1/*
+	handle @api {
+		header ?Cache-Control "no-store"
+		reverse_proxy api:8000
+	}
+
+	@staff path /staff /staff/*
+	handle @staff {
+		header >Cache-Control "no-store"
+		header >X-Robots-Tag "noindex, nofollow"
+		header >Referrer-Policy "same-origin"
+		header Content-Security-Policy-Report-Only "{$STAFF_CSP}"
+		reverse_proxy staff:3001
+	}
+
+	handle {
+		header Content-Security-Policy-Report-Only "{$STOREFRONT_CSP}"
+		reverse_proxy storefront:3000
+	}
+}

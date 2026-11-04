@@ -1,0 +1,21 @@
+{
+  "name": "@aurevon/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AureVon brand tokens (MTS v2.1 A-03) as CSS custom properties and TypeScript constants",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@aurevon/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  }
+}

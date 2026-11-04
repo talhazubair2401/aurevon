@@ -1,0 +1,60 @@
+[project]
+name = "aurevon-backend"
+version = "0.1.0"
+description = "AureVon Django API (MTS v2.1)"
+requires-python = ">=3.13,<3.14"
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "S", "DJ", "C4", "SIM", "RUF"]
+ignore = ["RUF012"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S101", "S105", "S106"]
+"config/settings/*" = ["F405"]
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+strict = true
+warn_unused_ignores = true
+exclude = ["/migrations/"]
+
+[[tool.mypy.overrides]]
+module = ["environ.*", "celery.*", "pythonjsonlogger.*", "factory.*", "kombu.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["*.tests.*", "tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+addopts = "-ra --strict-markers"
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+
+[tool.importlinter]
+root_packages = ["config", "common", "apps"]
+
+[[tool.importlinter.contracts]]
+name = "Shared code never depends on business apps"
+type = "forbidden"
+source_modules = ["common"]
+forbidden_modules = ["apps"]
+
+[[tool.importlinter.contracts]]
+name = "Business apps never import the project configuration"
+type = "forbidden"
+source_modules = ["apps"]
+forbidden_modules = ["config"]

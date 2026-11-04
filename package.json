@@ -1,0 +1,22 @@
+{
+  "name": "aurevon",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.12 <23"
+  },
+  "scripts": {
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --filter \"!@aurevon/e2e\" --if-present test",
+    "build": "pnpm --filter @aurevon/storefront --filter @aurevon/staff build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "gen:api": "cd backend && python manage.py spectacular --settings=config.settings.test --format openapi-json --file ../packages/api-client/openapi.json --validate --fail-on-warn && cd .. && pnpm --filter @aurevon/api-client generate",
+    "test:e2e": "pnpm --filter @aurevon/e2e test"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10",
+    "typescript": "5.9.3"
+  }
+}

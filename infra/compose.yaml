@@ -1,0 +1,125 @@
+# Local stack (MTS v2.1 §14). From the repository root:
+#   docker compose -f infra/compose.yaml up --build
+# Then open http://localhost:8080 (storefront), /staff/ (staff) and /api/v1/ (API).
+name: aurevon
+
+x-backend-env: &backend-env
+  DJANGO_SETTINGS_MODULE: config.settings.local
+  DJANGO_SECRET_KEY: local-development-only-not-a-secret
+  DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,api
+  DATABASE_URL: postgres://aurevon:aurevon@postgres:5432/aurevon
+  REDIS_URL: redis://redis:6379/0
+
+services:
+  postgres:
+    # Same major version as production (P-04). Revisit if P-10 selects a provider on another major version.
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: aurevon
+      POSTGRES_PASSWORD: aurevon
+      POSTGRES_DB: aurevon
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aurevon -d aurevon"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  mailpit:
+    # Catches all outgoing email locally; web UI on http://localhost:8025
+    image: axllent/mailpit:v1.27
+    ports:
+      - "8025:8025"
+
+  migrate:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    command: ["python", "manage.py", "migrate", "--noinput"]
+    environment: *backend-env
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    environment: *backend-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready', timeout=3)",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  worker:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    command: ["celery", "-A", "config", "worker", "--loglevel", "INFO"]
+    environment: *backend-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  scheduler:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile }
+    command:
+      [
+        "celery",
+        "-A",
+        "config",
+        "beat",
+        "--loglevel",
+        "INFO",
+        "--schedule",
+        "/tmp/celerybeat-schedule",
+      ]
+    environment: *backend-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  storefront:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+      args: { APP: storefront }
+    environment:
+      PORT: "3000"
+
+  staff:
+    build:
+      context: ..
+      dockerfile: infra/docker/web.Dockerfile
+      args: { APP: staff }
+    environment:
+      PORT: "3001"
+
+  proxy:
+    image: caddy:2.10-alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./proxy/Caddyfile:/etc/caddy/Caddyfile:ro
+    environment:
+      STOREFRONT_CSP: "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' blob:; worker-src 'self' blob:; form-action 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'"
+      STAFF_CSP: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'"
+    depends_on:
+      api: { condition: service_healthy }
+      storefront: { condition: service_started }
+      staff: { condition: service_started }
+
+volumes:
+  postgres-data:

@@ -1,0 +1,23 @@
+/*
+ * AureVon brand tokens (MTS v2.1 A-03). Keep in sync with src/index.ts; a test enforces it.
+ * Font families are provided by each app through next/font (self-hosted, MTS §12).
+ */
+:root {
+  --av-color-off-white: #f9f8f6;
+  --av-color-charcoal: #121212;
+  --av-color-stone: #e5e0db;
+  --av-color-deep-brown: #3b2f2f;
+  --av-color-champagne-gold: #c2a676;
+
+  /* Roles */
+  --av-surface: var(--av-color-off-white);
+  --av-text: var(--av-color-charcoal);
+  --av-divider: var(--av-color-stone);
+  --av-supporting: var(--av-color-deep-brown);
+  --av-accent: var(--av-color-champagne-gold);
+
+  --av-font-display:
+    var(--av-font-display-family, "Playfair Display"), Georgia, "Times New Roman", serif;
+  --av-font-ui:
+    var(--av-font-ui-family, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}

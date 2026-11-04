@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+**/.next/
+**/node_modules/
+packages/api-client/openapi.json
+packages/api-client/src/schema.d.ts
+backend/
+prototypes/
+docs/
+e2e/results/
+e2e/playwright-report/

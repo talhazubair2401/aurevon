@@ -1,0 +1,26 @@
+{
+  "name": "@aurevon/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed client for the AureVon API, generated from Django's OpenAPI schema (MTS §8). Never edit schema.d.ts by hand.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "generate": "openapi-typescript openapi.json -o src/schema.d.ts && prettier --write src/schema.d.ts --ignore-path /dev/null",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "openapi-fetch": "0.17.0"
+  },
+  "devDependencies": {
+    "@aurevon/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "openapi-typescript": "7.13.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  }
+}

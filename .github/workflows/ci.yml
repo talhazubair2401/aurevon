@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.13"
+  NODE_VERSION: "22"
+
+jobs:
+  backend:
+    name: Backend (lint, types, boundaries, migrations, tests, security)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env: { POSTGRES_USER: aurevon, POSTGRES_PASSWORD: aurevon, POSTGRES_DB: aurevon }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U aurevon" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7.4-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.test
+      DATABASE_URL: postgres://aurevon:aurevon@localhost:5432/aurevon
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Format and lint (Ruff)
+        run: ruff format --check . && ruff check .
+      - name: Type check (mypy, strict)
+        run: mypy .
+      - name: Module boundaries (import-linter)
+        run: lint-imports
+      - name: No missing migrations
+        run: python manage.py makemigrations --check --dry-run
+      - name: Migrations apply to an empty database
+        run: python manage.py migrate --noinput
+      - name: Tests (pytest on PostgreSQL)
+        run: pytest
+      - name: Production configuration check
+        env:
+          DJANGO_SECRET_KEY: ci-only-${{ github.run_id }}-not-a-real-secret-0123456789abcdef
+          DJANGO_ALLOWED_HOSTS: aurevon.example
+        run: python manage.py check --deploy --fail-level WARNING --settings=config.settings.production
+      - name: Static security analysis (Bandit)
+        run: bandit -q -c pyproject.toml -r .
+      - name: Dependency vulnerabilities (pip-audit)
+        run: pip-audit -r requirements.txt --strict
+
+  frontend:
+    name: Frontend (format, lint, types, tests, production builds)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+        env: { NEXT_TELEMETRY_DISABLED: "1" }
+      - name: Dependency vulnerabilities (production dependencies)
+        run: pnpm audit --prod --audit-level high
+
+  contract:
+    name: API contract (schema and typed client in sync)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pip install -r backend/requirements.txt
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm gen:api
+      - name: Generated files must be committed
+        run: git diff --exit-code -- packages/api-client
+
+  stack:
+    name: Full stack (Docker Compose, routes, end-to-end, CSP V-05)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Build and start the stack
+        run: docker compose -f infra/compose.yaml up --build --detach --wait --wait-timeout 300
+      - run: pnpm install --frozen-lockfile --filter @aurevon/e2e...
+      - run: pnpm --filter @aurevon/e2e exec playwright install --with-deps chromium
+      - name: End-to-end tests and CSP report
+        run: pnpm test:e2e
+        env: { CI: "true" }
+      - name: Celery worker answers
+        run: docker compose -f infra/compose.yaml exec -T worker celery -A config inspect ping --timeout 10
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-and-csp-results
+          path: |
+            e2e/results/
+            e2e/playwright-report/
+          retention-days: 30
+      - name: Service logs on failure
+        if: failure()
+        run: docker compose -f infra/compose.yaml logs --no-color
+      - name: Stop the stack
+        if: always()
+        run: docker compose -f infra/compose.yaml down --volumes
