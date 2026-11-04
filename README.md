@@ -13,6 +13,8 @@ The authoritative blueprint is **MTS v2.1** ([`docs/mts/`](docs/mts/)). Decision
 | `apps/staff`             | Next.js staff dashboard, served at `/staff/`                                          |
 | `backend`                | Django + Django REST Framework API, served at `/api/v1/`; Celery worker and scheduler |
 | `packages/design-tokens` | Approved brand tokens (A-03) as CSS custom properties and TypeScript                  |
+| `packages/ui`            | Shared accessible components on the tokens (Button, fields, Alert, Wordmark, Icon)    |
+| `packages/i18n`          | Locales (en, ur), text direction, Intl money/date formatting, interface messages      |
 | `packages/api-client`    | Typed API client generated from the OpenAPI schema; never edited by hand              |
 | `packages/config`        | Shared TypeScript settings                                                            |
 | `e2e`                    | Playwright tests against the running stack, including the CSP report (V-05)           |
@@ -30,7 +32,7 @@ docker compose -f infra/compose.yaml up --build
 
 Then open:
 
-- http://localhost:8080/ — storefront
+- http://localhost:8080/ — storefront (redirects to `/en`; Urdu at `/ur`)
 - http://localhost:8080/staff/ — staff dashboard
 - http://localhost:8080/api/v1/ — API
 - http://localhost:8025/ — Mailpit (all outgoing email lands here locally)
