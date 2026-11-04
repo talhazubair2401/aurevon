@@ -1,0 +1,12 @@
+{% autoescape off %}Subject: Action may be needed: recovery of your AureVon Owner account
+
+{{ approved_by }} has started recovery of the Owner account {{ account_email }}.
+
+If nothing is done, at {{ effective_at }} the account's current password, authenticator and recovery codes will stop working and a new set-up link will be sent.
+
+If you did NOT ask for this, cancel it now. The link works immediately and without signing in:
+{{ cancel_link }}
+
+You can also cancel from the staff dashboard if you can still sign in.
+
+— {{ site_name }}{% endautoescape %}

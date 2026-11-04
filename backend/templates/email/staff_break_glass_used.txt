@@ -1,0 +1,7 @@
+{% autoescape off %}Subject: Break-glass recovery used for {{ account_email }}
+
+The emergency break-glass procedure was used to recover the Owner account {{ account_email }}.
+Operator: {{ operator }}
+If this wasn't planned, treat it as a security incident. Create a new sealed emergency code afterwards.
+
+— {{ site_name }}{% endautoescape %}

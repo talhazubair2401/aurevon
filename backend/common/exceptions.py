@@ -30,6 +30,15 @@ def problem_response(status_code: int, title: str, detail: str | None = None, co
     return JsonResponse(body, status=status_code, content_type=PROBLEM_CONTENT_TYPE)
 
 
+class ApiProblem(exceptions.APIException):
+    """A business-rule failure with a stable machine-readable code, rendered as problem details."""
+
+    def __init__(self, status_code: int, code: str, detail: str, retry_after: int | None = None) -> None:
+        self.status_code = status_code
+        self.retry_after = retry_after
+        super().__init__(detail=detail, code=code)
+
+
 def _first_message(detail: Any) -> str:
     if isinstance(detail, list) and detail:
         return _first_message(detail[0])
@@ -62,6 +71,9 @@ def problem_details_handler(exc: Exception, context: dict[str, Any]) -> Response
     else:  # Http404 / PermissionDenied converted by DRF
         body = problem(response.status_code, _title_for(response.status_code), _first_message(response.data))
 
+    retry = getattr(exc, "retry_after", None)
+    if isinstance(retry, int):
+        response["Retry-After"] = str(retry)
     response.data = body
     response.content_type = PROBLEM_CONTENT_TYPE
     return response

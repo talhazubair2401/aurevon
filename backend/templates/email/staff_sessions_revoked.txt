@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Your AureVon staff sessions were ended
+
+{{ by }} ended all sessions for {{ account_email }}. Sign in again to continue.
+
+— {{ site_name }}{% endautoescape %}

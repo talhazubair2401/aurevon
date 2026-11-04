@@ -1,0 +1,59 @@
+"""Routes for both realms. `staff_urlpatterns` mount at /api/v1/staff/, `customer_urlpatterns` at /api/v1/."""
+
+from django.urls import URLPattern, path
+
+from apps.audit.api.views import AuditLogView
+from apps.cms.api.views import SettingsView, SettingView
+
+from . import customer, staff_admin, staff_auth, staff_me
+
+staff_urlpatterns: list[URLPattern] = [
+    path("auth/login", staff_auth.StaffLoginView.as_view()),
+    path("auth/mfa/verify", staff_auth.StaffMfaVerifyView.as_view()),
+    path("auth/session", staff_auth.StaffSessionView.as_view()),
+    path("auth/logout", staff_auth.StaffLogoutView.as_view()),
+    path("auth/step-up", staff_auth.StaffStepUpView.as_view()),
+    path("auth/password-reset", staff_auth.StaffPasswordResetView.as_view()),
+    path("auth/password-reset/confirm", staff_auth.StaffPasswordResetConfirmView.as_view()),
+    path("auth/enroll/start", staff_auth.StaffEnrollStartView.as_view()),
+    path("auth/enroll/complete", staff_auth.StaffEnrollCompleteView.as_view()),
+    path("auth/recovery/start", staff_auth.StaffRecoveryStartView.as_view()),
+    path("auth/recovery/complete", staff_auth.StaffRecoveryCompleteView.as_view()),
+    path("auth/recovery/cancel", staff_auth.StaffRecoveryCancelLinkView.as_view()),
+    path("me/sessions", staff_me.MySessionsView.as_view()),
+    path("me/sessions/<uuid:session_id>", staff_me.MySessionView.as_view()),
+    path("me/password", staff_me.MyPasswordView.as_view()),
+    path("me/mfa/start", staff_me.MyMfaStartView.as_view()),
+    path("me/mfa/confirm", staff_me.MyMfaConfirmView.as_view()),
+    path("me/recovery-codes", staff_me.MyRecoveryCodesView.as_view()),
+    path("me/recovery-email", staff_me.MyRecoveryEmailView.as_view()),
+    path("roles", staff_admin.RolesView.as_view()),
+    path("accounts", staff_admin.StaffAccountsView.as_view()),
+    path("accounts/<uuid:account_id>", staff_admin.StaffAccountView.as_view()),
+    path("accounts/<uuid:account_id>/role", staff_admin.StaffRoleView.as_view()),
+    path("accounts/<uuid:account_id>/suspend", staff_admin.StaffSuspendView.as_view()),
+    path("accounts/<uuid:account_id>/reactivate", staff_admin.StaffReactivateView.as_view()),
+    path("accounts/<uuid:account_id>/deactivate", staff_admin.StaffDeactivateView.as_view()),
+    path("accounts/<uuid:account_id>/invite", staff_admin.StaffReinviteView.as_view()),
+    path("accounts/<uuid:account_id>/sessions", staff_admin.StaffAccountSessionsView.as_view()),
+    path("accounts/<uuid:account_id>/sessions/revoke", staff_admin.StaffAccountRevokeSessionsView.as_view()),
+    path("accounts/<uuid:account_id>/recovery", staff_admin.StaffRecoveryView.as_view()),
+    path("accounts/<uuid:account_id>/recovery/resend", staff_admin.StaffRecoveryResendView.as_view()),
+    path("accounts/<uuid:account_id>/recovery/cancel", staff_admin.StaffRecoveryCancelView.as_view()),
+    path("audit-log", AuditLogView.as_view()),
+    path("settings", SettingsView.as_view()),
+    path("settings/<str:key>", SettingView.as_view()),
+]
+
+customer_urlpatterns: list[URLPattern] = [
+    path("auth/register", customer.RegisterView.as_view()),
+    path("auth/login", customer.LoginView.as_view()),
+    path("auth/session", customer.SessionView.as_view()),
+    path("auth/logout", customer.LogoutView.as_view()),
+    path("auth/verify", customer.VerifyEmailView.as_view()),
+    path("auth/password-reset", customer.PasswordResetView.as_view()),
+    path("auth/password-reset/confirm", customer.PasswordResetConfirmView.as_view()),
+    path("me/sessions", customer.MySessionsView.as_view()),
+    path("me/sessions/<uuid:session_id>", customer.MySessionView.as_view()),
+    path("me/sessions/revoke-others", customer.RevokeOtherSessionsView.as_view()),
+]

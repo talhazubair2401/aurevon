@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Recovery email changed
+
+The recovery email for the staff account {{ account_email }} is now: {{ recovery_email }}
+
+— {{ site_name }}{% endautoescape %}

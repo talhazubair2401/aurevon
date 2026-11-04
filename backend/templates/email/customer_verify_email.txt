@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: Confirm your email for AureVon
+
+Welcome to AureVon. Confirm your email address here:
+{{ link }}
+
+— {{ site_name }}{% endautoescape %}

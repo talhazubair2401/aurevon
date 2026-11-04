@@ -1,13 +1,17 @@
 """Routes under /api/v1/. Each module adds its own include here as it is built."""
 
 from django.conf import settings
-from django.urls import URLPattern, URLResolver, path, re_path
+from django.urls import URLPattern, URLResolver, include, path, re_path
 from drf_spectacular.views import SpectacularAPIView
 
+from apps.accounts.api.urls import customer_urlpatterns, staff_urlpatterns
 from common.views import ApiIndexView, api_not_found
 
 urlpatterns: list[URLPattern | URLResolver] = [
     path("", ApiIndexView.as_view(), name="api-index"),
+    # Staff API: only the staff session cookie is honoured here (MTS v2.1 A-22, §9).
+    path("staff/", include(staff_urlpatterns)),
+    *customer_urlpatterns,
 ]
 
 if settings.API_SCHEMA_PUBLIC:

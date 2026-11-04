@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Staff account recovered: {{ account_email }}
+
+{{ account_email }} completed account recovery and has a new password and authenticator.
+
+— {{ site_name }}{% endautoescape %}

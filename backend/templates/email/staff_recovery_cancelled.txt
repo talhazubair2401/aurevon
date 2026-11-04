@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Account recovery cancelled
+
+Recovery of the staff account {{ account_email }} was cancelled by {{ by }}. Nothing has changed on the account.
+
+— {{ site_name }}{% endautoescape %}

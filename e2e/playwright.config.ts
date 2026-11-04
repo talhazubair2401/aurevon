@@ -13,6 +13,7 @@ export default defineConfig({
   },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "phone", use: { ...devices["Pixel 7"] } },
+    // The staff journey creates the first Owner, so it runs once, on desktop.
+    { name: "phone", use: { ...devices["Pixel 7"] }, testIgnore: /staff\.spec\.ts/ },
   ],
 });

@@ -19,7 +19,18 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "common",
+    "apps.audit",
+    "apps.notifications",
+    "apps.cms",
+    "apps.accounts",
 ]
+
+# Customer and staff identities (MTS v2.1 A-22). Sign-in is handled by AureVon's own realm services, never
+# by django.contrib.auth backends, so no backend is configured and `authenticate()` can't log anyone in.
+AUTH_USER_MODEL = "accounts.Account"
+AUTHENTICATION_BACKENDS: list[str] = []
+# The sign-in name is unique per (email, account type), not alone — on purpose (MTS §6).
+SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -48,6 +59,28 @@ DATABASES["default"]["CONN_MAX_AGE"] = env.int("DATABASE_CONN_MAX_AGE", default=
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REDIS_URL = env("REDIS_URL")
+
+# Rate limits, lockouts and sign-in challenges live in Redis, shared by every API process.
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": REDIS_URL}}
+
+# Number of trusted reverse-proxy hops in front of the API (CDN, proxy). Decides which X-Forwarded-For entry is real.
+TRUSTED_PROXY_COUNT = env.int("TRUSTED_PROXY_COUNT", default=0)
+
+# Public base URL used in emailed links.
+SITE_URL = env("SITE_URL", default="http://localhost:8080").rstrip("/")
+DISPLAY_TIME_ZONE = "Asia/Karachi"  # times shown to people (MTS §5); storage stays UTC
+
+# Encrypts authenticator secrets at rest. Required in production; derived from SECRET_KEY elsewhere.
+MFA_ENCRYPTION_KEY = env("MFA_ENCRYPTION_KEY", default="")
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", default="localhost")
+EMAIL_PORT = env.int("EMAIL_PORT", default=1025)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="AureVon <no-reply@aurevon.pk>")
 
 # Argon2 first (MTS §9); the others only verify older hashes.
 PASSWORD_HASHERS = [
@@ -92,6 +125,10 @@ CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_REJECT_ON_WORKER_LOST = True
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 CELERY_TIMEZONE = "UTC"
+CELERY_BEAT_SCHEDULE = {
+    # Owner recoveries whose 24-hour wait has ended (decision 0003, 4.3).
+    "release-due-staff-recoveries": {"task": "accounts.release_due_recoveries", "schedule": 60.0},
+}
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"

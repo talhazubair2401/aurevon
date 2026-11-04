@@ -1,0 +1,300 @@
+/* Staff dashboard building blocks, on the A-03 brand tokens. Quiet, legible, no decoration. */
+
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.narrow {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.card {
+  width: min(100%, 26rem);
+  padding: 2rem;
+  border: 1px solid var(--av-divider);
+  background: #fff;
+}
+
+.wide {
+  width: min(100%, 34rem);
+}
+
+.panel {
+  border: 1px solid var(--av-divider);
+  background: #fff;
+  padding: 1.5rem;
+  margin-block-end: 1.5rem;
+}
+
+.wordmark {
+  font-family: var(--av-font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  letter-spacing: 0.12em;
+  margin: 0 0 1.5rem;
+}
+
+.title {
+  font-family: var(--av-font-display);
+  font-weight: 500;
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  font-family: var(--av-font-display);
+  font-weight: 500;
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+}
+
+.muted {
+  color: var(--av-supporting);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+}
+
+.input,
+.select {
+  font: inherit;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #cfc8c1;
+  background: #fff;
+  color: var(--av-text);
+  border-radius: 0;
+}
+
+.input:focus-visible,
+.select:focus-visible {
+  outline: 2px solid var(--av-accent);
+  outline-offset: 0;
+}
+
+.codeInput {
+  composes: input;
+  font-size: 1.25rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.button {
+  font: inherit;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--av-text);
+  background: var(--av-text);
+  color: var(--av-surface);
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.secondary {
+  composes: button;
+  background: transparent;
+  color: var(--av-text);
+}
+
+.danger {
+  composes: button;
+  background: #7a2121;
+  border-color: #7a2121;
+}
+
+.link {
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--av-supporting);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.error {
+  color: #8a1c1c;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.success {
+  color: #2d5a2d;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.banner {
+  border-inline-start: 3px solid var(--av-accent);
+  background: #fbf7ef;
+  padding: 0.85rem 1rem;
+  margin-block-end: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.bannerUrgent {
+  composes: banner;
+  border-inline-start-color: #8a1c1c;
+  background: #fbefef;
+}
+
+.header {
+  border-block-end: 1px solid var(--av-divider);
+  background: #fff;
+}
+
+.headerInner {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-family: var(--av-font-display);
+  letter-spacing: 0.12em;
+  font-size: 1.05rem;
+  margin-inline-end: auto;
+}
+
+.nav {
+  display: flex;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+}
+
+.navLink {
+  color: var(--av-text);
+  text-decoration: none;
+  padding-block: 0.2rem;
+  border-block-end: 2px solid transparent;
+}
+
+.navLinkActive {
+  composes: navLink;
+  border-block-end-color: var(--av-accent);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  text-align: start;
+  padding: 0.6rem 0.5rem;
+  border-block-end: 1px solid var(--av-divider);
+  vertical-align: top;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--av-supporting);
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--av-divider);
+  text-transform: capitalize;
+}
+
+.codes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.4rem 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95rem;
+  padding: 1rem;
+  background: var(--av-surface);
+  border: 1px solid var(--av-divider);
+  margin: 0 0 1rem;
+  list-style: none;
+}
+
+.qr {
+  display: block;
+  width: 12rem;
+  height: 12rem;
+  margin: 0 auto 0.75rem;
+  image-rendering: pixelated;
+}
+
+.secret {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  background: var(--av-surface);
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.dialogBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(18 18 18 / 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 10;
+}
+
+.pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  color: var(--av-supporting);
+}
+
+.headerMeta {
+  color: var(--av-supporting);
+  font-size: 0.8rem;
+}
+
+.center {
+  text-align: center;
+}
+
+@media (max-width: 40rem) {
+  .hideSmall {
+    display: none;
+  }
+}

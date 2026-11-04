@@ -12,7 +12,9 @@ test.describe("routes behind the proxy", () => {
   test("staff dashboard is served at /staff/ and is never cached or indexed", async ({ page }) => {
     const response = await page.goto("/staff/");
     expect(response?.status()).toBe(200);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("AureVon Staff");
+    // Without a staff session the dashboard shows nothing but its sign-in screen (MTS §2).
+    await expect(page).toHaveURL(/\/staff\/sign-in$/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Staff sign-in");
     const headers = response!.headers();
     expect(headers["cache-control"]).toContain("no-store");
     expect(headers["x-robots-tag"]).toContain("noindex");

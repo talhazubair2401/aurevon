@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Your AureVon staff role changed
+
+Your role is now {{ role }}. The change applies immediately.
+
+— {{ site_name }}{% endautoescape %}

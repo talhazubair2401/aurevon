@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: Staff sign-in locked after repeated failures
+
+Sign-in for the staff account {{ email }} was locked for {{ minutes }} minutes after 5 failed attempts in 15 minutes.
+Its open sessions were signed out. If this wasn't expected, review the audit log and consider suspending the account.
+
+— {{ site_name }}{% endautoescape %}

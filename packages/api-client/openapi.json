@@ -26,10 +26,1541 @@
                     }
                 }
             }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "operationId": "auth_login",
+                "tags": [
+                    "customer auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomerSignInInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerSessionInfoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "operationId": "auth_logout",
+                "tags": [
+                    "customer auth"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/password-reset": {
+            "post": {
+                "operationId": "auth_password_reset",
+                "tags": [
+                    "customer auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AcceptedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/password-reset/confirm": {
+            "post": {
+                "operationId": "auth_password_reset_confirm",
+                "tags": [
+                    "customer auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenPasswordInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "operationId": "auth_register",
+                "tags": [
+                    "customer auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomerRegisterInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AcceptedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/session": {
+            "get": {
+                "operationId": "auth_session",
+                "tags": [
+                    "customer auth"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerSessionInfoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/verify": {
+            "post": {
+                "operationId": "auth_verify",
+                "tags": [
+                    "customer auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/me/sessions": {
+            "get": {
+                "operationId": "me_sessions",
+                "description": "Decision 0003, clarification 2: customers see and revoke their own sessions.",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SessionOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/me/sessions/{session_id}": {
+            "delete": {
+                "operationId": "me_session_revoke",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "session_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/me/sessions/revoke-others": {
+            "post": {
+                "operationId": "me_sessions_revoke_others",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RevokedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts": {
+            "get": {
+                "operationId": "staff_accounts_list",
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StaffAccountSummaryOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_accounts_invite",
+                "tags": [
+                    "staff administration"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InviteInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}": {
+            "get": {
+                "operationId": "staff_accounts_detail",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/deactivate": {
+            "post": {
+                "operationId": "staff_accounts_deactivate",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/invite": {
+            "post": {
+                "operationId": "staff_accounts_reinvite",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/reactivate": {
+            "post": {
+                "operationId": "staff_accounts_reactivate",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/recovery": {
+            "post": {
+                "operationId": "staff_accounts_recovery_approve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/recovery/cancel": {
+            "post": {
+                "operationId": "staff_accounts_recovery_cancel",
+                "description": "Any Owner, or the person being recovered (signed in during the wait), can cancel.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/recovery/resend": {
+            "post": {
+                "operationId": "staff_accounts_recovery_resend",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/role": {
+            "put": {
+                "operationId": "staff_accounts_role",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleChangeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/sessions": {
+            "get": {
+                "operationId": "staff_accounts_sessions",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SessionOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/sessions/revoke": {
+            "post": {
+                "operationId": "staff_accounts_sessions_revoke",
+                "description": "Containment: deliberately no re-confirmation, so a compromised account can be cut off at once.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RevokedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/accounts/{account_id}/suspend": {
+            "post": {
+                "operationId": "staff_accounts_suspend",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "account_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SuspendInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffAccountDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/audit-log": {
+            "get": {
+                "operationId": "staff_audit_log",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "action",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Exact action, e.g. staff.suspended"
+                    },
+                    {
+                        "in": "query",
+                        "name": "actor_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "cursor",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "From the `next` or `previous` link of a page"
+                    },
+                    {
+                        "in": "query",
+                        "name": "target_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuditLogPageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/enroll/complete": {
+            "post": {
+                "operationId": "staff_auth_enroll_complete",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenPasswordCodeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetupCompleteOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/enroll/start": {
+            "post": {
+                "operationId": "staff_auth_enroll_start",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PendingDeviceOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/login": {
+            "post": {
+                "operationId": "staff_auth_login",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailPasswordInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChallengeOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/logout": {
+            "post": {
+                "operationId": "staff_auth_logout",
+                "tags": [
+                    "staff auth"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/mfa/verify": {
+            "post": {
+                "operationId": "staff_auth_mfa_verify",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MfaVerifyInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffSessionInfoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/password-reset": {
+            "post": {
+                "operationId": "staff_auth_password_reset",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AcceptedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/password-reset/confirm": {
+            "post": {
+                "operationId": "staff_auth_password_reset_confirm",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenPasswordCodeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/recovery/cancel": {
+            "post": {
+                "operationId": "staff_auth_recovery_cancel",
+                "description": "The immediate cancellation link sent during an Owner recovery's 24-hour wait.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    },
+                    "400": {
+                        "description": "Invalid or expired link"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/recovery/complete": {
+            "post": {
+                "operationId": "staff_auth_recovery_complete",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenPasswordCodeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SetupCompleteOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/recovery/start": {
+            "post": {
+                "operationId": "staff_auth_recovery_start",
+                "description": "Staff sign-in, enrollment and recovery steps: reachable without a session, always rate-limited.",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PendingDeviceOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/session": {
+            "get": {
+                "operationId": "staff_auth_session",
+                "tags": [
+                    "staff auth"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffSessionInfoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/auth/step-up": {
+            "post": {
+                "operationId": "staff_auth_step_up",
+                "tags": [
+                    "staff auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CodeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StepUpOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/mfa/confirm": {
+            "post": {
+                "operationId": "staff_me_mfa_confirm",
+                "description": "Replacing the authenticator needs a fresh confirmation, except right after a recovery-code sign-in,\nwhen setting up a new one is the only thing the session may do.",
+                "tags": [
+                    "staff me"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CodeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecoveryCodesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/mfa/start": {
+            "post": {
+                "operationId": "staff_me_mfa_start",
+                "description": "Replacing the authenticator needs a fresh confirmation, except right after a recovery-code sign-in,\nwhen setting up a new one is the only thing the session may do.",
+                "tags": [
+                    "staff me"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PendingDeviceOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/password": {
+            "post": {
+                "operationId": "staff_me_password",
+                "tags": [
+                    "staff me"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/recovery-codes": {
+            "post": {
+                "operationId": "staff_me_recovery_codes",
+                "tags": [
+                    "staff me"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecoveryCodesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/recovery-email": {
+            "get": {
+                "operationId": "staff_me_recovery_email_get",
+                "tags": [
+                    "staff me"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecoveryEmailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "staff_me_recovery_email_set",
+                "tags": [
+                    "staff me"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RecoveryEmailInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RecoveryEmailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/sessions": {
+            "get": {
+                "operationId": "staff_me_sessions",
+                "tags": [
+                    "staff me"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SessionOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/me/sessions/{session_id}": {
+            "delete": {
+                "operationId": "staff_me_session_revoke",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "session_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff me"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/roles": {
+            "get": {
+                "operationId": "staff_roles",
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RoleWithPermissionsOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/settings": {
+            "get": {
+                "operationId": "staff_settings_list",
+                "tags": [
+                    "staff administration"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SettingOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/settings/{key}": {
+            "put": {
+                "operationId": "staff_settings_set",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff administration"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SettingInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SettingOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
+            "AcceptedOut": {
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "detail"
+                ]
+            },
             "ApiIndex": {
                 "type": "object",
                 "properties": {
@@ -44,6 +1575,859 @@
                     "name",
                     "version"
                 ]
+            },
+            "AuditLogOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "actor_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "actor_label": {
+                        "type": "string",
+                        "maxLength": 254
+                    },
+                    "action": {
+                        "type": "string",
+                        "maxLength": 80
+                    },
+                    "target_type": {
+                        "type": "string",
+                        "maxLength": 40
+                    },
+                    "target_id": {
+                        "type": "string",
+                        "maxLength": 64
+                    },
+                    "before": {
+                        "nullable": true
+                    },
+                    "after": {
+                        "nullable": true
+                    },
+                    "ip": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "request_id": {
+                        "type": "string",
+                        "maxLength": 64
+                    }
+                },
+                "required": [
+                    "action",
+                    "actor_label",
+                    "at",
+                    "id"
+                ]
+            },
+            "AuditLogPageOut": {
+                "type": "object",
+                "properties": {
+                    "next": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AuditLogOut"
+                        }
+                    }
+                },
+                "required": [
+                    "next",
+                    "previous",
+                    "results"
+                ]
+            },
+            "ChallengeOut": {
+                "type": "object",
+                "properties": {
+                    "challenge": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "challenge",
+                    "expires_in"
+                ]
+            },
+            "ChangePasswordInRequest": {
+                "type": "object",
+                "properties": {
+                    "current_password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    }
+                },
+                "required": [
+                    "current_password",
+                    "new_password"
+                ]
+            },
+            "CodeInRequest": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 10
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            },
+            "CustomerAccountOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email_verified": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "email",
+                    "email_verified",
+                    "full_name",
+                    "id"
+                ]
+            },
+            "CustomerRegisterInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    },
+                    "full_name": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 150
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
+            },
+            "CustomerSessionInfoOut": {
+                "type": "object",
+                "properties": {
+                    "account": {
+                        "$ref": "#/components/schemas/CustomerAccountOut"
+                    },
+                    "csrf_token": {
+                        "type": "string"
+                    },
+                    "session": {
+                        "$ref": "#/components/schemas/SessionOut"
+                    }
+                },
+                "required": [
+                    "account",
+                    "csrf_token",
+                    "session"
+                ]
+            },
+            "CustomerSignInInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    },
+                    "remember": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
+            },
+            "EmailInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    }
+                },
+                "required": [
+                    "email"
+                ]
+            },
+            "EmailPasswordInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
+            },
+            "InviteInRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "full_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "role": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "email",
+                    "full_name",
+                    "role"
+                ]
+            },
+            "MfaVerifyInRequest": {
+                "type": "object",
+                "properties": {
+                    "challenge": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 10
+                    },
+                    "recovery_code": {
+                        "type": "string",
+                        "maxLength": 20
+                    }
+                },
+                "required": [
+                    "challenge"
+                ]
+            },
+            "OwnRecoveryOut": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "effective_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "approved_by": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "approved_by",
+                    "effective_at",
+                    "status"
+                ]
+            },
+            "PendingDeviceOut": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "secret": {
+                        "type": "string",
+                        "description": "Base32 secret, for manual entry in the authenticator app."
+                    },
+                    "otpauth_uri": {
+                        "type": "string"
+                    },
+                    "qr_svg": {
+                        "type": "string",
+                        "description": "The otpauth URI as an inline SVG QR code."
+                    }
+                },
+                "required": [
+                    "email",
+                    "otpauth_uri",
+                    "qr_svg",
+                    "secret"
+                ]
+            },
+            "RecoveryCodesOut": {
+                "type": "object",
+                "properties": {
+                    "recovery_codes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "recovery_codes"
+                ]
+            },
+            "RecoveryEmailInRequest": {
+                "type": "object",
+                "properties": {
+                    "recovery_email": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "format": "email",
+                                "maxLength": 254
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "recovery_email"
+                ]
+            },
+            "RecoveryEmailOut": {
+                "type": "object",
+                "properties": {
+                    "recovery_email": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "recovery_email"
+                ]
+            },
+            "RevokedOut": {
+                "type": "object",
+                "properties": {
+                    "revoked": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "revoked"
+                ]
+            },
+            "RoleChangeInRequest": {
+                "type": "object",
+                "properties": {
+                    "role": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "role"
+                ]
+            },
+            "RoleOut": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "name"
+                ]
+            },
+            "RoleWithPermissionsOut": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "code",
+                    "name",
+                    "permissions"
+                ]
+            },
+            "SecurityWarningsEnum": {
+                "enum": [
+                    "single_owner",
+                    "few_recovery_codes"
+                ],
+                "type": "string",
+                "description": "* `single_owner` - single_owner\n* `few_recovery_codes` - few_recovery_codes"
+            },
+            "SessionOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ip": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "user_agent": {
+                        "type": "string"
+                    },
+                    "current": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "current",
+                    "expires_at",
+                    "id",
+                    "ip",
+                    "last_seen_at",
+                    "user_agent"
+                ]
+            },
+            "SettingInRequest": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "value"
+                ]
+            },
+            "SettingOut": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string"
+                    },
+                    "group": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "nullable": true
+                    },
+                    "editable": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "description",
+                    "editable",
+                    "group",
+                    "key",
+                    "value"
+                ]
+            },
+            "SetupCompleteOut": {
+                "type": "object",
+                "properties": {
+                    "session": {
+                        "$ref": "#/components/schemas/StaffSessionInfoOut"
+                    },
+                    "recovery_codes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "recovery_codes",
+                    "session"
+                ]
+            },
+            "StaffAccountDetailOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleOut"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_login": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "invited_by": {
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true
+                    },
+                    "active_sessions": {
+                        "type": "integer"
+                    },
+                    "has_authenticator": {
+                        "type": "boolean"
+                    },
+                    "recovery_codes_remaining": {
+                        "type": "integer"
+                    },
+                    "recovery": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StaffRecoveryStateOut"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "active_sessions",
+                    "created_at",
+                    "email",
+                    "full_name",
+                    "has_authenticator",
+                    "id",
+                    "invited_by",
+                    "last_login",
+                    "recovery",
+                    "recovery_codes_remaining",
+                    "role",
+                    "status"
+                ]
+            },
+            "StaffAccountSummaryOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleOut"
+                    }
+                },
+                "required": [
+                    "email",
+                    "full_name",
+                    "id",
+                    "role",
+                    "status"
+                ]
+            },
+            "StaffRecoveryStateOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "effective_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "approved_by": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "approved_by",
+                    "created_at",
+                    "effective_at",
+                    "id",
+                    "status"
+                ]
+            },
+            "StaffSessionInfoOut": {
+                "type": "object",
+                "properties": {
+                    "account": {
+                        "$ref": "#/components/schemas/StaffAccountSummaryOut"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "csrf_token": {
+                        "type": "string"
+                    },
+                    "session": {
+                        "$ref": "#/components/schemas/StaffSessionMetaOut"
+                    },
+                    "security_warnings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SecurityWarningsEnum"
+                        }
+                    },
+                    "recovery_in_progress": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/OwnRecoveryOut"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "account",
+                    "csrf_token",
+                    "permissions",
+                    "recovery_in_progress",
+                    "security_warnings",
+                    "session"
+                ]
+            },
+            "StaffSessionMetaOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "idle_timeout_seconds": {
+                        "type": "integer"
+                    },
+                    "stepped_up_until": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "mfa_reenrollment_required": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "expires_at",
+                    "id",
+                    "idle_timeout_seconds",
+                    "mfa_reenrollment_required",
+                    "stepped_up_until"
+                ]
+            },
+            "StepUpOut": {
+                "type": "object",
+                "properties": {
+                    "stepped_up_until": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "stepped_up_until"
+                ]
+            },
+            "SuspendInRequest": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 300
+                    }
+                },
+                "required": [
+                    "reason"
+                ]
+            },
+            "TokenInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "TokenPasswordCodeInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    },
+                    "code": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 10
+                    }
+                },
+                "required": [
+                    "code",
+                    "password",
+                    "token"
+                ]
+            },
+            "TokenPasswordInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    }
+                },
+                "required": [
+                    "password",
+                    "token"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "customerSession": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "__Host-av_session"
+            },
+            "staffSession": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "__Secure-av_staff"
             }
         }
     }

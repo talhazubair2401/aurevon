@@ -1,7 +1,7 @@
 import createClient, { type Client } from "openapi-fetch";
 import type { paths } from "./schema";
 
-export type { paths } from "./schema";
+export type { components, paths } from "./schema";
 
 /** The API's single error shape: RFC 9457 problem details (MTS §8). */
 export interface ProblemDetails {

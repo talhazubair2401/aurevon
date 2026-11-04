@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: Staff account suspended: {{ email }}
+
+{{ by }} suspended the staff account {{ email }}. All its sessions were ended.
+Reason: {{ reason }}
+
+— {{ site_name }}{% endautoescape %}

@@ -21,4 +21,6 @@ CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=[])
 
 # HSTS preload is switched on once the domain is stable (MTS §12); until then its check is expected to warn.
 if not SECURE_HSTS_PRELOAD:
-    SILENCED_SYSTEM_CHECKS = ["security.W021"]
+    SILENCED_SYSTEM_CHECKS = [*SILENCED_SYSTEM_CHECKS, "security.W021"]
+
+MFA_ENCRYPTION_KEY = env("MFA_ENCRYPTION_KEY")  # required: Fernet key, see .env.example

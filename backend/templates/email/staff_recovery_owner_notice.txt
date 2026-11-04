@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Staff account recovery approved: {{ email }}
+
+{{ by }} approved account recovery for {{ email }}. It proceeds at {{ effective_at }}.
+
+— {{ site_name }}{% endautoescape %}

@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: New recovery codes issued
+
+New recovery codes were generated for {{ account_email }}. The old codes no longer work.
+
+— {{ site_name }}{% endautoescape %}

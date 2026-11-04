@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: Your authenticator app was replaced
+
+A new authenticator app was connected to {{ account_email }} and new recovery codes were issued. Your other sessions were signed out.
+If this wasn't you, contact an Owner immediately.
+
+— {{ site_name }}{% endautoescape %}

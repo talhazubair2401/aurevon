@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: A recovery code was used on your AureVon staff account
+
+Someone signed in to {{ account_email }} with a recovery code. Your previous authenticator no longer works and a new one must be set up.
+Recovery codes left: {{ remaining }}. If this wasn't you, contact an Owner immediately.
+
+— {{ site_name }}{% endautoescape %}

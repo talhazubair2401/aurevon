@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Your AureVon staff account was deactivated
+
+Your staff account {{ account_email }} has been deactivated and all its sessions have ended.
+
+— {{ site_name }}{% endautoescape %}

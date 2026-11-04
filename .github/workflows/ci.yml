@@ -63,6 +63,7 @@ jobs:
         env:
           DJANGO_SECRET_KEY: ci-only-${{ github.run_id }}-not-a-real-secret-0123456789abcdef
           DJANGO_ALLOWED_HOSTS: aurevon.example
+          MFA_ENCRYPTION_KEY: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY= # CI only, not a secret
         run: python manage.py check --deploy --fail-level WARNING --settings=config.settings.production
       - name: Static security analysis (Bandit)
         run: bandit -q -c pyproject.toml -r .
@@ -127,7 +128,13 @@ jobs:
       - run: pnpm --filter @aurevon/e2e exec playwright install --with-deps chromium
       - name: End-to-end tests and CSP report
         run: pnpm test:e2e
-        env: { CI: "true" }
+        env:
+          CI: "true"
+          # The staff journey bootstraps the first Owner with the real management command.
+          E2E_MANAGE: docker compose -f ../infra/compose.yaml exec -T api python manage.py
+      - name: Scheduler is running (Owner-recovery release job)
+        run: |
+          docker compose -f infra/compose.yaml logs scheduler | grep -q "beat: Starting"
       - name: Celery worker answers
         run: docker compose -f infra/compose.yaml exec -T worker celery -A config inspect ping --timeout 10
       - name: Upload results

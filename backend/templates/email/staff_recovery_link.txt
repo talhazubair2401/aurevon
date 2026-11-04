@@ -1,0 +1,9 @@
+{% autoescape off %}Subject: Recover your AureVon staff account
+
+Your account recovery can now be completed. Set a new password and connect a new authenticator app here.
+The link works once and expires in {{ minutes }} minutes:
+{{ link }}
+
+Your previous password, authenticator and recovery codes no longer work.
+
+— {{ site_name }}{% endautoescape %}

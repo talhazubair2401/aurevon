@@ -1,0 +1,148 @@
+import { execSync } from "node:child_process";
+import { createHmac } from "node:crypto";
+import { expect, test, type Page } from "@playwright/test";
+
+/*
+ * The M2 staff journey, end to end through the proxy, the real API and real email (Mailpit):
+ * bootstrap Owner -> enrol with an authenticator -> single-Owner warning -> invite staff ->
+ * staff enrols -> Owner suspends them -> their session ends at once -> audit log shows it.
+ * Runs once (desktop project only, see playwright.config.ts) against a fresh database, as in CI.
+ */
+
+const MAILPIT = process.env.E2E_MAILPIT_URL ?? "http://localhost:8025";
+const MANAGE = process.env.E2E_MANAGE ?? "cd ../backend && python manage.py";
+const OWNER = "owner@aurevon.test";
+const MEMBER = "support.member@aurevon.test";
+const PASSWORD = "quiet linen evening 2026";
+
+// No retries: the journey creates the first Owner, which can only happen once per database.
+test.describe.configure({ mode: "serial", retries: 0 });
+
+// --- RFC 6238 TOTP, as an authenticator app computes it ---
+function base32(secret: string): Buffer {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let bits = "";
+  for (const ch of secret.replace(/=+$/, ""))
+    bits += alphabet.indexOf(ch).toString(2).padStart(5, "0");
+  const bytes = bits.match(/.{8}/g) ?? [];
+  return Buffer.from(bytes.map((b) => parseInt(b, 2)));
+}
+const lastStep = new Map<string, number>();
+/** A code for the current step, or the next one if the current step was already used (replay is refused). */
+function totp(secret: string): string {
+  let step = Math.floor(Date.now() / 1000 / 30);
+  if ((lastStep.get(secret) ?? -1) >= step) step = (lastStep.get(secret) ?? step) + 1;
+  lastStep.set(secret, step);
+  const counter = Buffer.alloc(8);
+  counter.writeBigUInt64BE(BigInt(step));
+  const digest = createHmac("sha1", base32(secret)).update(counter).digest();
+  const offset = digest[digest.length - 1]! & 0x0f;
+  const value = (digest.readUInt32BE(offset) & 0x7fffffff) % 1_000_000;
+  return value.toString().padStart(6, "0");
+}
+
+// --- Mailpit ---
+async function latestLinkTo(page: Page, address: string, pathPart: string): Promise<string> {
+  for (let attempt = 0; attempt < 40; attempt++) {
+    const search = await page.request.get(
+      `${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:"${address}"`)}`,
+    );
+    const { messages } = (await search.json()) as { messages: { ID: string }[] };
+    for (const message of messages) {
+      const body = (await (
+        await page.request.get(`${MAILPIT}/api/v1/message/${message.ID}`)
+      ).json()) as { Text: string };
+      const match = body.Text.match(new RegExp(`https?://\\S+/staff/${pathPart}#token=[\\w-]+`));
+      if (match) return match[0];
+    }
+    await page.waitForTimeout(250);
+  }
+  throw new Error(`no ${pathPart} email to ${address}`);
+}
+
+async function enrol(page: Page, link: string): Promise<string> {
+  await page.goto(link);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Set up your staff account");
+  const secret = (await page.getByTestId("totp-secret").textContent())!.trim();
+  await page.getByLabel("New password (at least 12 characters)").fill(PASSWORD);
+  await page.getByLabel("Repeat the password").fill(PASSWORD);
+  await page.getByLabel("Code shown in your authenticator app").fill(totp(secret));
+  await page.getByRole("button", { name: "Finish set-up" }).click();
+  await expect(page.getByTestId("recovery-codes").locator("li")).toHaveCount(10);
+  await page.getByRole("button", { name: "I've saved them" }).click();
+  return secret;
+}
+
+let ownerSecret = "";
+
+test("the first Owner is bootstrapped, enrols and sees the single-Owner warning", async ({
+  page,
+}) => {
+  execSync(`${MANAGE} create_owner --email ${OWNER} --name "First Owner"`, { stdio: "inherit" });
+  ownerSecret = await enrol(page, await latestLinkTo(page, OWNER, "enroll"));
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Welcome, First Owner");
+  await expect(page.getByTestId("single-owner-warning")).toBeVisible();
+  // The link token never stays in the address bar.
+  expect(page.url()).not.toContain("token=");
+});
+
+test("Owner invites a staff member, who enrols, and suspension ends their session at once", async ({
+  browser,
+}) => {
+  const owner = await browser.newPage();
+  await owner.goto("/staff/sign-in");
+  await owner.getByLabel("Email").fill(OWNER);
+  await owner.getByLabel("Password").fill(PASSWORD);
+  await owner.getByRole("button", { name: "Continue" }).click();
+  await owner.getByLabel("Authenticator code").fill(totp(ownerSecret));
+  await owner.getByRole("button", { name: "Sign in" }).click();
+  await expect(owner.getByTestId("single-owner-warning")).toBeVisible();
+
+  await owner
+    .getByRole("navigation", { name: "Staff" })
+    .getByRole("link", { name: "Team" })
+    .click();
+  await owner.getByLabel("Full name").fill("Sana Support");
+  await owner.getByLabel("Email").fill(MEMBER);
+  await owner.getByLabel("Role").selectOption("support");
+  await owner.getByRole("button", { name: "Send invitation" }).click();
+  await expect(owner.getByText(`Invitation sent to ${MEMBER}`)).toBeVisible();
+
+  const member = await browser.newPage();
+  await enrol(member, await latestLinkTo(member, MEMBER, "enroll"));
+  await expect(member.getByRole("heading", { level: 1 })).toContainText("Welcome, Sana Support");
+  await expect(
+    member.getByRole("navigation", { name: "Staff" }).getByRole("link", { name: "Team" }),
+  ).toHaveCount(0); // Support can't manage staff
+
+  await owner.reload();
+  await owner.getByTestId(`staff-row-${MEMBER}`).getByRole("button", { name: "Manage" }).click();
+  const panel = owner.getByTestId("account-panel");
+  await panel.getByLabel("Reason for suspension").fill("End-to-end test");
+  await panel.getByRole("button", { name: "Suspend" }).click();
+  const stepUp = owner.getByRole("dialog");
+  if (await stepUp.isVisible().catch(() => false)) {
+    await stepUp.getByLabel("Authenticator code").fill(totp(ownerSecret));
+    await stepUp.getByRole("button", { name: "Confirm" }).click();
+  }
+  await expect(panel.getByText("Suspended. All sessions ended.")).toBeVisible();
+
+  await member.reload();
+  await expect(member).toHaveURL(/\/staff\/sign-in$/);
+
+  await owner
+    .getByRole("navigation", { name: "Staff" })
+    .getByRole("link", { name: "Audit log" })
+    .click();
+  await expect(owner.getByRole("cell", { name: "staff.suspended" })).toBeVisible();
+});
+
+test("a customer session is never accepted by the staff API", async ({ request }) => {
+  const email = `shopper-${Date.now()}@aurevon.test`;
+  await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });
+  const login = await request.post("/api/v1/auth/login", { data: { email, password: PASSWORD } });
+  expect(login.status()).toBe(200);
+  expect((await request.get("/api/v1/auth/session")).status()).toBe(200);
+  expect((await request.get("/api/v1/staff/auth/session")).status()).toBe(401);
+  expect((await request.get("/api/v1/staff/accounts")).status()).toBe(401);
+});

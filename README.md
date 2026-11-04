@@ -35,7 +35,16 @@ Then open:
 - http://localhost:8080/api/v1/ — API
 - http://localhost:8025/ — Mailpit (all outgoing email lands here locally)
 
-Stop with `Ctrl+C`; add `-v` to `docker compose ... down -v` to wipe the local database.
+Create the first Owner (the set-up link arrives in Mailpit):
+
+```bash
+docker compose -f infra/compose.yaml exec api python manage.py create_owner --email you@example.com --name "Your Name"
+```
+
+Staff accounts, recovery and break-glass: `docs/runbooks/staff-accounts.md`.
+
+Stop with `Ctrl+C`; add `-v` to `docker compose ... down -v` to wipe the local database. If you ran the M1 stack
+before, wipe it once (`down -v`): M2 introduces the custom account model.
 
 ## Develop without Docker
 

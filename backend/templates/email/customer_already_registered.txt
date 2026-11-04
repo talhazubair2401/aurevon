@@ -1,0 +1,8 @@
+{% autoescape off %}Subject: Your AureVon account
+
+Someone tried to register with this email, but you already have an AureVon account. Sign in here:
+{{ link }}
+
+If you've forgotten your password, use "Forgot password" on that page. If this wasn't you, you can ignore this email.
+
+— {{ site_name }}{% endautoescape %}

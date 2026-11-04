@@ -40,6 +40,7 @@ django_settings_module = "config.settings.test"
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py"]
 addopts = "-ra --strict-markers"
+markers = ["real_on_commit: keep transaction.on_commit deferred (email is sent only after commit)"]
 
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
@@ -58,3 +59,10 @@ name = "Business apps never import the project configuration"
 type = "forbidden"
 source_modules = ["apps"]
 forbidden_modules = ["config"]
+
+[[tool.importlinter.contracts]]
+name = "Notifications and the audit log are leaves: they never depend on accounts"
+type = "forbidden"
+source_modules = ["apps.notifications", "apps.audit.models", "apps.audit.services"]
+forbidden_modules = ["apps.accounts"]
+

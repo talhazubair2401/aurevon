@@ -9,6 +9,10 @@ x-backend-env: &backend-env
   DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,api
   DATABASE_URL: postgres://aurevon:aurevon@postgres:5432/aurevon
   REDIS_URL: redis://redis:6379/0
+  SITE_URL: http://localhost:8080
+  TRUSTED_PROXY_COUNT: "1" # the local Caddy proxy
+  EMAIL_HOST: mailpit
+  EMAIL_PORT: "1025"
 
 services:
   postgres:

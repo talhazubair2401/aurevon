@@ -1,0 +1,11 @@
+{% autoescape off %}Subject: You're invited to AureVon staff
+
+{{ invited_by }} has invited you to the AureVon staff dashboard as {{ role }}.
+
+Set up your account here (the link works once and expires in {{ hours }} hours):
+{{ link }}
+
+You'll choose a password and connect an authenticator app such as Google Authenticator, Microsoft Authenticator or 1Password.
+If you weren't expecting this, ignore this email.
+
+— {{ site_name }}{% endautoescape %}

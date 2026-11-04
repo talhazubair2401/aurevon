@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: Your AureVon staff account was suspended
+
+Your staff account {{ account_email }} has been suspended and all its sessions have ended.
+Reason: {{ reason }}
+
+— {{ site_name }}{% endautoescape %}
