@@ -1,0 +1,109 @@
+.field {
+  display: grid;
+  gap: var(--av-space-2);
+}
+
+.label {
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-small);
+  font-weight: 500;
+  color: var(--av-text);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--av-text-muted);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--av-text-small);
+  color: var(--av-text-muted);
+  line-height: 1.5;
+}
+
+.error {
+  margin: 0;
+  font-size: var(--av-text-small);
+  color: var(--av-error);
+  line-height: 1.5;
+}
+
+.control {
+  inline-size: 100%;
+  min-height: var(--av-tap-target);
+  padding-block: var(--av-space-3);
+  padding-inline: var(--av-space-3);
+  border: var(--av-border-width) solid var(--av-field-border);
+  border-radius: var(--av-radius);
+  background: var(--av-surface-raised);
+  color: var(--av-text);
+  /* 16px minimum stops iOS Safari zooming into fields. */
+  font: inherit;
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-body);
+}
+
+.control:hover {
+  border-color: var(--av-text);
+}
+
+.control:focus-visible {
+  outline: var(--av-focus-width) solid var(--av-focus);
+  outline-offset: 0;
+  border-color: var(--av-focus);
+}
+
+.control[aria-invalid="true"] {
+  border-color: var(--av-error);
+  border-inline-start-width: 3px;
+}
+
+.control:disabled {
+  background: var(--av-surface);
+  color: var(--av-text-muted);
+  cursor: not-allowed;
+}
+
+.select {
+  appearance: none;
+  padding-inline-end: var(--av-space-10);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.25rem) 50%,
+    calc(100% - 0.9rem) 50%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+
+[dir="rtl"] .select {
+  background-position:
+    1.25rem 50%,
+    0.9rem 50%;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--av-space-3);
+}
+
+.checkbox {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin: 0.15rem 0 0;
+  flex: none;
+  accent-color: var(--av-color-charcoal);
+}
+
+.checkbox:focus-visible {
+  outline: var(--av-focus-width) solid var(--av-focus);
+  outline-offset: var(--av-focus-offset);
+}
+
+.checkboxLabel {
+  font-size: var(--av-text-body);
+  line-height: 1.5;
+}

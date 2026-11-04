@@ -2,11 +2,20 @@ import { expect, test } from "@playwright/test";
 
 // Routing and staff restrictions (MTS v2.1 A-27, §2).
 test.describe("routes behind the proxy", () => {
-  test("storefront is served at /", async ({ page }) => {
+  test("storefront is served at / and adds the locale prefix", async ({ page }) => {
     const response = await page.goto("/");
     expect(response?.status()).toBe(200);
+    await expect(page).toHaveURL(/\/en$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("AUREVON");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  });
+
+  test("an Urdu browser is sent to /ur", async ({ browser }) => {
+    const context = await browser.newContext({ locale: "ur-PK" });
+    const page = await context.newPage();
+    await page.goto("/");
+    await expect(page).toHaveURL(/\/ur$/);
+    await context.close();
   });
 
   test("staff dashboard is served at /staff/ and is never cached or indexed", async ({ page }) => {

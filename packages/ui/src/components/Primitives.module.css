@@ -1,0 +1,128 @@
+.visuallyHidden {
+  position: absolute !important;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skipLink {
+  position: absolute;
+  inset-inline-start: var(--av-space-4);
+  inset-block-start: var(--av-space-4);
+  z-index: 100;
+  padding: var(--av-space-3) var(--av-space-4);
+  background: var(--av-surface-inverse);
+  color: var(--av-text-inverse);
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-small);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skipLink:focus {
+  transform: none;
+  outline: var(--av-focus-width) solid var(--av-focus-inverse);
+  outline-offset: -4px;
+}
+
+.wordmark {
+  display: inline-block;
+  font-family: var(--av-font-wordmark);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.wordmark-sm {
+  font-size: 1.125rem;
+}
+
+.wordmark-md {
+  font-size: 1.5rem;
+}
+
+.wordmark-lg {
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+}
+
+.container {
+  inline-size: 100%;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding-inline: var(--av-gutter);
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.link:focus-visible {
+  outline: var(--av-focus-width) solid var(--av-focus);
+  outline-offset: var(--av-focus-offset);
+}
+
+.alert {
+  padding: var(--av-space-4);
+  border: var(--av-border-width) solid var(--av-divider);
+  border-inline-start-width: 3px;
+  background: var(--av-surface-raised);
+  font-size: var(--av-text-small);
+  line-height: 1.5;
+}
+
+.alert-info {
+  border-inline-start-color: var(--av-text);
+}
+
+.alert-success {
+  border-inline-start-color: var(--av-success);
+}
+
+.alert-success .alertTitle {
+  color: var(--av-success);
+}
+
+.alert-error {
+  border-inline-start-color: var(--av-error);
+}
+
+.alert-error .alertTitle {
+  color: var(--av-error);
+}
+
+.alertTitle {
+  margin: 0;
+  font-weight: 600;
+}
+
+.alertBody {
+  margin-block-start: var(--av-space-1);
+}
+
+.alertBody > :first-child {
+  margin-block-start: 0;
+}
+
+.alertBody > :last-child {
+  margin-block-end: 0;
+}
+
+.price {
+  font-family: var(--av-font-ui-family, "Inter"), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}

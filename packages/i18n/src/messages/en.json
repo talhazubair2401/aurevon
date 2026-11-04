@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "AureVon",
+    "tagline": "Modern Style. Timeless Confidence."
+  },
+  "shell": {
+    "skipToContent": "Skip to main content",
+    "home": "AureVon home",
+    "primaryNav": "Main",
+    "footerNav": "Footer",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu",
+    "search": "Search",
+    "account": "Account",
+    "bag": "Bag",
+    "language": "Language",
+    "switchTo": "Read this page in {language}",
+    "copyright": "© {year} AureVon. All rights reserved."
+  },
+  "nav": {
+    "shopAll": "Shop All",
+    "collections": "Collections",
+    "shop": "Shop",
+    "help": "Help",
+    "contact": "Contact us",
+    "shipping": "Shipping",
+    "returns": "Returns and exchanges",
+    "privacy": "Privacy policy",
+    "terms": "Terms of sale"
+  },
+  "home": {
+    "placeholderNote": "The approved homepage design is built in M4, once the A-04 reference files are supplied."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page doesn't exist yet, or has moved.",
+    "back": "Back to the homepage"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "Please try again. If it keeps happening, contact us.",
+    "retry": "Try again"
+  }
+}

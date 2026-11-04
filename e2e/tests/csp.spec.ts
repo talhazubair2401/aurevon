@@ -29,7 +29,7 @@ async function collect(
 
 test("CSP baseline is reported against the production builds", async ({ page }, testInfo) => {
   const results: Record<string, { header: string | null; violations: Violation[] }> = {};
-  for (const path of ["/", "/staff/"]) {
+  for (const path of ["/en", "/ur", "/staff/"]) {
     results[path] = await collect(page, path);
     expect(results[path].header, `report-only CSP header on ${path}`).toContain(
       "default-src 'self'",

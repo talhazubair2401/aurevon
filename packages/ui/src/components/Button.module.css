@@ -1,0 +1,103 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--av-space-2);
+  min-height: var(--av-tap-target);
+  padding-block: var(--av-space-3);
+  padding-inline: var(--av-space-6);
+  border: var(--av-border-width) solid transparent;
+  border-radius: var(--av-radius);
+  font: inherit;
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-small);
+  font-weight: 500;
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color var(--av-duration-fast) var(--av-easing),
+    color var(--av-duration-fast) var(--av-easing),
+    border-color var(--av-duration-fast) var(--av-easing);
+}
+
+.button:focus-visible {
+  outline: var(--av-focus-width) solid var(--av-focus);
+  outline-offset: var(--av-focus-offset);
+}
+
+.lg {
+  min-height: 3.25rem;
+  padding-inline: var(--av-space-8);
+}
+
+.block {
+  display: flex;
+  inline-size: 100%;
+}
+
+.primary {
+  background: var(--av-surface-inverse);
+  color: var(--av-text-inverse);
+  border-color: var(--av-surface-inverse);
+}
+
+.primary:hover {
+  background: var(--av-supporting);
+  border-color: var(--av-supporting);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--av-text);
+  border-color: var(--av-text);
+}
+
+.secondary:hover {
+  background: var(--av-surface-inverse);
+  color: var(--av-text-inverse);
+}
+
+.text {
+  min-height: auto;
+  padding: var(--av-space-1) 0;
+  background: transparent;
+  color: var(--av-text);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.button[aria-disabled="true"],
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.spinner {
+  inline-size: 1em;
+  block-size: 1em;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2400ms;
+  }
+}
+
+/* Urdu: no capitals or tracking in Arabic script. */
+:lang(ur) .button {
+  text-transform: none;
+  font-size: var(--av-text-body);
+}

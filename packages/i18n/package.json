@@ -1,0 +1,22 @@
+{
+  "name": "@aurevon/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Locales, text direction, formatting and English/Urdu interface messages (MTS A-18, M15)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./messages/en.json": "./src/messages/en.json",
+    "./messages/ur.json": "./src/messages/ur.json"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@aurevon/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0"
+  }
+}

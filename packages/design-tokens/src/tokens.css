@@ -1,23 +1,131 @@
 /*
- * AureVon brand tokens (MTS v2.1 A-03). Keep in sync with src/index.ts; a test enforces it.
+ * AureVon design tokens. Keep in sync with src/index.ts; tests enforce it.
+ * Core colours: A-03 (APPROVED). Functional colours, charcoal focus, fonts, registration palette: decision 0004
+ * (APPROVED). Type scale, spacing, layout, motion: P-19 proposal defaults (PROPOSED, confirm against A-04).
  * Font families are provided by each app through next/font (self-hosted, MTS §12).
  */
 :root {
+  /* Core palette (A-03) */
   --av-color-off-white: #f9f8f6;
   --av-color-charcoal: #121212;
   --av-color-stone: #e5e0db;
   --av-color-deep-brown: #3b2f2f;
   --av-color-champagne-gold: #c2a676;
 
+  /* Functional colours (decision 0004, item 1) */
+  --av-color-white: #ffffff;
+  --av-color-muted-text: #6b6461;
+  --av-color-field-border: #8c7f78;
+  --av-color-error: #9a2b2b;
+  --av-color-success: #2e5e3a;
+
+  /* Registration page only: "Burgundy & Blush" (decision 0004, item 4) */
+  --av-reg-burgundy: #70263d;
+  --av-reg-blush: #e8c5cc;
+  --av-reg-ivory: #faf7f4;
+  --av-reg-ink: #292629;
+
   /* Roles */
   --av-surface: var(--av-color-off-white);
+  --av-surface-raised: var(--av-color-white);
+  --av-surface-inverse: var(--av-color-charcoal);
   --av-text: var(--av-color-charcoal);
-  --av-divider: var(--av-color-stone);
+  --av-text-inverse: var(--av-color-off-white);
+  --av-text-muted: var(--av-color-muted-text);
   --av-supporting: var(--av-color-deep-brown);
+  --av-divider: var(--av-color-stone);
+  --av-field-border: var(--av-color-field-border);
+  /* Gold: hairlines, accents on dark surfaces and 3D only. Never text or focus on light surfaces (2.2:1). */
   --av-accent: var(--av-color-champagne-gold);
+  --av-focus: var(--av-color-charcoal);
+  --av-focus-inverse: var(--av-color-off-white);
+  --av-error: var(--av-color-error);
+  --av-success: var(--av-color-success);
 
+  /* Font families */
   --av-font-display:
     var(--av-font-display-family, "Playfair Display"), Georgia, "Times New Roman", serif;
   --av-font-ui:
     var(--av-font-ui-family, "Inter"), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --av-font-body: var(--av-font-ui);
+  /* The Latin AUREVON wordmark keeps Playfair in every language (decision 0004, item 6). Never overridden. */
+  --av-font-wordmark:
+    var(--av-font-display-family, "Playfair Display"), Georgia, "Times New Roman", serif;
+  --av-line-height-body: 1.6;
+  --av-line-height-tight: 1.1;
+  --av-line-height-heading: 1.25;
+
+  /* Type scale (mobile first; desktop values below). PROPOSED */
+  --av-text-display: 2.375rem; /* 38 */
+  --av-text-h1: 1.875rem; /* 30 */
+  --av-text-h2: 1.5rem; /* 24 */
+  --av-text-h3: 1.25rem; /* 20 */
+  --av-text-body: 1rem; /* 16 */
+  --av-text-small: 0.875rem; /* 14 */
+  --av-text-caption: 0.75rem; /* 12 */
+  --av-tracking-caps: 0.1em;
+  --av-tracking-wordmark: 0.14em;
+
+  /* Spacing: 4px grid. PROPOSED */
+  --av-space-1: 0.25rem;
+  --av-space-2: 0.5rem;
+  --av-space-3: 0.75rem;
+  --av-space-4: 1rem;
+  --av-space-5: 1.25rem;
+  --av-space-6: 1.5rem;
+  --av-space-8: 2rem;
+  --av-space-10: 2.5rem;
+  --av-space-12: 3rem;
+  --av-space-16: 4rem;
+  --av-space-24: 6rem;
+
+  /* Layout. PROPOSED */
+  --av-max-width: 90rem; /* 1440 */
+  --av-gutter: var(--av-space-4);
+  --av-radius: 0; /* sharp corners unless A-04 shows otherwise */
+  --av-border-width: 1px;
+  --av-focus-width: 2px;
+  --av-focus-offset: 2px;
+  --av-tap-target: 2.75rem; /* 44px minimum touch target */
+
+  /* Motion. PROPOSED */
+  --av-duration-fast: 200ms;
+  --av-duration-base: 300ms;
+  --av-easing: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --av-text-display: 3.5rem; /* 56 */
+    --av-text-h1: 2.5rem; /* 40 */
+    --av-text-h2: 1.875rem; /* 30 */
+    --av-text-h3: 1.375rem; /* 22 */
+    --av-gutter: var(--av-space-10);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --av-duration-fast: 0ms;
+    --av-duration-base: 0ms;
+  }
+}
+
+/*
+ * Urdu (decision 0004, item 3): Noto Nastaliq Urdu for reading text, Noto Naskh Arabic for interface controls.
+ * Playfair Display has no Arabic-script glyphs, so Urdu headings use Nastaliq.
+ */
+:lang(ur) {
+  --av-font-body:
+    var(--av-font-urdu-reading-family, "Noto Nastaliq Urdu"),
+    var(--av-font-urdu-ui-family, "Noto Naskh Arabic"), serif;
+  --av-font-ui:
+    var(--av-font-urdu-ui-family, "Noto Naskh Arabic"), var(--av-font-ui-family, "Inter"),
+    system-ui, sans-serif;
+  --av-font-display: var(--av-font-body);
+  --av-line-height-body: 1.9;
+  --av-line-height-tight: 1.6;
+  --av-line-height-heading: 1.8;
+  --av-tracking-caps: 0; /* letter-spacing breaks Arabic-script joining */
+  --av-tracking-wordmark: 0;
 }

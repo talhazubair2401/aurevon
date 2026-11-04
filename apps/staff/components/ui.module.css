@@ -1,4 +1,4 @@
-/* Staff dashboard building blocks, on the A-03 brand tokens. Quiet, legible, no decoration. */
+/* Staff dashboard building blocks on the shared tokens (A-03, decision 0004): same identity, denser, no gold. */
 
 .page {
   max-width: 64rem;
@@ -17,7 +17,7 @@
   width: min(100%, 26rem);
   padding: 2rem;
   border: 1px solid var(--av-divider);
-  background: #fff;
+  background: var(--av-surface-raised);
 }
 
 .wide {
@@ -26,7 +26,7 @@
 
 .panel {
   border: 1px solid var(--av-divider);
-  background: #fff;
+  background: var(--av-surface-raised);
   padding: 1.5rem;
   margin-block-end: 1.5rem;
 }
@@ -75,15 +75,15 @@
 .select {
   font: inherit;
   padding: 0.6rem 0.7rem;
-  border: 1px solid #cfc8c1;
-  background: #fff;
+  border: 1px solid var(--av-field-border);
+  background: var(--av-surface-raised);
   color: var(--av-text);
   border-radius: 0;
 }
 
 .input:focus-visible,
 .select:focus-visible {
-  outline: 2px solid var(--av-accent);
+  outline: 2px solid var(--av-focus);
   outline-offset: 0;
 }
 
@@ -125,8 +125,8 @@
 
 .danger {
   composes: button;
-  background: #7a2121;
-  border-color: #7a2121;
+  background: var(--av-error);
+  border-color: var(--av-error);
 }
 
 .link {
@@ -141,20 +141,20 @@
 }
 
 .error {
-  color: #8a1c1c;
+  color: var(--av-error);
   font-size: 0.875rem;
   margin: 0;
 }
 
 .success {
-  color: #2d5a2d;
+  color: var(--av-success);
   font-size: 0.875rem;
   margin: 0;
 }
 
 .banner {
-  border-inline-start: 3px solid var(--av-accent);
-  background: #fbf7ef;
+  border-inline-start: 3px solid var(--av-text);
+  background: var(--av-surface-raised);
   padding: 0.85rem 1rem;
   margin-block-end: 1rem;
   font-size: 0.875rem;
@@ -163,13 +163,13 @@
 
 .bannerUrgent {
   composes: banner;
-  border-inline-start-color: #8a1c1c;
-  background: #fbefef;
+  border-inline-start-color: var(--av-error);
+  background: var(--av-surface-raised);
 }
 
 .header {
   border-block-end: 1px solid var(--av-divider);
-  background: #fff;
+  background: var(--av-surface-raised);
 }
 
 .headerInner {
@@ -205,7 +205,7 @@
 
 .navLinkActive {
   composes: navLink;
-  border-block-end-color: var(--av-accent);
+  border-block-end-color: var(--av-text);
 }
 
 .table {

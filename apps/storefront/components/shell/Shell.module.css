@@ -1,0 +1,271 @@
+/*
+ * Shell styles. PROVISIONAL (decision 0004, item 5): neutral, token-only defaults so the structure can be
+ * reviewed and tested. Final placement, sizing and treatment follow the A-04 references when supplied.
+ * Logical properties throughout, so Urdu right-to-left needs no separate rules.
+ */
+
+.header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 50;
+  background: var(--av-surface);
+  border-block-end: var(--av-border-width) solid var(--av-divider);
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--av-space-4);
+  max-inline-size: var(--av-max-width);
+  min-block-size: 4rem;
+  margin-inline: auto;
+  padding-inline: var(--av-gutter);
+}
+
+.headerStart {
+  display: flex;
+  align-items: center;
+  gap: var(--av-space-2);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--av-tap-target);
+  color: var(--av-text);
+  text-decoration: none;
+}
+
+.primaryNav {
+  display: none;
+  flex: 1;
+}
+
+.navList,
+.menuList,
+.footerList,
+.languages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navList {
+  display: flex;
+  justify-content: center;
+  gap: var(--av-space-8);
+}
+
+.navLink,
+.languageLink {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--av-tap-target);
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-small);
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  text-underline-offset: 0.4em;
+}
+
+.navLink:hover,
+.languageLink:hover {
+  text-decoration: underline;
+}
+
+.languageLink {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--av-text-body);
+}
+
+.utilities {
+  display: flex;
+  align-items: center;
+  gap: var(--av-space-1);
+}
+
+.iconLink {
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--av-tap-target);
+  block-size: var(--av-tap-target);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--av-text);
+  cursor: pointer;
+}
+
+.desktopOnly {
+  display: none;
+  margin-inline-end: var(--av-space-3);
+}
+
+.mobileOnly {
+  display: block;
+}
+
+@media (min-width: 64rem) {
+  .primaryNav,
+  .desktopOnly {
+    display: block;
+  }
+
+  .mobileOnly {
+    display: none;
+  }
+}
+
+/* Phone menu */
+.menuDialog {
+  inline-size: min(22rem, 88vw);
+  max-inline-size: none;
+  block-size: 100dvh;
+  max-block-size: none;
+  margin: 0;
+  margin-inline-end: auto;
+  padding: 0;
+  border: 0;
+  background: var(--av-surface);
+  color: var(--av-text);
+}
+
+.menuDialog::backdrop {
+  background: rgb(18 18 18 / 0.4);
+}
+
+.menuDialog[open] {
+  animation: slide-in var(--av-duration-base) var(--av-easing);
+}
+
+[dir="rtl"] .menuDialog[open] {
+  animation-name: slide-in-rtl;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-in-rtl {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuDialog[open] {
+    animation: none;
+  }
+}
+
+.menuPanel {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100%;
+  padding: var(--av-space-2) var(--av-space-4) var(--av-space-8);
+}
+
+.menuTop {
+  display: flex;
+  justify-content: flex-start;
+  margin-block-end: var(--av-space-4);
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-block-size: 3.25rem;
+  border-block-end: var(--av-border-width) solid var(--av-divider);
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-body);
+  text-decoration: none;
+}
+
+.menuFooter {
+  margin-block-start: auto;
+  padding-block-start: var(--av-space-8);
+}
+
+/* Footer */
+.footer {
+  margin-block-start: var(--av-space-16);
+  border-block-start: var(--av-border-width) solid var(--av-divider);
+}
+
+.footerInner {
+  display: grid;
+  gap: var(--av-space-10);
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-12) var(--av-gutter) var(--av-space-8);
+}
+
+.footerTagline {
+  margin: var(--av-space-3) 0 0;
+  color: var(--av-supporting);
+  font-size: var(--av-text-small);
+}
+
+.footerNav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--av-space-8);
+}
+
+.footerHeading {
+  margin: 0 0 var(--av-space-3);
+  font-family: var(--av-font-ui);
+  font-size: var(--av-text-caption);
+  font-weight: 600;
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+}
+
+.footerLink {
+  display: inline-block;
+  padding-block: var(--av-space-2);
+  font-size: var(--av-text-small);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+.footerBottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--av-space-4);
+  padding-block-start: var(--av-space-6);
+  border-block-start: var(--av-border-width) solid var(--av-divider);
+}
+
+.copyright {
+  margin: 0;
+  color: var(--av-text-muted);
+  font-size: var(--av-text-caption);
+}
+
+@media (min-width: 64rem) {
+  .footerInner {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .footerBottom {
+    grid-column: 1 / -1;
+  }
+}
+
+:lang(ur) .navLink,
+:lang(ur) .footerHeading {
+  text-transform: none;
+  font-size: var(--av-text-body);
+}

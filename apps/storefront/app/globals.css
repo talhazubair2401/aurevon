@@ -1,7 +1,13 @@
+/* Base styles on the design tokens (decision 0004). Components carry their own CSS Modules. */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 html,
@@ -10,13 +16,91 @@ body {
 }
 
 body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--av-surface);
   color: var(--av-text);
-  font-family: var(--av-font-ui);
+  font-family: var(--av-font-body);
+  font-size: var(--av-text-body);
+  line-height: var(--av-line-height-body);
   -webkit-font-smoothing: antialiased;
 }
 
+/* Charcoal focus ring everywhere (decision 0004, item 1); off-white on dark surfaces. */
 :focus-visible {
-  outline: 2px solid var(--av-accent);
-  outline-offset: 2px;
+  outline: var(--av-focus-width) solid var(--av-focus);
+  outline-offset: var(--av-focus-offset);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-inline-size: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--av-font-display);
+  font-weight: 500;
+  line-height: var(--av-line-height-heading);
+  margin-block: 0 var(--av-space-4);
+}
+
+h1 {
+  font-size: var(--av-text-h1);
+}
+
+h2 {
+  font-size: var(--av-text-h2);
+}
+
+h3 {
+  font-size: var(--av-text-h3);
+}
+
+/* The main landmark receives focus from the skip link without showing a ring. */
+main:focus {
+  outline: none;
+}
+
+.av-centred {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  gap: var(--av-space-4);
+  padding: var(--av-space-16) var(--av-gutter);
+  text-align: center;
+}
+
+.av-heading {
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h1);
+  font-weight: 500;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+.av-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
