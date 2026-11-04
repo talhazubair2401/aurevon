@@ -66,7 +66,7 @@ def confirm_newsletter(token: str) -> bool:
         return False
     record.status = ConsentStatus.CONFIRMED
     record.confirmed_at = timezone.now()
-    record.confirm_token_hash = ""
+    record.confirm_token_hash = ""  # nosec B105  (clears a used token hash, not a password)
     record.confirm_expires_at = None
     record.save()
     return True
