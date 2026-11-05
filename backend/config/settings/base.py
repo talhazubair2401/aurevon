@@ -150,6 +150,7 @@ SPECTACULAR_SETTINGS = {
         "PageKindEnum": ["content", "policy"],
         "ContentFieldKindEnum": ["text", "textarea", "href"],
         "ThreeDStatusEnum": ["processing", "failed", "draft", "approved", "retired"],
+        "StatusEnum": ["draft", "published", "archived"],
     },
 }
 

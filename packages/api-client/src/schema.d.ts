@@ -865,6 +865,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/catalog/3d/{asset_id}/file": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Draft preview for staff: a short-lived signed link, plus the staff session (never public /media/). */
+    get: operations["staff_catalog_3d_file"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/catalog/categories": {
     parameters: {
       query?: never;
@@ -1021,6 +1038,71 @@ export interface paths {
     put?: never;
     post?: never;
     delete: operations["staff_catalog_image_remove"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/models3d": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Upload a garment model (decision 0007). Processing runs in the background; the editor polls. */
+    post: operations["staff_catalog_3d_upload"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/models3d/{asset_id}/approve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_catalog_3d_approve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/models3d/{asset_id}/colours": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_catalog_3d_colours"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/catalog/products/{product_id}/models3d/{asset_id}/retire": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_catalog_3d_retire"];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -1832,6 +1914,43 @@ export interface components {
       code?: string;
       recovery_code?: string;
     };
+    Model3D: {
+      url: string;
+      compression: string;
+      checksum: string;
+      variant_map: {
+        [key: string]: string;
+      };
+    };
+    Model3DInRequest: {
+      /** Format: binary */
+      file: string;
+    };
+    Model3DOut: {
+      /** Format: uuid */
+      id: string;
+      status: components["schemas"]["ThreeDStatusEnum"];
+      file_name: string;
+      colours: string[];
+      variants: string[];
+      variant_map: {
+        [key: string]: string;
+      };
+      compression: string;
+      bytes: number | null;
+      triangles: number | null;
+      max_texture_px: number | null;
+      est_gpu_mb: string | null;
+      report: unknown;
+      preview_url: string | null;
+      url: string;
+      uploaded_by: string;
+      approved_by: string;
+      /** Format: date-time */
+      approved_at: string | null;
+      /** Format: date-time */
+      created_at: string;
+    };
     Money: {
       amount: string;
       currency: string;
@@ -1989,6 +2108,7 @@ export interface components {
       variants: components["schemas"]["Variant"][];
       size_chart: components["schemas"]["SizeChartRow"][];
       collections: components["schemas"]["CollectionCard"][];
+      model3d: components["schemas"]["Model3D"] | null;
     };
     ProductImage: {
       url: string | null;
@@ -2012,6 +2132,8 @@ export interface components {
       variant_list: components["schemas"]["VariantOut"][];
       publish_problems: string[];
       images: components["schemas"]["ImageOut"][];
+      models3d: components["schemas"]["Model3DOut"][];
+      shoppers_see_3d: boolean;
       /** Format: date-time */
       updated_at: string;
     };
@@ -2236,6 +2358,15 @@ export interface components {
     SuspendInRequest: {
       reason: string;
     };
+    /**
+     * @description * `processing` - processing
+     *     * `failed` - failed
+     *     * `draft` - draft
+     *     * `approved` - approved
+     *     * `retired` - retired
+     * @enum {string}
+     */
+    ThreeDStatusEnum: "processing" | "failed" | "draft" | "approved" | "retired";
     TokenInRequest: {
       token: string;
     };
@@ -3467,6 +3598,30 @@ export interface operations {
       };
     };
   };
+  staff_catalog_3d_file: {
+    parameters: {
+      query?: {
+        expires?: string;
+        sig?: string;
+      };
+      header?: never;
+      path: {
+        asset_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "model/gltf-binary": string;
+        };
+      };
+    };
+  };
   staff_catalog_categories: {
     parameters: {
       query?: never;
@@ -3769,6 +3924,109 @@ export interface operations {
       header?: never;
       path: {
         image_id: string;
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_3d_upload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["Model3DInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_3d_approve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        asset_id: string;
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_3d_colours: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        asset_id: string;
+        product_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductOut"];
+        };
+      };
+    };
+  };
+  staff_catalog_3d_retire: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        asset_id: string;
         product_id: string;
       };
       cookie?: never;

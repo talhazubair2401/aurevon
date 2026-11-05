@@ -2002,6 +2002,58 @@
                 }
             }
         },
+        "/api/v1/staff/catalog/3d/{asset_id}/file": {
+            "get": {
+                "operationId": "staff_catalog_3d_file",
+                "description": "Draft preview for staff: a short-lived signed link, plus the staff session (never public /media/).",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "asset_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "expires",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "sig",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "model/gltf-binary": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/catalog/categories": {
             "get": {
                 "operationId": "staff_catalog_categories",
@@ -2490,6 +2542,208 @@
                     {
                         "in": "path",
                         "name": "image_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/models3d": {
+            "post": {
+                "operationId": "staff_catalog_3d_upload",
+                "description": "Upload a garment model (decision 0007). Processing runs in the background; the editor polls.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Model3DInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/models3d/{asset_id}/approve": {
+            "post": {
+                "operationId": "staff_catalog_3d_approve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "asset_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/models3d/{asset_id}/colours": {
+            "put": {
+                "operationId": "staff_catalog_3d_colours",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "asset_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "product_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff catalogue"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/catalog/products/{product_id}/models3d/{asset_id}/retire": {
+            "post": {
+                "operationId": "staff_catalog_3d_retire",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "asset_id",
                         "schema": {
                             "type": "string",
                             "format": "uuid"
@@ -4931,6 +5185,139 @@
                     "challenge"
                 ]
             },
+            "Model3D": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "compression": {
+                        "type": "string"
+                    },
+                    "checksum": {
+                        "type": "string"
+                    },
+                    "variant_map": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "checksum",
+                    "compression",
+                    "url",
+                    "variant_map"
+                ]
+            },
+            "Model3DInRequest": {
+                "type": "object",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "required": [
+                    "file"
+                ]
+            },
+            "Model3DOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ThreeDStatusEnum"
+                    },
+                    "file_name": {
+                        "type": "string"
+                    },
+                    "colours": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "variants": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "variant_map": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "compression": {
+                        "type": "string"
+                    },
+                    "bytes": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "triangles": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "max_texture_px": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "est_gpu_mb": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "report": {},
+                    "preview_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "uploaded_by": {
+                        "type": "string"
+                    },
+                    "approved_by": {
+                        "type": "string"
+                    },
+                    "approved_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "approved_at",
+                    "approved_by",
+                    "bytes",
+                    "colours",
+                    "compression",
+                    "created_at",
+                    "est_gpu_mb",
+                    "file_name",
+                    "id",
+                    "max_texture_px",
+                    "preview_url",
+                    "report",
+                    "status",
+                    "triangles",
+                    "uploaded_by",
+                    "url",
+                    "variant_map",
+                    "variants"
+                ]
+            },
             "Money": {
                 "type": "object",
                 "properties": {
@@ -5518,6 +5905,14 @@
                         "items": {
                             "$ref": "#/components/schemas/CollectionCard"
                         }
+                    },
+                    "model3d": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Model3D"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -5533,6 +5928,7 @@
                     "images",
                     "is_featured",
                     "is_new",
+                    "model3d",
                     "name",
                     "price_max",
                     "price_min",
@@ -5626,6 +6022,15 @@
                             "$ref": "#/components/schemas/ImageOut"
                         }
                     },
+                    "models3d": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Model3DOut"
+                        }
+                    },
+                    "shoppers_see_3d": {
+                        "type": "boolean"
+                    },
                     "updated_at": {
                         "type": "string",
                         "format": "date-time"
@@ -5640,7 +6045,9 @@
                     "id",
                     "images",
                     "is_featured",
+                    "models3d",
                     "publish_problems",
+                    "shoppers_see_3d",
                     "slug",
                     "status",
                     "style_number",
@@ -6404,6 +6811,17 @@
                 "required": [
                     "reason"
                 ]
+            },
+            "ThreeDStatusEnum": {
+                "enum": [
+                    "processing",
+                    "failed",
+                    "draft",
+                    "approved",
+                    "retired"
+                ],
+                "type": "string",
+                "description": "* `processing` - processing\n* `failed` - failed\n* `draft` - draft\n* `approved` - approved\n* `retired` - retired"
             },
             "TokenInRequest": {
                 "type": "object",
