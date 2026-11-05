@@ -3,7 +3,7 @@
 **Date:** 4 November 2026 · **Baseline:** MTS v2.1, decision 0006 (P-12)
 **Commits:** `1a2a902` (catalogue rules, stock records, product page, search), `d9a34dc` (staff catalogue and
 CSV import), `6245ac4` (product images) · **CI:** all four jobs green on `6245ac4`
-**Status:** awaiting your approval before M6.
+**Status:** APPROVED by the product owner on 5 November 2026.
 
 ## Built
 - **Catalogue rules (decision 0006):** categories with their own ordered sizes (letters or numbers) and size
