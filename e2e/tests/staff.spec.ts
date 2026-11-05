@@ -301,6 +301,7 @@ test("Owner uploads, previews and approves a 3D model", async ({ browser }) => {
   await expect(draft.getByText("garment-textured.glb")).toBeVisible();
 
   const preview = draft.locator("[data-viewer3d]");
+  await preview.scrollIntoViewIfNeeded(); // the viewer only renders on screen (D3), warm-up included
   await expect(preview).toHaveAttribute("data-phase", "ready", { timeout: 60_000 });
   const approve = draft.getByRole("button", { name: "Approve model" });
   await expect(approve).toBeDisabled();
