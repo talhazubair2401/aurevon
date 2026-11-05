@@ -6,6 +6,7 @@ import { useSession } from "../lib/session";
 import { Message, type Msg } from "./CatalogNav";
 import { LOCALES } from "./ContentEditor";
 import c from "./content.module.css";
+import { ThreeDPanel } from "./ThreeDPanel";
 import ui from "./ui.module.css";
 
 type Product = Schemas["ProductOut"];
@@ -273,6 +274,7 @@ export function ProductEditor({
       </section>
 
       <ImagesPanel product={product} onSaved={onSaved} canEdit={canEdit} colours={pickedColours} />
+      <ThreeDPanel product={product} onSaved={onSaved} colours={pickedColours} />
 
       <section className={ui.panel} aria-labelledby="prices-title">
         <h2 id="prices-title" className={ui.subtitle}>

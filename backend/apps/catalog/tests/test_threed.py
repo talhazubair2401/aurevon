@@ -81,7 +81,8 @@ def test_approval_needs_publish_rights_and_a_check(settings: Any, client: Client
     assert client.get(f"/api/v1/catalog/products/{product.slug}").json()["model3d"] is None
     settings.THREED_FOR_SHOPPERS = True
     sent = client.get(f"/api/v1/catalog/products/{product.slug}").json()["model3d"]
-    assert sent["url"] == approved["url"] and sent["variant_map"] == {"ivory": "ivory", "sage": "sage"}
+    assert sent["by_colour"]["ivory"] == {"url": approved["url"], "variant": "ivory", "compression": "draco"}
+    assert sent["by_colour"]["sage"]["variant"] == "sage"
 
     # A newer approved model for the same colours retires the older one.
     second = upload(editor, product, "garment-draco.glb").json()["models3d"][0]
@@ -93,7 +94,7 @@ def test_approval_needs_publish_rights_and_a_check(settings: Any, client: Client
     assert client.get(f"/api/v1/catalog/products/{product.slug}").json()["model3d"] is None
 
 
-def test_a_model_without_variants_covers_the_colours_staff_choose(client: Client) -> None:
+def test_a_model_without_variants_covers_the_colours_staff_choose(client: Client, settings: Any) -> None:
     product = kurta()
     api = sign_in(make_staff(RoleCode.STORE_ADMIN))
     model = upload(api, product, "garment-novariants.glb").json()["models3d"][0]
@@ -104,6 +105,10 @@ def test_a_model_without_variants_covers_the_colours_staff_choose(client: Client
     r = api.put(f"{base}/colours", {"colours": ["sage"]}, format="json")
     assert r.json()["models3d"][0]["variant_map"] == {"sage": ""}
     assert api.put(f"{base}/colours", {"colours": ["teal"]}, format="json").status_code == 400
+    assert api.post(f"{base}/approve", {"checked": True}, format="json").status_code == 200
+    settings.THREED_FOR_SHOPPERS = True
+    sent = client.get(f"/api/v1/catalog/products/{product.slug}").json()["model3d"]["by_colour"]
+    assert list(sent) == ["sage"] and sent["sage"]["variant"] == ""  # ivory keeps its photos
 
 
 @pytest.mark.parametrize(

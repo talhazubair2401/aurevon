@@ -6,7 +6,12 @@ const config: NextConfig = {
   basePath: "/staff",
   output: "standalone",
   outputFileTracingRoot: path.join(__dirname, "../.."),
-  transpilePackages: ["@aurevon/design-tokens", "@aurevon/api-client", "@aurevon/csp"],
+  transpilePackages: [
+    "@aurevon/design-tokens",
+    "@aurevon/api-client",
+    "@aurevon/csp",
+    "@aurevon/viewer3d",
+  ],
   poweredByHeader: false,
   reactStrictMode: true,
   async headers() {

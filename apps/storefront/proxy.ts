@@ -18,6 +18,7 @@ export default function proxy(request: NextRequest) {
     app: "storefront",
     nonce,
     development: process.env.NODE_ENV === "development",
+    webAssembly: true, // 3D viewer (M6)
   });
 
   const requestHeaders = new Headers(request.headers);

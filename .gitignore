@@ -37,3 +37,6 @@ dump.rdb
 backend/media/
 backend/media-private/
 backend/media-private-test/
+
+# Draco decoder, copied from three.js by aurevon-copy-decoders (M6)
+apps/*/public/3d/

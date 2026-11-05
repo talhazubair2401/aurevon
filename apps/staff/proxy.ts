@@ -3,7 +3,7 @@ import { HTML_CACHE_CONTROL, buildPolicy, generateNonce, reportingEndpoints } fr
 
 /**
  * Every staff page request gets a fresh nonce and the enforcing staff CSP (decision 0005, D-08): no
- * third-party origins, no WebAssembly. Next.js reads the nonce from the request header and stamps its scripts.
+ * third-party origins; WebAssembly only for the 3D model preview (M6). Next.js reads the nonce from the request header and stamps its scripts.
  */
 export default function proxy(request: NextRequest) {
   const nonce = generateNonce();
@@ -11,6 +11,7 @@ export default function proxy(request: NextRequest) {
     app: "staff",
     nonce,
     development: process.env.NODE_ENV === "development",
+    webAssembly: true, // 3D viewer (M6)
   });
 
   const requestHeaders = new Headers(request.headers);

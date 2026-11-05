@@ -27,5 +27,7 @@ WORKDIR /app
 RUN addgroup -S app && adduser -S app -G app
 COPY --from=build --chown=app:app /repo/apps/${APP}/.next/standalone ./
 COPY --from=build --chown=app:app /repo/apps/${APP}/.next/static ./apps/${APP}/.next/static
+# Static files (the 3D viewer's Draco decoder, copied at build time).
+COPY --from=build --chown=app:app /repo/apps/${APP}/public ./apps/${APP}/public
 USER app
 CMD ["sh", "-c", "node apps/${APP}/server.js"]

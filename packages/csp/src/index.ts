@@ -14,8 +14,8 @@ export interface PolicyOptions {
   /** next dev needs eval for React's debugging; development builds never ship. */
   development?: boolean;
   /**
-   * 3D viewer (M6): WebAssembly for Draco/Meshopt and blob: workers. Off until the viewer exists and
-   * V-05 proves it (decision 0005).
+   * 3D viewer (M6): WebAssembly for Draco/Meshopt, blob: workers (Draco decoder) and blob: images and fetches
+   * (textures inside .glb files). Storefront for shoppers, staff for model previews (decision 0005, V-05).
    */
   webAssembly?: boolean;
 }
@@ -61,7 +61,12 @@ export function buildPolicy({
     "report-uri": [REPORT_PATH],
     "report-to": [REPORT_GROUP],
   };
-  if (app === "storefront" && webAssembly) directives["worker-src"] = ["'self'", "blob:"];
+  if (webAssembly) {
+    directives["worker-src"] = ["'self'", "blob:"];
+    for (const name of ["img-src", "connect-src"]) {
+      if (!directives[name]!.includes("blob:")) directives[name] = [...directives[name]!, "blob:"];
+    }
+  }
   if (development) {
     // Hot reload uses a websocket on the dev server.
     directives["connect-src"] = [...directives["connect-src"]!, "ws:"];

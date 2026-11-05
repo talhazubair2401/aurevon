@@ -47,19 +47,25 @@ describe.each(["storefront", "staff"] as const)("%s production policy", (app) =>
     expect(policy).not.toMatch(/https?:/);
   });
 
-  it("has no WebAssembly or blob workers until the 3D viewer needs them (M6)", () => {
+  it("has no WebAssembly or blob workers without the 3D option", () => {
     expect(policy).not.toContain("wasm-unsafe-eval");
     expect(d.has("worker-src")).toBe(false);
   });
 });
 
-it("the 3D option adds exactly WebAssembly and blob workers to the storefront", () => {
-  const d = directives(
-    buildPolicy({ app: "storefront", nonce: generateNonce(), webAssembly: true }),
-  );
-  expect(d.get("script-src")).toContain("'wasm-unsafe-eval'");
-  expect(d.get("worker-src")).toEqual(["'self'", "blob:"]);
-});
+it.each(["storefront", "staff"] as const)(
+  "the 3D option adds WebAssembly and blob: to %s",
+  (app) => {
+    const policy = buildPolicy({ app, nonce: generateNonce(), webAssembly: true });
+    const d = directives(policy);
+    expect(d.get("script-src")).toContain("'wasm-unsafe-eval'");
+    expect(d.get("script-src")).not.toContain("'unsafe-eval'");
+    expect(d.get("worker-src")).toEqual(["'self'", "blob:"]);
+    expect(d.get("img-src")).toContain("blob:");
+    expect(d.get("connect-src")).toContain("blob:");
+    expect(policy).not.toMatch(/https?:/);
+  },
+);
 
 it("only development builds get unsafe-eval", () => {
   const policy = buildPolicy({ app: "storefront", nonce: generateNonce(), development: true });

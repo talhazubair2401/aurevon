@@ -50,6 +50,17 @@
 		respond 405
 	}
 
+	# Draco decoder for the 3D viewer (M6): self-hosted, in a folder named by the three.js release, so it is
+	# cached for good like the build assets.
+	@decoders path /3d/draco/* /staff/3d/draco/*
+	handle @decoders {
+		header >Cache-Control "public, max-age=31536000, immutable"
+		header >X-Content-Type-Options nosniff
+		@staffDecoders path /staff/*
+		reverse_proxy @staffDecoders staff:3001
+		reverse_proxy storefront:3000
+	}
+
 	@staffAssets path /staff/_next/static/*
 	handle @staffAssets {
 		header >X-Robots-Tag "noindex, nofollow"

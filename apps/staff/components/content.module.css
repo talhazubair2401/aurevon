@@ -230,3 +230,24 @@
   object-fit: cover;
   border: 1px solid var(--av-divider);
 }
+
+/* 3D model preview (M6): the same viewer shoppers get, on its dark stage. */
+.preview3d {
+  position: relative;
+  inline-size: min(100%, 26rem);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #121212;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+}
+
+.facts dd {
+  margin: 0;
+}

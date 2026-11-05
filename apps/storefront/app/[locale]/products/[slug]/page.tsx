@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, type Locale } from "@aurevon/i18n";
 import { Price } from "@aurevon/ui";
+import { decoderPath, ProductViewer, VIEWER_ENGLISH, type ViewerLabels } from "@aurevon/viewer3d";
 import { GarmentArt, type ArtKind } from "@/components/art/GarmentArt";
 import { Breadcrumbs } from "@/components/content/Breadcrumbs";
 import styles from "@/components/product/ProductPage.module.css";
@@ -57,9 +58,10 @@ export default async function ProductPage({
   const locale = raw as Locale;
   const product = await load(locale, slug);
   if (!product) return redirectOrNotFound(locale, `/products/${slug}`);
-  const [availability, t, query] = await Promise.all([
+  const [availability, t, t3d, query] = await Promise.all([
     getAvailability(product.slug),
     getTranslations({ locale, namespace: "product" }),
+    getTranslations({ locale, namespace: "viewer3d" }),
     searchParams,
   ]);
 
@@ -84,6 +86,28 @@ export default async function ProductPage({
   const href = (c: string, s?: string) =>
     `${base}?colour=${encodeURIComponent(c)}${s ? `&size=${encodeURIComponent(s)}` : ""}`;
   const anyAvailable = colourVariants.some((v) => v.available);
+  // 3D only where the API sends it (approved, and on for shoppers after V-01 to V-03); a colour without it keeps
+  // its photos (decision 0007, D-03). The image is the poster and always renders first.
+  const model = product.model3d?.by_colour[colour.slug];
+  // Raw strings: the viewer fills its own {key} and {colour} placeholders.
+  const viewerLabels = Object.fromEntries(
+    Object.keys(VIEWER_ENGLISH).map((k) => [k, String(t3d.raw(k))]),
+  ) as unknown as ViewerLabels;
+  const poster = shown?.url ? (
+    // eslint-disable-next-line @next/next/no-img-element -- served pre-sized from object storage (M5)
+    <img
+      src={shown.url}
+      alt={shown.alt}
+      className={styles.photo}
+      width={1600}
+      height={2000}
+      fetchPriority="high"
+    />
+  ) : shown?.demo_art ? (
+    <div className={styles.stageArt} role="img" aria-label={shown.alt}>
+      <GarmentArt kind={shown.demo_art as ArtKind} colour={shown.tone} />
+    </div>
+  ) : null;
 
   return (
     <div className={styles.page}>
@@ -123,21 +147,19 @@ export default async function ProductPage({
       <div className={styles.layout}>
         <section className={styles.gallery} aria-label={t("gallery")}>
           <div className={styles.stage}>
-            {shown?.url ? (
-              // eslint-disable-next-line @next/next/no-img-element -- served pre-sized from object storage (M5)
-              <img
-                src={shown.url}
-                alt={shown.alt}
-                className={styles.photo}
-                width={1600}
-                height={2000}
-                fetchPriority="high"
-              />
-            ) : shown?.demo_art ? (
-              <div className={styles.stageArt} role="img" aria-label={shown.alt}>
-                <GarmentArt kind={shown.demo_art as ArtKind} colour={shown.tone} />
-              </div>
-            ) : null}
+            {model ? (
+              <ProductViewer
+                src={model.url}
+                variant={model.variant}
+                decoderPath={decoderPath()}
+                colourName={colour.name}
+                labels={viewerLabels}
+              >
+                {poster}
+              </ProductViewer>
+            ) : (
+              poster
+            )}
           </div>
           {colours.length > 1 ? (
             <ul className={styles.thumbs}>

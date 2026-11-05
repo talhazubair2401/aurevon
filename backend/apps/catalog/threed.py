@@ -99,13 +99,15 @@ def process(asset_id: str) -> None:
         src.write_bytes(private_storage().get(asset.source_key))
         result = run_pipeline(src, out)
         if not result.get("ok"):
-            asset.status = ThreeDStatus.FAILED
-            asset.report = {
-                "error": result.get("message"),
-                "code": result.get("code"),
-                "details": result.get("details", []),
-            }
-            asset.save(update_fields=["status", "report", "updated_at"])
+            ThreeDAsset.objects.filter(pk=asset.pk, status=ThreeDStatus.PROCESSING).update(
+                status=ThreeDStatus.FAILED,
+                report={
+                    "error": result.get("message"),
+                    "code": result.get("code"),
+                    "details": result.get("details", []),
+                },
+                updated_at=timezone.now(),
+            )
             return
         report = result["report"]
         draft_key = f"3d/drafts/{report['checksum']}.glb"
@@ -123,7 +125,11 @@ def process(asset_id: str) -> None:
     }
     asset.variant_map = variant_map(asset)
     asset.status = ThreeDStatus.DRAFT
-    asset.save()
+    # Only if still processing: a second run of the same job (a retried task) never overwrites a later
+    # approval or retirement.
+    with transaction.atomic():
+        if ThreeDAsset.objects.select_for_update().filter(pk=asset.pk, status=ThreeDStatus.PROCESSING).exists():
+            asset.save()
 
 
 @transaction.atomic
@@ -247,15 +253,15 @@ def preview_bytes(asset: ThreeDAsset) -> bytes:
 
 
 def for_shoppers(product: Product) -> dict[str, Any] | None:
-    """The approved model the storefront may show, or None. None whenever 3D is off for shoppers."""
+    """Which model and variant each colour shows (D-03), or None. None whenever 3D is off for shoppers.
+
+    Several approved models can cover different colours (a per-colour model); a colour in none shows photos.
+    """
     if not settings.THREED_FOR_SHOPPERS:
         return None
-    asset = ThreeDAsset.objects.filter(product=product, status=ThreeDStatus.APPROVED).order_by("-approved_at").first()
-    if asset is None:
-        return None
-    return {
-        "url": asset.url,
-        "compression": asset.compression,
-        "checksum": asset.checksum,
-        "variant_map": asset.variant_map,
-    }
+    by_colour: dict[str, dict[str, str]] = {}
+    approved = ThreeDAsset.objects.filter(product=product, status=ThreeDStatus.APPROVED).order_by("approved_at")
+    for asset in approved:  # newest last, so it wins (approval retires overlaps anyway)
+        for colour, variant in asset.variant_map.items():
+            by_colour[colour] = {"url": asset.url, "variant": variant, "compression": asset.compression}
+    return {"by_colour": by_colour} if by_colour else None

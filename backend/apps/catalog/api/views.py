@@ -248,11 +248,16 @@ class SizeChartRowSerializer(serializers.Serializer[Any]):
     values = serializers.DictField(child=serializers.CharField())
 
 
-class Model3DSerializer(serializers.Serializer[Any]):
+class Model3DColourSerializer(serializers.Serializer[Any]):
     url = serializers.CharField()
+    variant = serializers.CharField(allow_blank=True)
     compression = serializers.CharField()
-    checksum = serializers.CharField()
-    variant_map = serializers.DictField(child=serializers.CharField(allow_blank=True))
+
+
+class Model3DSerializer(serializers.Serializer[Any]):
+    """3D per colour (decision 0007, D-03); a colour that isn't listed shows its photos."""
+
+    by_colour = serializers.DictField(child=Model3DColourSerializer())
 
 
 class ProductDetailSerializer(ProductCardSerializer):

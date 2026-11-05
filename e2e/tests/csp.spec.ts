@@ -15,6 +15,7 @@ const PAGES = [
   "/en/pages/about",
   "/ur/pages/returns",
   "/en/products/relaxed-chino",
+  "/en/products/block-print-kurta", // 3D viewer (M6) when 3D is on for shoppers
   "/ur/search?q=kurta",
   "/staff/sign-in",
   "/staff/forgot-password",
@@ -65,7 +66,7 @@ test("every page enforces the nonce policy with zero violations", async ({ page 
     expect(headers["content-security-policy-report-only"], path).toBeUndefined();
     expect(policy, path).toMatch(/script-src 'self' 'nonce-[^']+' 'strict-dynamic'/);
     expect(policy, path).not.toContain("unsafe-inline");
-    expect(policy, path).not.toContain("unsafe-eval");
+    expect(policy, path).not.toMatch(/'unsafe-eval'/); // 'wasm-unsafe-eval' (3D viewer, M6) is allowed
     expect(headers["reporting-endpoints"], path).toContain("/api/v1/csp-reports");
 
     // Every <script> in the server-sent HTML carries this response's nonce. (Chunks that those scripts load

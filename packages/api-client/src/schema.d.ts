@@ -1914,13 +1914,16 @@ export interface components {
       code?: string;
       recovery_code?: string;
     };
+    /** @description 3D per colour (decision 0007, D-03); a colour that isn't listed shows its photos. */
     Model3D: {
-      url: string;
-      compression: string;
-      checksum: string;
-      variant_map: {
-        [key: string]: string;
+      by_colour: {
+        [key: string]: components["schemas"]["Model3DColour"];
       };
+    };
+    Model3DColour: {
+      url: string;
+      variant: string;
+      compression: string;
     };
     Model3DInRequest: {
       /** Format: binary */

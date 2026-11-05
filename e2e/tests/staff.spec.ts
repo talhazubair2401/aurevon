@@ -280,6 +280,36 @@ test("Owner creates, prices and publishes a product", async ({ browser, page }) 
   expect((await page.goto("/en/products/e2e-linen-kurta"))!.status()).toBe(404);
 });
 
+/*
+ * M6 model workflow: upload a .glb, the pipeline checks and compresses it into a draft, staff preview it in the
+ * shoppers' viewer through a short-lived signed address, and only a confirmed check lets it be approved.
+ */
+test("Owner uploads, previews and approves a 3D model", async ({ browser }) => {
+  test.setTimeout(180_000);
+  const owner = await signInOwner(browser);
+  await owner.goto("/staff/catalog");
+  await owner.getByRole("link", { name: "Block-Print Kurta" }).click();
+  const panel = owner.getByRole("region", { name: "3D model" });
+  await expect(panel).toBeVisible();
+  const before = await panel.locator('[data-model3d="draft"]').count();
+  await panel
+    .getByLabel("Model file (.glb)")
+    .setInputFiles("../packages/asset-pipeline/fixtures/garment-textured.glb");
+  await panel.getByRole("button", { name: "Upload model" }).click();
+  const draft = panel.locator('[data-model3d="draft"]').nth(before);
+  await expect(draft).toBeVisible({ timeout: 90_000 });
+  await expect(draft.getByText("garment-textured.glb")).toBeVisible();
+
+  const preview = draft.locator("[data-viewer3d]");
+  await expect(preview).toHaveAttribute("data-phase", "ready", { timeout: 60_000 });
+  const approve = draft.getByRole("button", { name: "Approve model" });
+  await expect(approve).toBeDisabled();
+  await draft.getByRole("checkbox", { name: /I checked this model in the viewer/ }).check();
+  await approve.click();
+  await expect(panel.getByText("Approved.")).toBeVisible();
+  await expect(panel.locator('[data-model3d="approved"]').first()).toBeVisible();
+});
+
 test("a customer session is never accepted by the staff API", async ({ request }) => {
   const email = `shopper-${Date.now()}@aurevon.test`;
   await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });

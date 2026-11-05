@@ -5187,28 +5187,36 @@
             },
             "Model3D": {
                 "type": "object",
+                "description": "3D per colour (decision 0007, D-03); a colour that isn't listed shows its photos.",
                 "properties": {
-                    "url": {
-                        "type": "string"
-                    },
-                    "compression": {
-                        "type": "string"
-                    },
-                    "checksum": {
-                        "type": "string"
-                    },
-                    "variant_map": {
+                    "by_colour": {
                         "type": "object",
                         "additionalProperties": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/Model3DColour"
                         }
                     }
                 },
                 "required": [
-                    "checksum",
+                    "by_colour"
+                ]
+            },
+            "Model3DColour": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "variant": {
+                        "type": "string"
+                    },
+                    "compression": {
+                        "type": "string"
+                    }
+                },
+                "required": [
                     "compression",
                     "url",
-                    "variant_map"
+                    "variant"
                 ]
             },
             "Model3DInRequest": {

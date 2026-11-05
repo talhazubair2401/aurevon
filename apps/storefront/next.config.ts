@@ -12,6 +12,7 @@ const config: NextConfig = {
     "@aurevon/api-client",
     "@aurevon/i18n",
     "@aurevon/ui",
+    "@aurevon/viewer3d",
   ],
   poweredByHeader: false,
   reactStrictMode: true,
