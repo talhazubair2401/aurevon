@@ -25,8 +25,8 @@ class Command(BaseCommand):
         parser.add_argument("--name", default="demo.glb")
 
     def handle(self, *args: Any, **options: Any) -> None:
-        if not settings.ALLOW_DEMO_DATA:
-            raise CommandError("Demo data is switched off (ALLOW_DEMO_DATA).")
+        if not settings.DEBUG and not getattr(settings, "ALLOW_DEMO_DATA", False):  # same rule as the catalogue
+            raise CommandError("Demo data is only for local development and review environments.")
         product = Product.objects.filter(slug=options["product"]).first()
         if product is None:
             raise CommandError(f"No product {options['product']}.")
