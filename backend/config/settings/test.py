@@ -17,3 +17,4 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 SITE_URL = "https://aurevon.test"
 MEDIA_STORAGE = "local"
+MEDIA_PRIVATE_ROOT = str(BASE_DIR / "media-private-test")

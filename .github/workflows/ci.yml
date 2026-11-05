@@ -47,6 +47,14 @@ jobs:
           cache: pip
           cache-dependency-path: backend/requirements*.txt
       - run: pip install -r requirements-dev.txt
+      # The 3D tests run the real model pipeline (packages/asset-pipeline, Node.js).
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --filter @aurevon/asset-pipeline
+        working-directory: .
       - name: Format and lint (Ruff)
         run: ruff format --check . && ruff check .
       - name: Type check (mypy, strict)
@@ -123,7 +131,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
       - name: Build and start the stack
+        # 3D on for shoppers here only, to test the storefront viewer (decision 0007). Off everywhere else
+        # until V-01, V-02 and V-03 pass.
         run: docker compose -f infra/compose.yaml up --build --detach --wait --wait-timeout 300
+        env:
+          THREED_FOR_SHOPPERS: "true"
       - run: pnpm install --frozen-lockfile --filter @aurevon/e2e...
       - run: pnpm --filter @aurevon/e2e exec playwright install --with-deps chromium
       - name: End-to-end tests and CSP report

@@ -225,3 +225,53 @@ class CollectionItem(models.Model):
 
     def __str__(self) -> str:
         return f"{self.collection_id}:{self.product_id}"
+
+
+class ThreeDStatus(models.TextChoices):
+    PROCESSING = "processing", "Processing"
+    FAILED = "failed", "Failed"
+    DRAFT = "draft", "Draft (awaiting approval)"
+    APPROVED = "approved", "Approved"
+    RETIRED = "retired", "Retired"
+
+
+class ThreeDAsset(models.Model):
+    """A garment model (MTS §4 "3D asset record"; decision 0007). Only approved assets reach the storefront,
+    and only while THREED_FOR_SHOPPERS is on. Sources and drafts live in private storage."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="models3d")
+    status = models.CharField(max_length=12, choices=ThreeDStatus.choices, default=ThreeDStatus.PROCESSING)
+    file_name = models.CharField(max_length=200)
+    # Colours this file covers when it has no variant for them (a per-colour model, D-03). Empty: by variant name.
+    colours = models.JSONField(default=list)
+    source_key = models.CharField(max_length=200)
+    draft_key = models.CharField(max_length=200, blank=True)
+    url = models.CharField(max_length=300, blank=True)  # public, set on approval
+    compression = models.CharField(max_length=10, blank=True)
+    bytes = models.PositiveBigIntegerField(null=True)
+    triangles = models.PositiveIntegerField(null=True)
+    max_texture_px = models.PositiveIntegerField(null=True)
+    est_gpu_mb = models.DecimalField(max_digits=8, decimal_places=1, null=True)
+    variants = models.JSONField(default=list)  # material variant names in the file
+    variant_map = models.JSONField(default=dict)  # {colour slug: variant name, or "" for the model as delivered}
+    checksum = models.CharField(max_length=64, blank=True)
+    report = models.JSONField(default=dict)  # validator, provisional warnings (D-01), notes, or the failure
+    uploaded_by = models.CharField(max_length=254, blank=True)
+    approved_by = models.CharField(max_length=254, blank=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.CheckConstraint(condition=Q(status__in=ThreeDStatus.values), name="threed_status_valid"),
+            models.CheckConstraint(
+                condition=~Q(status="approved") | (~Q(url="") & Q(approved_at__isnull=False)),
+                name="threed_approved_has_url",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.product_id}:{self.file_name}"

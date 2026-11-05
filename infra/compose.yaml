@@ -20,6 +20,10 @@ x-backend-env: &backend-env
   # production (P-10). MinIO no longer publishes official images, so it isn't used here.
   MEDIA_STORAGE: local
   MEDIA_ROOT: /media
+  MEDIA_PRIVATE_ROOT: /media-private
+  # 3D for shoppers stays off until V-01, V-02 and V-03 pass (decision 0007). CI's full-stack job turns it on
+  # to test the storefront viewer; never set it on in staging or production before the validations pass.
+  THREED_FOR_SHOPPERS: ${THREED_FOR_SHOPPERS:-false}
 
 services:
   postgres:
@@ -70,6 +74,7 @@ services:
     environment: *backend-env
     volumes:
       - media-data:/media
+      - media-private:/media-private
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
@@ -92,6 +97,7 @@ services:
     environment: *backend-env
     volumes:
       - media-data:/media
+      - media-private:/media-private
     depends_on:
       migrate: { condition: service_completed_successfully }
       redis: { condition: service_healthy }
@@ -153,4 +159,5 @@ services:
 
 volumes:
   media-data:
+  media-private:
   postgres-data:

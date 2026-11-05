@@ -35,3 +35,5 @@ Thumbs.db
 # local Redis snapshots
 dump.rdb
 backend/media/
+backend/media-private/
+backend/media-private-test/

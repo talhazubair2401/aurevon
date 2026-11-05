@@ -83,6 +83,8 @@ MEDIA_STORAGE = env("MEDIA_STORAGE", default="local")  # "s3" (MinIO locally, P-
 MEDIA_ROOT = env("MEDIA_ROOT", default=str(BASE_DIR / "media"))
 MEDIA_URL = "/media/"
 MEDIA_BUCKET = env("MEDIA_BUCKET", default="aurevon-media")
+MEDIA_PRIVATE_ROOT = env("MEDIA_PRIVATE_ROOT", default=str(BASE_DIR / "media-private"))
+MEDIA_PRIVATE_BUCKET = env("MEDIA_PRIVATE_BUCKET", default="aurevon-private")
 S3_ENDPOINT_URL = env("S3_ENDPOINT_URL", default="")
 S3_ACCESS_KEY = env("S3_ACCESS_KEY", default="")
 S3_SECRET_KEY = env("S3_SECRET_KEY", default="")
@@ -90,6 +92,13 @@ S3_REGION = env("S3_REGION", default="")
 # Uploads are read into memory to be checked and re-encoded; product photos stay well under this.
 DATA_UPLOAD_MAX_MEMORY_SIZE = 16 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 16 * 1024 * 1024
+# 3D (M6; decision 0007). Shoppers never see 3D until V-01, V-02 and V-03 pass (MTS §17): this stays False in
+# every environment until then. It is the only switch; the storefront shows a viewer only when the API sends a model.
+THREED_FOR_SHOPPERS = env.bool("THREED_FOR_SHOPPERS", default=False)
+# The model pipeline (packages/asset-pipeline), run by the worker with Node.js.
+ASSET_PIPELINE = env("ASSET_PIPELINE", default=str(BASE_DIR.parent / "packages" / "asset-pipeline" / "src" / "cli.mjs"))
+ASSET_PIPELINE_TIMEOUT_SECONDS = 300
+THREED_PREVIEW_SECONDS = 600  # staff preview links for drafts
 DISPLAY_TIME_ZONE = "Asia/Karachi"  # times shown to people (MTS §5); storage stays UTC
 
 # Encrypts authenticator secrets at rest. Required in production; derived from SECRET_KEY elsewhere.

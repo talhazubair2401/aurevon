@@ -6,6 +6,7 @@ come from the file), and every price change asks for the authenticator code agai
 
 from typing import Any
 
+from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from drf_spectacular.types import OpenApiTypes
@@ -22,8 +23,8 @@ from apps.audit.services import Actor
 from apps.inventory import selectors as inventory
 from common.exceptions import ApiProblem
 
-from .. import editing, images, importing
-from ..models import Category, Colour, Product, ProductImage, ProductStatus
+from .. import editing, images, importing, threed
+from ..models import Category, Colour, Product, ProductImage, ProductStatus, ThreeDAsset, ThreeDStatus
 
 TAG = ["staff catalogue"]
 
@@ -104,6 +105,31 @@ class ImageIn(serializers.Serializer[Any]):
     alt_ur = serializers.CharField(max_length=200, allow_blank=True, required=False)
 
 
+class Model3DOut(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    status = serializers.ChoiceField(choices=ThreeDStatus.values)
+    file_name = serializers.CharField()
+    colours = serializers.ListField(child=serializers.CharField())
+    variants = serializers.ListField(child=serializers.CharField())
+    variant_map = serializers.DictField(child=serializers.CharField(allow_blank=True))
+    compression = serializers.CharField(allow_blank=True)
+    bytes = serializers.IntegerField(allow_null=True)
+    triangles = serializers.IntegerField(allow_null=True)
+    max_texture_px = serializers.IntegerField(allow_null=True)
+    est_gpu_mb = serializers.CharField(allow_null=True)
+    report = serializers.JSONField()
+    preview_url = serializers.CharField(allow_null=True)
+    url = serializers.CharField(allow_blank=True)
+    uploaded_by = serializers.CharField(allow_blank=True)
+    approved_by = serializers.CharField(allow_blank=True)
+    approved_at = serializers.DateTimeField(allow_null=True)
+    created_at = serializers.DateTimeField()
+
+
+class Model3DIn(serializers.Serializer[Any]):
+    file = serializers.FileField()
+
+
 class ProductOut(serializers.Serializer[Any]):
     id = serializers.UUIDField()
     slug = serializers.CharField()
@@ -118,6 +144,8 @@ class ProductOut(serializers.Serializer[Any]):
     variant_list = VariantOut(many=True)
     publish_problems = serializers.ListField(child=serializers.CharField())
     images = ImageOut(many=True)
+    models3d = Model3DOut(many=True)
+    shoppers_see_3d = serializers.BooleanField()
     updated_at = serializers.DateTimeField()
 
 
@@ -282,7 +310,33 @@ def product_out(p: Product) -> dict[str, Any]:
             }
             for i in p.images.exclude(url="").order_by("position")
         ],
+        "models3d": [model3d_out(a) for a in p.models3d.exclude(status=ThreeDStatus.RETIRED)],
+        "shoppers_see_3d": settings.THREED_FOR_SHOPPERS,
         "updated_at": p.updated_at,
+    }
+
+
+def model3d_out(a: ThreeDAsset) -> dict[str, Any]:
+    has_file = a.status in (ThreeDStatus.DRAFT, ThreeDStatus.APPROVED)
+    return {
+        "id": a.pk,
+        "status": a.status,
+        "file_name": a.file_name,
+        "colours": a.colours,
+        "variants": a.variants,
+        "variant_map": a.variant_map,
+        "compression": a.compression,
+        "bytes": a.bytes,
+        "triangles": a.triangles,
+        "max_texture_px": a.max_texture_px,
+        "est_gpu_mb": None if a.est_gpu_mb is None else str(a.est_gpu_mb),
+        "report": a.report,
+        "preview_url": threed.preview_url(a) if has_file else None,
+        "url": a.url,
+        "uploaded_by": a.uploaded_by,
+        "approved_by": a.approved_by,
+        "approved_at": a.approved_at,
+        "created_at": a.created_at,
     }
 
 
@@ -442,3 +496,91 @@ class ProductImageView(_CatalogView):
         product = image.product
         images.remove_image(image, self.actor(), request)
         return Response(product_out(product))
+
+
+class Models3DView(_CatalogView):
+    """Upload a garment model (decision 0007). Processing runs in the background; the editor polls."""
+
+    required_permission = Perm.CATALOG_EDIT
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(
+        tags=TAG,
+        request={"multipart/form-data": Model3DIn},
+        responses={201: ProductOut},
+        operation_id="staff_catalog_3d_upload",
+    )
+    def post(self, request: Request, product_id: str) -> Response:
+        serializer = Model3DIn(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        upload = serializer.validated_data["file"]
+        if upload.size > threed.MAX_BYTES:
+            raise editing.CatalogError("The file is larger than 100 MB.")
+        product = Product.objects.get(pk=product_id)
+        threed.upload(product, upload.name, upload.read(), self.actor(), request)
+        return Response(product_out(product), status=status.HTTP_201_CREATED)
+
+
+def _asset(product_id: str, asset_id: str) -> ThreeDAsset:
+    asset = ThreeDAsset.objects.filter(product_id=product_id, pk=asset_id).select_related("product").first()
+    if asset is None:
+        raise ApiProblem(404, "not-found", "No such model.")
+    return asset
+
+
+class Model3DColoursView(_CatalogView):
+    required_permission = Perm.CATALOG_EDIT
+
+    @extend_schema(
+        tags=TAG, request=OpenApiTypes.OBJECT, responses={200: ProductOut}, operation_id="staff_catalog_3d_colours"
+    )
+    def put(self, request: Request, product_id: str, asset_id: str) -> Response:
+        asset = threed.set_colours(_asset(product_id, asset_id), _body(request).get("colours"), self.actor(), request)
+        return Response(product_out(asset.product))
+
+
+class Model3DApproveView(_CatalogView):
+    required_permission = Perm.CATALOG_PUBLISH
+
+    @extend_schema(
+        tags=TAG, request=OpenApiTypes.OBJECT, responses={200: ProductOut}, operation_id="staff_catalog_3d_approve"
+    )
+    def post(self, request: Request, product_id: str, asset_id: str) -> Response:
+        asset = threed.approve(
+            _asset(product_id, asset_id), _body(request).get("checked") is True, self.actor(), request
+        )
+        return Response(product_out(asset.product))
+
+
+class Model3DRetireView(_CatalogView):
+    required_permission = Perm.CATALOG_PUBLISH
+
+    @extend_schema(tags=TAG, request=None, responses={200: ProductOut}, operation_id="staff_catalog_3d_retire")
+    def post(self, request: Request, product_id: str, asset_id: str) -> Response:
+        asset = threed.retire(_asset(product_id, asset_id), self.actor(), request)
+        return Response(product_out(asset.product))
+
+
+class Model3DFileView(_CatalogView):
+    """Draft preview for staff: a short-lived signed link, plus the staff session (never public /media/)."""
+
+    required_permission = Perm.CATALOG_VIEW
+
+    @extend_schema(
+        tags=TAG,
+        responses={(200, "model/gltf-binary"): bytes},
+        operation_id="staff_catalog_3d_file",
+        parameters=[OpenApiParameter("expires", str), OpenApiParameter("sig", str)],
+    )
+    def get(self, request: Request, asset_id: str) -> HttpResponse:
+        if not threed.preview_allowed(
+            asset_id, request.query_params.get("expires", ""), request.query_params.get("sig", "")
+        ):
+            raise ApiProblem(403, "link-expired", "This preview link has expired. Reload the page.")
+        asset = ThreeDAsset.objects.filter(pk=asset_id).first()
+        if asset is None:
+            raise ApiProblem(404, "not-found", "No such model.")
+        response = HttpResponse(threed.preview_bytes(asset), content_type="model/gltf-binary")
+        response["Cache-Control"] = "private, no-store"
+        response["X-Content-Type-Options"] = "nosniff"
+        return response

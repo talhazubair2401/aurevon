@@ -4,7 +4,7 @@ from typing import Any
 
 from common.api import money
 
-from . import selectors
+from . import selectors, threed
 from .models import Category, Collection, Product
 
 
@@ -114,4 +114,6 @@ def product_detail(product: Product, locale: str) -> dict[str, Any]:
         ],
         "size_chart": size_chart(product.category, locale),
         "collections": [collection(c, locale) for c in product.collections.all() if c.is_published],
+        # None while 3D is off for shoppers (until V-01 to V-03 pass) or when no model is approved.
+        "model3d": threed.for_shoppers(product),
     }

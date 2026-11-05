@@ -248,6 +248,13 @@ class SizeChartRowSerializer(serializers.Serializer[Any]):
     values = serializers.DictField(child=serializers.CharField())
 
 
+class Model3DSerializer(serializers.Serializer[Any]):
+    url = serializers.CharField()
+    compression = serializers.CharField()
+    checksum = serializers.CharField()
+    variant_map = serializers.DictField(child=serializers.CharField(allow_blank=True))
+
+
 class ProductDetailSerializer(ProductCardSerializer):
     description = serializers.CharField(allow_blank=True)
     fabric = serializers.CharField(allow_blank=True)
@@ -258,6 +265,7 @@ class ProductDetailSerializer(ProductCardSerializer):
     variants = VariantSerializer(many=True)
     size_chart = SizeChartRowSerializer(many=True)
     collections = CollectionCardSerializer(many=True)
+    model3d = Model3DSerializer(allow_null=True)
 
 
 class VariantAvailabilitySerializer(serializers.Serializer[Any]):

@@ -43,6 +43,8 @@
 			root * /srv/media
 			header Cache-Control "public, max-age=31536000, immutable"
 			header X-Content-Type-Options nosniff
+			@glb path *.glb
+			header @glb Content-Type model/gltf-binary
 			file_server
 		}
 		respond 405
