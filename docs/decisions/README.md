@@ -15,6 +15,7 @@ decisions made since then are recorded here and in the numbered records; the nex
 | D-12 | Owner recovery: two Owners before launch, 24-hour assisted recovery, sealed break-glass | 0003 | 4 Nov 2026 | APPROVED |
 | P-19 | Functional colours, charcoal focus, Inter, Nastaliq + Naskh for Urdu, registration palette, interim wordmark | 0004 | 4 Nov 2026 | APPROVED (A-04 files still to supply) |
 | D-08 | CSP with a per-request nonce and `'strict-dynamic'`, both apps; HTML never publicly cached | 0005 | 4 Nov 2026 | APPROVED, implemented |
+| D-01–D-05 | 3D: provisional warnings only (no final budget), Draco, material variants per colour, external CLO 3D / Marvelous Designer specialist, Ctrl/⌘ + wheel zoom | 0007 | 5 Nov 2026 | APPROVED |
 | P-12 | Launch catalogue rules: departments, categories, letter and numeric sizes per category, colours, SKUs, prices, product fields, images, CSV import, stock | 0006 | 4 Nov 2026 | APPROVED |
 
 ## Still open (unchanged from MTS v2.1 §18 unless noted)
@@ -32,7 +33,6 @@ decisions made since then are recorded here and in the numbered records; the nex
 | P-16 | Analytics definitions and consent | M13 |
 | P-17 | Backups, RTO, RPO | M14 |
 | P-18 | Supported browsers and devices; performance budgets | M14 |
-| D-01 to D-05 | 3D asset budget, compression, colour variants, model production, wheel zoom | M5–M6, 3D switch-on |
 | D-06 | Reservation expiry | M7 |
 | D-07 | Late payment after expiry | M8 |
 | D-09 | Network restriction for staff routes | Staff routes on staging |
