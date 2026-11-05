@@ -149,6 +149,7 @@ SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "PageKindEnum": ["content", "policy"],
         "ContentFieldKindEnum": ["text", "textarea", "href"],
+        "ThreeDStatusEnum": ["processing", "failed", "draft", "approved", "retired"],
     },
 }
 
