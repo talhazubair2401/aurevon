@@ -2,7 +2,7 @@
 
 **Date:** 5 November 2026 · **Baseline:** MTS v2.1 §4, decision 0007 (D-01 to D-05), P-09 v2 reference
 **Commits:** `5e6cd8b`/`f4a73f8` (model pipeline, 3D records, approval), `f4fa8b7` (viewer, storefront and staff
-integration, 3D tests)
+integration, 3D tests), `75491f0`/`165fb41` (fixes) · **CI:** all four jobs green on `165fb41`
 **Status:** Built and tested. **3D is OFF for shoppers** (`THREED_FOR_SHOPPERS=false` everywhere except the CI
 test stack) until V-01, V-02 and V-03 pass.
 
