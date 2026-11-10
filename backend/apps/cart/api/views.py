@@ -78,7 +78,8 @@ def set_cart_cookie(response: Response, token: str) -> None:
 
 def cart_payload(cart: Cart | None, locale: str, guest: bool) -> dict[str, Any]:
     if cart is None:
-        return {"id": None, "csrf_token": None, "items": [], "count": 0, "subtotal": money(0, "PKR"), "coupon_code": ""}
+        empty: dict[str, Any] = {"id": None, "items": [], "count": 0, "subtotal": money(0, "PKR"), "coupon_code": ""}
+        return {**empty, "csrf_token": None}  # nosec B105 - no cart yet, so no token
     lines = services.lines(cart, locale)
     items = []
     for ln in lines:
