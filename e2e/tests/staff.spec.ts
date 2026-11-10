@@ -380,6 +380,48 @@ test("Owner packs, dispatches and delivers a cash-on-delivery order", async ({ b
   expect(((await search.json()) as { messages: unknown[] }).messages.length).toBeGreaterThan(0);
 });
 
+/*
+ * M9 inventory: the Owner adds a supplier, raises a purchase order, sends it and receives part of it; sellable
+ * stock goes up by the received units and the movement shows the purchase order.
+ */
+test("Owner buys stock from a supplier and receives it", async ({ browser }) => {
+  test.setTimeout(180_000);
+  const owner = await signInOwner(browser);
+  await owner.goto("/staff/inventory");
+  const firstSku = (await owner.locator("table tbody tr td a").first().textContent())!.trim();
+  const onHandBefore = Number(
+    await owner.locator("table tbody tr").first().locator("td").nth(2).textContent(),
+  );
+
+  const supplier = `Lawn House ${Date.now()}`;
+  await owner.getByRole("link", { name: "Suppliers" }).click();
+  await owner.getByLabel("Name").last().fill(supplier);
+  await owner.getByRole("button", { name: "Add supplier" }).click();
+  await expect(owner.getByRole("heading", { name: supplier })).toBeVisible();
+
+  await owner.getByRole("link", { name: "Purchase orders" }).click();
+  await owner.getByLabel("Supplier").selectOption({ label: supplier });
+  await owner.getByLabel("Line 1 SKU").fill(firstSku);
+  await owner.getByLabel("Line 1 quantity").fill("10");
+  await owner.getByLabel("Line 1 unit cost (PKR)").fill("1500");
+  await owner.getByRole("button", { name: "Create draft" }).click();
+  await expect(
+    owner.getByRole("heading", { name: new RegExp(`PO-\\d+ · ${supplier}`) }),
+  ).toBeVisible();
+  await owner.getByRole("button", { name: "Mark as sent" }).click();
+  await expect(owner.getByText("Marked as sent to the supplier.")).toBeVisible();
+  await owner.getByLabel(`Units of ${firstSku} that arrived`).fill("4");
+  await owner.getByRole("button", { name: "Receive stock" }).click();
+  await expect(owner.getByText("Received. Sellable stock has gone up.")).toBeVisible();
+  await expect(owner.getByText("Partly received")).toBeVisible();
+
+  await owner.getByRole("link", { name: firstSku }).click();
+  await expect(
+    owner.getByText("Sellable on hand").locator("xpath=following-sibling::dd[1]"),
+  ).toHaveText(String(onHandBefore + 4));
+  await expect(owner.getByRole("cell", { name: /^PO-\d+$/ }).first()).toBeVisible();
+});
+
 test("a customer session is never accepted by the staff API", async ({ request }) => {
   const email = `shopper-${Date.now()}@aurevon.test`;
   await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });

@@ -1728,6 +1728,86 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/inventory": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_stock"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/inventory/{sku}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_stock_item"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/inventory/{sku}/adjust": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_stock_adjust"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/inventory/{sku}/reorder-level": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_stock_reorder"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/inventory/{sku}/transfer": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_stock_transfer"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/me/mfa/confirm": {
     parameters: {
       query?: never;
@@ -1977,6 +2057,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/purchase-orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_purchase_orders"];
+    put?: never;
+    post: operations["staff_purchase_order_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/purchase-orders/{po_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_purchase_order"];
+    put: operations["staff_purchase_order_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/purchase-orders/{po_id}/{action}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_purchase_order_action"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/redirects": {
     parameters: {
       query?: never;
@@ -2164,6 +2292,38 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["staff_shipment_event"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/suppliers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_suppliers"];
+    put?: never;
+    post: operations["staff_supplier_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/suppliers/{supplier_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_supplier_update"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2608,6 +2768,16 @@ export interface components {
       amount: string;
       currency: string;
     };
+    MovementOut: {
+      location: string;
+      quantity: number;
+      reason: string;
+      reference: string;
+      note: string;
+      actor: string;
+      /** Format: date-time */
+      at: string;
+    };
     NavLink: {
       label: string;
       href: string;
@@ -2846,6 +3016,34 @@ export interface components {
     PlacedOut: {
       order: components["schemas"]["OrderOut"];
       next: components["schemas"]["NextEnum"];
+    };
+    PoLineOut: {
+      /** Format: uuid */
+      id: string;
+      sku: string;
+      product: string;
+      quantity_ordered: number;
+      quantity_received: number;
+      unit_cost: string;
+    };
+    PoOut: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      supplier: components["schemas"]["SupplierOut"];
+      status: string;
+      /** Format: date */
+      expected_on: string | null;
+      note: string;
+      created_by: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      sent_at: string | null;
+      lines: components["schemas"]["PoLineOut"][];
+      total_cost: string;
+      units_ordered: number;
+      units_received: number;
     };
     PriceFacet: {
       min: string | null;
@@ -3239,6 +3437,37 @@ export interface components {
       /** Format: date-time */
       stepped_up_until: string;
     };
+    StockDetailOut: {
+      sku: string;
+      product: string;
+      product_slug: string;
+      colour: string;
+      size: string;
+      on_hand: number;
+      reserved: number;
+      available: number;
+      quarantine: number;
+      damaged: number;
+      reorder_level: number;
+      low: boolean;
+      is_active: boolean;
+      movements: components["schemas"]["MovementOut"][];
+    };
+    StockRowOut: {
+      sku: string;
+      product: string;
+      product_slug: string;
+      colour: string;
+      size: string;
+      on_hand: number;
+      reserved: number;
+      available: number;
+      quarantine: number;
+      damaged: number;
+      reorder_level: number;
+      low: boolean;
+      is_active: boolean;
+    };
     SubscribeInRequest: {
       /** Format: email */
       email: string;
@@ -3247,6 +3476,28 @@ export interface components {
       /** @default storefront */
       source: string;
       consent: boolean;
+    };
+    SupplierInRequest: {
+      name: string;
+      contact_name?: string;
+      email?: string;
+      phone?: string;
+      address?: string;
+      notes?: string;
+      /** @default true */
+      is_active: boolean;
+    };
+    SupplierOut: {
+      /** Format: uuid */
+      id: string;
+      name: string;
+      contact_name: string;
+      email: string;
+      phone: string;
+      address: string;
+      notes: string;
+      is_active: boolean;
+      open_orders: number;
     };
     SuspendInRequest: {
       reason: string;
@@ -6031,6 +6282,131 @@ export interface operations {
       };
     };
   };
+  staff_stock: {
+    parameters: {
+      query?: {
+        low?: boolean;
+        offset?: number;
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockRowOut"][];
+        };
+      };
+    };
+  };
+  staff_stock_item: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sku: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockDetailOut"];
+        };
+      };
+    };
+  };
+  staff_stock_adjust: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sku: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockRowOut"];
+        };
+      };
+    };
+  };
+  staff_stock_reorder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sku: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockRowOut"];
+        };
+      };
+    };
+  };
+  staff_stock_transfer: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        sku: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockRowOut"];
+        };
+      };
+    };
+  };
   staff_me_mfa_confirm: {
     parameters: {
       query?: never;
@@ -6405,6 +6781,128 @@ export interface operations {
       };
     };
   };
+  staff_purchase_orders: {
+    parameters: {
+      query?: {
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PoOut"][];
+        };
+      };
+    };
+  };
+  staff_purchase_order_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PoOut"];
+        };
+      };
+    };
+  };
+  staff_purchase_order: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        po_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PoOut"];
+        };
+      };
+    };
+  };
+  staff_purchase_order_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        po_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PoOut"];
+        };
+      };
+    };
+  };
+  staff_purchase_order_action: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        action: string;
+        po_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PoOut"];
+        };
+      };
+    };
+  };
   staff_redirects: {
     parameters: {
       query?: never;
@@ -6693,6 +7191,73 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_suppliers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupplierOut"][];
+        };
+      };
+    };
+  };
+  staff_supplier_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SupplierInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupplierOut"];
+        };
+      };
+    };
+  };
+  staff_supplier_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        supplier_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SupplierInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupplierOut"];
         };
       };
     };

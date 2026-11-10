@@ -4629,6 +4629,227 @@
                 }
             }
         },
+        "/api/v1/staff/inventory": {
+            "get": {
+                "operationId": "staff_stock",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "low",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StockRowOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/inventory/{sku}": {
+            "get": {
+                "operationId": "staff_stock_item",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "sku",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockDetailOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/inventory/{sku}/adjust": {
+            "post": {
+                "operationId": "staff_stock_adjust",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "sku",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockRowOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/inventory/{sku}/reorder-level": {
+            "put": {
+                "operationId": "staff_stock_reorder",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "sku",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockRowOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/inventory/{sku}/transfer": {
+            "post": {
+                "operationId": "staff_stock_transfer",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "sku",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StockRowOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/me/mfa/confirm": {
             "post": {
                 "operationId": "staff_me_mfa_confirm",
@@ -5244,6 +5465,210 @@
                 }
             }
         },
+        "/api/v1/staff/purchase-orders": {
+            "get": {
+                "operationId": "staff_purchase_orders",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PoOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_purchase_order_create",
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/purchase-orders/{po_id}": {
+            "get": {
+                "operationId": "staff_purchase_order",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "po_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "staff_purchase_order_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "po_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/purchase-orders/{po_id}/{action}": {
+            "post": {
+                "operationId": "staff_purchase_order_action",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "action",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "po_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PoOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/redirects": {
             "get": {
                 "operationId": "staff_redirects",
@@ -5712,6 +6137,113 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/StaffOrderOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/suppliers": {
+            "get": {
+                "operationId": "staff_suppliers",
+                "tags": [
+                    "staff inventory"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SupplierOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_supplier_create",
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupplierInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SupplierOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/suppliers/{supplier_id}": {
+            "put": {
+                "operationId": "staff_supplier_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "supplier_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff inventory"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupplierInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SupplierOut"
                                 }
                             }
                         },
@@ -7331,6 +7863,42 @@
                     "currency"
                 ]
             },
+            "MovementOut": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "reference": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "actor": {
+                        "type": "string"
+                    },
+                    "at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "actor",
+                    "at",
+                    "location",
+                    "note",
+                    "quantity",
+                    "reason",
+                    "reference"
+                ]
+            },
             "NavLink": {
                 "type": "object",
                 "properties": {
@@ -8162,6 +8730,106 @@
                 "required": [
                     "next",
                     "order"
+                ]
+            },
+            "PoLineOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "sku": {
+                        "type": "string"
+                    },
+                    "product": {
+                        "type": "string"
+                    },
+                    "quantity_ordered": {
+                        "type": "integer"
+                    },
+                    "quantity_received": {
+                        "type": "integer"
+                    },
+                    "unit_cost": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "product",
+                    "quantity_ordered",
+                    "quantity_received",
+                    "sku",
+                    "unit_cost"
+                ]
+            },
+            "PoOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "supplier": {
+                        "$ref": "#/components/schemas/SupplierOut"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "expected_on": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "sent_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "lines": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PoLineOut"
+                        }
+                    },
+                    "total_cost": {
+                        "type": "string"
+                    },
+                    "units_ordered": {
+                        "type": "integer"
+                    },
+                    "units_received": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "created_by",
+                    "expected_on",
+                    "id",
+                    "lines",
+                    "note",
+                    "number",
+                    "sent_at",
+                    "status",
+                    "supplier",
+                    "total_cost",
+                    "units_ordered",
+                    "units_received"
                 ]
             },
             "PriceFacet": {
@@ -9613,6 +10281,131 @@
                     "stepped_up_until"
                 ]
             },
+            "StockDetailOut": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "product": {
+                        "type": "string"
+                    },
+                    "product_slug": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "on_hand": {
+                        "type": "integer"
+                    },
+                    "reserved": {
+                        "type": "integer"
+                    },
+                    "available": {
+                        "type": "integer"
+                    },
+                    "quarantine": {
+                        "type": "integer"
+                    },
+                    "damaged": {
+                        "type": "integer"
+                    },
+                    "reorder_level": {
+                        "type": "integer"
+                    },
+                    "low": {
+                        "type": "boolean"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "movements": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MovementOut"
+                        }
+                    }
+                },
+                "required": [
+                    "available",
+                    "colour",
+                    "damaged",
+                    "is_active",
+                    "low",
+                    "movements",
+                    "on_hand",
+                    "product",
+                    "product_slug",
+                    "quarantine",
+                    "reorder_level",
+                    "reserved",
+                    "size",
+                    "sku"
+                ]
+            },
+            "StockRowOut": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "product": {
+                        "type": "string"
+                    },
+                    "product_slug": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "on_hand": {
+                        "type": "integer"
+                    },
+                    "reserved": {
+                        "type": "integer"
+                    },
+                    "available": {
+                        "type": "integer"
+                    },
+                    "quarantine": {
+                        "type": "integer"
+                    },
+                    "damaged": {
+                        "type": "integer"
+                    },
+                    "reorder_level": {
+                        "type": "integer"
+                    },
+                    "low": {
+                        "type": "boolean"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "available",
+                    "colour",
+                    "damaged",
+                    "is_active",
+                    "low",
+                    "on_hand",
+                    "product",
+                    "product_slug",
+                    "quarantine",
+                    "reorder_level",
+                    "reserved",
+                    "size",
+                    "sku"
+                ]
+            },
             "SubscribeInRequest": {
                 "type": "object",
                 "properties": {
@@ -9643,6 +10436,95 @@
                 "required": [
                     "consent",
                     "email"
+                ]
+            },
+            "SupplierInRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "contact_name": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "email": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "format": "email"
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "address": {
+                        "type": "string",
+                        "maxLength": 300
+                    },
+                    "notes": {
+                        "type": "string",
+                        "maxLength": 500
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "SupplierOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "contact_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "open_orders": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "address",
+                    "contact_name",
+                    "email",
+                    "id",
+                    "is_active",
+                    "name",
+                    "notes",
+                    "open_orders",
+                    "phone"
                 ]
             },
             "SuspendInRequest": {

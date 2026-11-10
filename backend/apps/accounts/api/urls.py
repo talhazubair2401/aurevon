@@ -6,6 +6,7 @@ from apps.audit.api.views import AuditLogView
 from apps.catalog.api import staff as catalog
 from apps.cms.api import staff as cms
 from apps.cms.api.views import SettingsView, SettingView
+from apps.inventory.api import staff as inventory
 from apps.orders.api import staff as orders
 
 from . import customer, staff_admin, staff_auth, staff_me
@@ -83,6 +84,17 @@ staff_urlpatterns: list[URLPattern] = [
     path("payments/<uuid:payment_id>/resolve", orders.PaymentReviewView.as_view()),
     path("alerts", orders.AlertsView.as_view()),
     path("alerts/<uuid:alert_id>/resolve", orders.AlertResolveView.as_view()),
+    # Inventory, suppliers and purchase orders (M9; MTS §8 "Staff: inventory").
+    path("inventory", inventory.StockView.as_view()),
+    path("inventory/<str:sku>", inventory.StockItemView.as_view()),
+    path("inventory/<str:sku>/adjust", inventory.StockAdjustView.as_view()),
+    path("inventory/<str:sku>/transfer", inventory.StockTransferView.as_view()),
+    path("inventory/<str:sku>/reorder-level", inventory.StockReorderView.as_view()),
+    path("suppliers", inventory.SuppliersView.as_view()),
+    path("suppliers/<uuid:supplier_id>", inventory.SupplierView.as_view()),
+    path("purchase-orders", inventory.PurchaseOrdersView.as_view()),
+    path("purchase-orders/<uuid:po_id>", inventory.PurchaseOrderView.as_view()),
+    path("purchase-orders/<uuid:po_id>/<slug:action>", inventory.PurchaseOrderActionView.as_view()),
     # Catalogue (M5; MTS §8 "Staff: catalogue"; decision 0006).
     path("catalog/colours", catalog.ColoursView.as_view()),
     path("catalog/colours/<slug:slug>", catalog.ColourView.as_view()),

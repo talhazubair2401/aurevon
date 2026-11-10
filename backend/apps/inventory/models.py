@@ -38,6 +38,8 @@ class InventoryItem(models.Model):
     location = models.ForeignKey(StockLocation, on_delete=models.PROTECT, related_name="items")
     on_hand = models.IntegerField(default=0)
     reserved = models.IntegerField(default=0)
+    # Low-stock alert when available sellable stock falls to this (0: no alert). Main warehouse only (M9).
+    reorder_level = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -115,3 +117,75 @@ class StockReservation(models.Model):
 
     def __str__(self) -> str:
         return f"{self.order_id}:{self.quantity}"
+
+
+class Supplier(models.Model):
+    """Who AureVon buys stock from (M9)."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=120, unique=True)
+    contact_name = models.CharField(max_length=120, blank=True)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    address = models.CharField(max_length=300, blank=True)
+    notes = models.CharField(max_length=500, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class PurchaseOrderStatus(models.TextChoices):
+    DRAFT = "draft", "Draft"
+    SENT = "sent", "Sent to supplier"
+    PARTLY_RECEIVED = "partly_received", "Partly received"
+    RECEIVED = "received", "Received"
+    CANCELLED = "cancelled", "Cancelled"
+
+
+class PurchaseOrder(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    number = models.CharField(max_length=20, unique=True)  # PO-000001
+    supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT, related_name="purchase_orders")
+    status = models.CharField(max_length=16, choices=PurchaseOrderStatus.choices, default=PurchaseOrderStatus.DRAFT)
+    expected_on = models.DateField(null=True, blank=True)
+    note = models.CharField(max_length=500, blank=True)
+    created_by = models.CharField(max_length=254)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.CheckConstraint(condition=Q(status__in=PurchaseOrderStatus.values), name="po_status_valid")
+        ]
+
+    def __str__(self) -> str:
+        return self.number
+
+
+class PurchaseOrderLine(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name="lines")
+    variant = models.ForeignKey("catalog.ProductVariant", on_delete=models.PROTECT, related_name="+")
+    quantity_ordered = models.PositiveIntegerField()
+    quantity_received = models.PositiveIntegerField(default=0)
+    unit_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=Q(quantity_ordered__gte=1), name="po_line_quantity_positive"),
+            models.CheckConstraint(
+                condition=Q(quantity_received__lte=F("quantity_ordered")), name="po_line_not_over_received"
+            ),
+            models.CheckConstraint(condition=Q(unit_cost__gte=0), name="po_line_cost_not_negative"),
+            models.UniqueConstraint(fields=["purchase_order", "variant"], name="po_line_variant_once"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.variant_id} x{self.quantity_ordered}"
