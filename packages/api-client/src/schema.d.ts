@@ -475,6 +475,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/contact": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Uses the cart view's session handling so a signed-in customer's ticket is linked to their account. */
+    post: operations["contact"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/me": {
     parameters: {
       query?: never;
@@ -555,6 +572,24 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/me/preferences": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Message preferences (M11). Each choice is a consent record with its wording version and time. */
+    get: operations["me_preferences_get"];
+    /** @description Message preferences (M11). Each choice is a consent record with its wording version and time. */
+    put: operations["me_preferences_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/me/sessions": {
     parameters: {
       query?: never;
@@ -598,6 +633,22 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["me_sessions_revoke_others"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/me/tickets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["me_tickets"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -715,6 +766,41 @@ export interface paths {
     get: operations["payment_status"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{number}/returns": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    get: operations["order_returns"];
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["order_return_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{number}/returns/{return_number}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["order_return_cancel"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1712,6 +1798,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/coupons": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_coupons"];
+    put?: never;
+    post: operations["staff_coupon_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/coupons/{coupon_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_coupon_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/couriers": {
     parameters: {
       query?: never;
@@ -2057,6 +2175,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/promotions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_promotions"];
+    put?: never;
+    post: operations["staff_promotion_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/promotions/{promotion_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_promotion_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/purchase-orders": {
     parameters: {
       query?: never;
@@ -2202,6 +2352,88 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/reports/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_reports_dashboard"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/reports/export/{kind}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description CSV download. Aggregate reports need `reports.aggregate`; the order list needs `reports.export_personal`. */
+    get: operations["staff_reports_export"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/returns": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_returns"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/returns/{return_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_return"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/returns/{return_id}/{action}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description approve | reject | receive | inspect | complete. */
+    post: operations["staff_return_action"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/roles": {
     parameters: {
       query?: never;
@@ -2298,6 +2530,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/shipping-rates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_shipping_rate_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/shipping-rates/{rate_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_shipping_rate_update"];
+    post?: never;
+    delete: operations["staff_shipping_rate_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/shipping-zones": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_shipping_zones"];
+    put?: never;
+    post: operations["staff_shipping_zone_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/shipping-zones/{code}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["staff_shipping_zone_update"];
+    post?: never;
+    delete: operations["staff_shipping_zone_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/suppliers": {
     parameters: {
       query?: never;
@@ -2324,6 +2620,155 @@ export interface paths {
     get?: never;
     put: operations["staff_supplier_update"];
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/support/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Counts for the support dashboard; each figure is null when the role can't see that area. */
+    get: operations["staff_support_summary"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/tax-rules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_tax_rules"];
+    put?: never;
+    post: operations["staff_tax_rule_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/tax-rules/{rule_id}/end": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Rules are never edited or deleted (orders were taxed with them); a rule is ended on a date instead. */
+    post: operations["staff_tax_rule_end"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/tickets": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_tickets"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/tickets/{ticket_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_ticket"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["staff_ticket_update"];
+    trace?: never;
+  };
+  "/api/v1/staff/tickets/{ticket_id}/messages": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_ticket_message"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/support/ticket": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description POST (not GET) so the token travels in the body, never in a URL or log. */
+    post: operations["support_ticket_open"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/support/ticket/reply": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["support_ticket_reply"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/unsubscribe": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description One-click stop for any consented message (the link in each reminder). No sign-in needed. */
+    post: operations["unsubscribe"];
     delete?: never;
     options?: never;
     head?: never;
@@ -2404,6 +2849,12 @@ export interface components {
       name: string;
       version: string;
     };
+    /**
+     * @description * `me` - me
+     *     * `nobody` - nobody
+     * @enum {string}
+     */
+    AssignEnum: "me" | "nobody";
     AttemptOut: {
       /** Format: uri */
       redirect_url: string;
@@ -2500,13 +2951,35 @@ export interface components {
       department: components["schemas"]["DepartmentEnum"];
       name: string;
     };
+    CategoryRowOut: {
+      category: string | null;
+      units: number;
+      /** Format: decimal */
+      revenue: string;
+    };
     ChallengeOut: {
       challenge: string;
       expires_in: number;
     };
+    ChangeOut: {
+      /** Format: double */
+      orders: number | null;
+      /** Format: double */
+      gross_sales: number | null;
+      /** Format: double */
+      net_sales: number | null;
+      /** Format: double */
+      average_order: number | null;
+    };
     ChangePasswordInRequest: {
       current_password: string;
       new_password: string;
+    };
+    CityRowOut: {
+      city: string;
+      orders: number;
+      /** Format: decimal */
+      gross_sales: string;
     };
     CodeInRequest: {
       code: string;
@@ -2543,6 +3016,24 @@ export interface components {
     ConfirmInRequest: {
       token: string;
     };
+    ContactInRequest: {
+      name: string;
+      /** Format: email */
+      email: string;
+      /** @default  */
+      phone: string;
+      category: components["schemas"]["TicketCategoryEnum"];
+      subject: string;
+      message: string;
+      order_number?: string;
+      /** @default en */
+      locale: components["schemas"]["LocaleEnum"];
+      /** @default  */
+      website: string;
+    };
+    ContactOut: {
+      number: string;
+    };
     /**
      * @description * `text` - text
      *     * `textarea` - textarea
@@ -2559,6 +3050,44 @@ export interface components {
     };
     CouponInRequest: {
       code: string;
+    };
+    CouponOut: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      description: string;
+      kind: string;
+      /** Format: decimal */
+      value: string;
+      /** Format: decimal */
+      max_discount: string | null;
+      /** Format: decimal */
+      min_subtotal: string;
+      categories: string[];
+      /** Format: date-time */
+      starts_at: string | null;
+      /** Format: date-time */
+      ends_at: string | null;
+      is_active: boolean;
+      state: string;
+      usage_limit: number | null;
+      per_customer_limit: number;
+      times_used: number;
+      /** Format: decimal */
+      discount_given: string;
+      /** Format: decimal */
+      order_value: string;
+      created_by: string;
+      /** Format: date-time */
+      created_at: string;
+    };
+    CouponRowOut: {
+      code: string;
+      uses: number;
+      /** Format: decimal */
+      discount: string;
+      /** Format: decimal */
+      orders_value: string;
     };
     CourierOut: {
       code: string;
@@ -2592,12 +3121,54 @@ export interface components {
       /** @default false */
       remember: boolean;
     };
+    CustomersOut: {
+      new_accounts: number;
+      guest_orders: number;
+      account_orders: number;
+      buying_accounts: number;
+      returning_accounts: number;
+    };
+    DashboardOut: {
+      /** Format: date */
+      start: string;
+      /** Format: date */
+      end: string;
+      /** Format: date */
+      previous_start: string;
+      /** Format: date */
+      previous_end: string;
+      summary: components["schemas"]["SummaryOut"];
+      change: components["schemas"]["ChangeOut"];
+      daily: components["schemas"]["DayOut"][];
+      products: components["schemas"]["ProductRowOut"][];
+      categories: components["schemas"]["CategoryRowOut"][];
+      cities: components["schemas"]["CityRowOut"][];
+      customers: components["schemas"]["CustomersOut"];
+      returns: components["schemas"]["ReturnsReportOut"];
+      coupons: components["schemas"]["CouponRowOut"][];
+      inventory: components["schemas"]["InventoryReportOut"];
+      exports: string[];
+      definitions: string;
+    };
+    DayOut: {
+      /** Format: date */
+      day: string;
+      orders: number;
+      /** Format: decimal */
+      gross_sales: string;
+    };
     /**
      * @description * `women` - women
      *     * `men` - men
      * @enum {string}
      */
     DepartmentEnum: "women" | "men";
+    /**
+     * @description * `percent` - percent
+     *     * `fixed` - fixed
+     * @enum {string}
+     */
+    DiscountKindEnum: "percent" | "fixed";
     EditableBlockOut: {
       key: string;
       label: string;
@@ -2620,6 +3191,12 @@ export interface components {
     };
     EnabledInRequest: {
       is_enabled: boolean;
+    };
+    ExchangeOptionOut: {
+      sku: string;
+      size: string;
+      colour: string;
+      in_stock: boolean;
     };
     Facets: {
       departments: components["schemas"]["CountFacet"][];
@@ -2679,6 +3256,16 @@ export interface components {
       errors: components["schemas"]["ImportErrorOut"][];
       applied: boolean;
     };
+    InventoryReportOut: {
+      sellable_units: number;
+      reserved_units: number;
+      /** Format: decimal */
+      retail_value: string;
+      out_of_stock: number;
+      low_stock: number;
+      quarantine_units: number;
+      damaged_units: number;
+    };
     InviteInRequest: {
       /** Format: email */
       email: string;
@@ -2715,6 +3302,21 @@ export interface components {
       label: string;
       items: components["schemas"]["NavLinkOut"][];
     };
+    MessageOut: {
+      /** Format: uuid */
+      id: string;
+      kind: components["schemas"]["TicketMessageKindEnum"];
+      author: string;
+      body: string;
+      /** Format: date-time */
+      created_at: string;
+    };
+    /**
+     * @description * `standard` - standard
+     *     * `express` - express
+     * @enum {string}
+     */
+    MethodEnum: "standard" | "express";
     MfaVerifyInRequest: {
       challenge: string;
       code?: string;
@@ -2778,6 +3380,13 @@ export interface components {
       /** Format: date-time */
       at: string;
     };
+    MyTicketRowOut: {
+      number: string;
+      subject: string;
+      status: string;
+      /** Format: date-time */
+      updated_at: string;
+    };
     NavLink: {
       label: string;
       href: string;
@@ -2793,6 +3402,14 @@ export interface components {
       footer_shop: components["schemas"]["NavLink"][];
       footer_help: components["schemas"]["NavLink"][];
     };
+    /**
+     * @description * `none` - none
+     *     * `pending` - pending
+     *     * `confirmed` - confirmed
+     *     * `withdrawn` - withdrawn
+     * @enum {string}
+     */
+    NewsletterEnum: "none" | "pending" | "confirmed" | "withdrawn";
     NewsletterOut: {
       status: string;
     };
@@ -2858,6 +3475,15 @@ export interface components {
       can_return: boolean;
       history: components["schemas"]["OrderEventOut"][];
       shipments: components["schemas"]["ShipmentOut"][];
+    };
+    OrderReturnsOut: {
+      can_return: boolean;
+      window_days: number;
+      /** Format: date-time */
+      return_by: string | null;
+      reasons: components["schemas"]["ReasonOut"][];
+      items: components["schemas"]["ReturnableItemOut"][];
+      requests: components["schemas"]["ReturnOut"][];
     };
     OrderRowOut: {
       number: string;
@@ -2986,6 +3612,10 @@ export interface components {
     PatchedQuantityInRequest: {
       quantity?: number;
     };
+    PatchedTicketUpdateInRequest: {
+      status?: components["schemas"]["TicketStatusEnum"];
+      assign?: components["schemas"]["AssignEnum"];
+    };
     /**
      * @description * `card` - card
      *     * `cod` - cod
@@ -3044,6 +3674,18 @@ export interface components {
       total_cost: string;
       units_ordered: number;
       units_received: number;
+    };
+    PreferencesInRequest: {
+      newsletter?: boolean;
+      cart_reminders?: boolean;
+      sms_updates?: boolean;
+    };
+    PreferencesOut: {
+      newsletter: components["schemas"]["NewsletterEnum"];
+      cart_reminders: boolean;
+      sms_updates: boolean;
+      email_verified: boolean;
+      has_phone: boolean;
     };
     PriceFacet: {
       min: string | null;
@@ -3129,6 +3771,14 @@ export interface components {
       previous: string | null;
       results: components["schemas"]["ProductCard"][];
     };
+    ProductRowOut: {
+      product: string;
+      name: string;
+      units: number;
+      /** Format: decimal */
+      revenue: string;
+      returned_units: number;
+    };
     ProductSummaryOut: {
       /** Format: uuid */
       id: string;
@@ -3150,6 +3800,53 @@ export interface components {
       email_verified: boolean;
       phone: string;
       preferred_locale: components["schemas"]["LocaleEnum"];
+    };
+    PromotionInRequest: {
+      kind: components["schemas"]["DiscountKindEnum"];
+      /** Format: decimal */
+      value: string;
+      /** Format: decimal */
+      max_discount?: string | null;
+      /**
+       * Format: decimal
+       * @default 0.00
+       */
+      min_subtotal: string;
+      categories?: string[];
+      /** Format: date-time */
+      starts_at?: string | null;
+      /** Format: date-time */
+      ends_at?: string | null;
+      /** @default true */
+      is_active: boolean;
+      name: string;
+      label_en: string;
+      /** @default  */
+      label_ur: string;
+    };
+    PromotionOut: {
+      /** Format: uuid */
+      id: string;
+      name: string;
+      label_en: string;
+      label_ur: string;
+      kind: string;
+      /** Format: decimal */
+      value: string;
+      /** Format: decimal */
+      max_discount: string | null;
+      /** Format: decimal */
+      min_subtotal: string;
+      categories: string[];
+      /** Format: date-time */
+      starts_at: string | null;
+      /** Format: date-time */
+      ends_at: string | null;
+      is_active: boolean;
+      state: string;
+      created_by: string;
+      /** Format: date-time */
+      created_at: string;
     };
     /**
      * @description * `punjab` - punjab
@@ -3188,6 +3885,59 @@ export interface components {
       payment_methods: string[];
       problems: string[];
       guest_checkout_allowed: boolean;
+    };
+    RateInRequest: {
+      zone: string;
+      method: components["schemas"]["MethodEnum"];
+      /** Format: decimal */
+      fee: string;
+      /** Format: decimal */
+      free_over?: string | null;
+      days_min: number;
+      days_max: number;
+      /** @default true */
+      cod_allowed: boolean;
+      /**
+       * Format: decimal
+       * @default 0.00
+       */
+      cod_fee: string;
+      /** @default true */
+      is_active: boolean;
+    };
+    RateOut: {
+      /** Format: uuid */
+      id: string;
+      zone: string;
+      method: string;
+      /** Format: decimal */
+      fee: string;
+      /** Format: decimal */
+      free_over: string | null;
+      days_min: number;
+      days_max: number;
+      cod_allowed: boolean;
+      /** Format: decimal */
+      cod_fee: string;
+      is_active: boolean;
+    };
+    ReasonCountOut: {
+      reason: string;
+      count: number;
+    };
+    /**
+     * @description * `size` - size
+     *     * `quality` - quality
+     *     * `not_as_described` - not_as_described
+     *     * `wrong_item` - wrong_item
+     *     * `changed_mind` - changed_mind
+     *     * `other` - other
+     * @enum {string}
+     */
+    ReasonEnum: "size" | "quality" | "not_as_described" | "wrong_item" | "changed_mind" | "other";
+    ReasonOut: {
+      code: string;
+      label: string;
     };
     RecoveryCodesOut: {
       recovery_codes: string[];
@@ -3237,6 +3987,100 @@ export interface components {
       created_at: string;
       /** Format: date-time */
       completed_at: string | null;
+    };
+    ReturnActionInRequest: {
+      /** @default  */
+      note: string;
+      outcomes?: {
+        [key: string]: {
+          [key: string]: string;
+        };
+      };
+      /** Format: decimal */
+      refund_amount?: string | null;
+    };
+    ReturnItemOut: {
+      /** Format: uuid */
+      id: string;
+      sku: string;
+      name: string;
+      size: string;
+      colour: string;
+      quantity: number;
+      exchange_sku: string;
+      exchange_label: string;
+      outcome: string;
+      inspection_note: string;
+    };
+    /**
+     * @description * `refund` - refund
+     *     * `exchange` - exchange
+     * @enum {string}
+     */
+    ReturnKindEnum: "refund" | "exchange";
+    ReturnLineInRequest: {
+      sku: string;
+      quantity: number;
+      /** @default  */
+      exchange_sku: string;
+    };
+    ReturnOut: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      order: string;
+      kind: components["schemas"]["ReturnKindEnum"];
+      status: components["schemas"]["ReturnStatusEnum"];
+      reason: string;
+      reason_label: string;
+      details: string;
+      decision_note: string;
+      /** Format: decimal */
+      refund_amount: string | null;
+      exchange_order: string | null;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+      items: components["schemas"]["ReturnItemOut"][];
+    };
+    ReturnRequestInRequest: {
+      kind: components["schemas"]["ReturnKindEnum"];
+      reason: components["schemas"]["ReasonEnum"];
+      /** @default  */
+      details: string;
+      lines: components["schemas"]["ReturnLineInRequest"][];
+    };
+    /**
+     * @description * `requested` - requested
+     *     * `approved` - approved
+     *     * `rejected` - rejected
+     *     * `received` - received
+     *     * `inspected` - inspected
+     *     * `completed` - completed
+     *     * `cancelled` - cancelled
+     * @enum {string}
+     */
+    ReturnStatusEnum:
+      "requested" | "approved" | "rejected" | "received" | "inspected" | "completed" | "cancelled";
+    ReturnableItemOut: {
+      sku: string;
+      name: string;
+      size: string;
+      colour: string;
+      image_url: string;
+      quantity: number;
+      available: number;
+      exchange_options: components["schemas"]["ExchangeOptionOut"][];
+    };
+    ReturnsReportOut: {
+      requests: number;
+      refunds: number;
+      exchanges: number;
+      units_returned: number;
+      /** Format: double */
+      return_rate_percent: number;
+      by_reason: components["schemas"]["ReasonCountOut"][];
     };
     RevokedOut: {
       revoked: number;
@@ -3377,6 +4221,31 @@ export interface components {
       status: string;
       role: components["schemas"]["RoleOut"];
     };
+    StaffCouponInRequest: {
+      kind: components["schemas"]["DiscountKindEnum"];
+      /** Format: decimal */
+      value: string;
+      /** Format: decimal */
+      max_discount?: string | null;
+      /**
+       * Format: decimal
+       * @default 0.00
+       */
+      min_subtotal: string;
+      categories?: string[];
+      /** Format: date-time */
+      starts_at?: string | null;
+      /** Format: date-time */
+      ends_at?: string | null;
+      /** @default true */
+      is_active: boolean;
+      code: string;
+      /** @default  */
+      description: string;
+      usage_limit?: number | null;
+      /** @default 1 */
+      per_customer_limit: number;
+    };
     StaffOrderOut: {
       order: unknown;
       account_email: string | null;
@@ -3402,6 +4271,50 @@ export interface components {
       /** Format: date-time */
       created_at: string;
     };
+    StaffReturnListOut: {
+      results: components["schemas"]["StaffReturnRowOut"][];
+      counts: {
+        [key: string]: number;
+      };
+    };
+    StaffReturnOut: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      order: string;
+      kind: components["schemas"]["ReturnKindEnum"];
+      status: components["schemas"]["ReturnStatusEnum"];
+      reason: string;
+      reason_label: string;
+      details: string;
+      decision_note: string;
+      /** Format: decimal */
+      refund_amount: string | null;
+      exchange_order: string | null;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+      items: components["schemas"]["ReturnItemOut"][];
+      customer_email: string;
+      customer_name: string;
+      /** Format: decimal */
+      suggested_refund: string | null;
+      can_complete_refund: boolean;
+    };
+    StaffReturnRowOut: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      order: string;
+      customer: string;
+      kind: string;
+      status: string;
+      reason_label: string;
+      units: number;
+      /** Format: date-time */
+      created_at: string;
+    };
     StaffSessionInfoOut: {
       account: components["schemas"]["StaffAccountSummaryOut"];
       permissions: string[];
@@ -3419,6 +4332,48 @@ export interface components {
       /** Format: date-time */
       stepped_up_until: string | null;
       mfa_reenrollment_required: boolean;
+    };
+    StaffTicketListOut: {
+      results: components["schemas"]["StaffTicketRowOut"][];
+      counts: {
+        [key: string]: number;
+      };
+    };
+    StaffTicketOut: {
+      number: string;
+      category: components["schemas"]["TicketCategoryEnum"];
+      subject: string;
+      status: components["schemas"]["TicketStatusEnum"];
+      order_number: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+      messages: components["schemas"]["MessageOut"][];
+      /** Format: uuid */
+      id: string;
+      name: string;
+      email: string;
+      phone: string;
+      locale: string;
+      has_account: boolean;
+      assigned_to: string | null;
+      assigned_to_me: boolean;
+    };
+    StaffTicketRowOut: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      subject: string;
+      category: string;
+      status: string;
+      name: string;
+      email: string;
+      order_number: string;
+      assigned_to: string | null;
+      messages: number;
+      /** Format: date-time */
+      updated_at: string;
     };
     /**
      * @description * `draft` - draft
@@ -3477,6 +4432,34 @@ export interface components {
       source: string;
       consent: boolean;
     };
+    SummaryOut: {
+      orders: number;
+      units: number;
+      /** Format: decimal */
+      gross_sales: string;
+      /** Format: decimal */
+      discounts: string;
+      /** Format: decimal */
+      shipping: string;
+      /** Format: decimal */
+      cod_fees: string;
+      /** Format: decimal */
+      tax: string;
+      /** Format: decimal */
+      refunds: string;
+      /** Format: decimal */
+      net_sales: string;
+      /** Format: decimal */
+      average_order: string;
+      cancelled: number;
+      awaiting_payment: number;
+      /** Format: decimal */
+      card_sales: string;
+      /** Format: decimal */
+      cod_sales: string;
+      /** Format: decimal */
+      cod_outstanding: string;
+    };
     SupplierInRequest: {
       name: string;
       contact_name?: string;
@@ -3499,8 +4482,57 @@ export interface components {
       is_active: boolean;
       open_orders: number;
     };
+    SupportSummaryOut: {
+      tickets_open: number | null;
+      tickets_mine: number | null;
+      tickets_waiting: number | null;
+      returns_requested: number | null;
+      returns_to_receive: number | null;
+      returns_to_inspect: number | null;
+      returns_to_complete: number | null;
+      refunds_waiting: number | null;
+    };
+    SupportTokenInRequest: {
+      token: string;
+    };
     SuspendInRequest: {
       reason: string;
+    };
+    TaxRuleEndInRequest: {
+      /** Format: date */
+      effective_to: string;
+    };
+    TaxRuleInRequest: {
+      name: string;
+      /** Format: decimal */
+      rate_percent: string;
+      /** @default true */
+      prices_include_tax: boolean;
+      /** @default false */
+      applies_to_shipping: boolean;
+      /** Format: date */
+      effective_from: string;
+      /** Format: date */
+      effective_to?: string | null;
+    };
+    TaxRuleOut: {
+      /** Format: uuid */
+      id: string;
+      name: string;
+      /** Format: decimal */
+      rate_percent: string;
+      prices_include_tax: boolean;
+      applies_to_shipping: boolean;
+      /** Format: date */
+      effective_from: string;
+      /** Format: date */
+      effective_to: string | null;
+      in_force: boolean;
+    };
+    TaxRulesOut: {
+      rules: components["schemas"]["TaxRuleOut"][];
+      /** Format: uuid */
+      in_force: string | null;
     };
     /**
      * @description * `processing` - processing
@@ -3511,6 +4543,58 @@ export interface components {
      * @enum {string}
      */
     ThreeDStatusEnum: "processing" | "failed" | "draft" | "approved" | "retired";
+    /**
+     * @description * `order` - order
+     *     * `delivery` - delivery
+     *     * `return` - return
+     *     * `payment` - payment
+     *     * `product` - product
+     *     * `other` - other
+     * @enum {string}
+     */
+    TicketCategoryEnum: "order" | "delivery" | "return" | "payment" | "product" | "other";
+    TicketMessageInRequest: {
+      kind: components["schemas"]["TicketReplyKindEnum"];
+      body: string;
+      /** @default false */
+      close: boolean;
+    };
+    /**
+     * @description * `customer` - customer
+     *     * `staff` - staff
+     *     * `note` - note
+     * @enum {string}
+     */
+    TicketMessageKindEnum: "customer" | "staff" | "note";
+    TicketOut: {
+      number: string;
+      category: components["schemas"]["TicketCategoryEnum"];
+      subject: string;
+      status: components["schemas"]["TicketStatusEnum"];
+      order_number: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+      messages: components["schemas"]["MessageOut"][];
+    };
+    TicketReplyInRequest: {
+      token: string;
+      message: string;
+    };
+    /**
+     * @description * `staff` - staff
+     *     * `note` - note
+     * @enum {string}
+     */
+    TicketReplyKindEnum: "staff" | "note";
+    /**
+     * @description * `open` - open
+     *     * `waiting` - waiting
+     *     * `closed` - closed
+     * @enum {string}
+     */
+    TicketStatusEnum: "open" | "waiting" | "closed";
     TokenInRequest: {
       token: string;
     };
@@ -3530,6 +4614,12 @@ export interface components {
      * @enum {string}
      */
     TypeEnum: "heading" | "paragraph" | "list";
+    UnsubscribeInRequest: {
+      token: string;
+    };
+    UnsubscribeOut: {
+      purpose: string;
+    };
     Variant: {
       sku: string;
       size: string;
@@ -3554,6 +4644,25 @@ export interface components {
     };
     WishlistInRequest: {
       slug: string;
+    };
+    ZoneInRequest: {
+      code: string;
+      name: string;
+      cities?: string[];
+      provinces?: components["schemas"]["ProvinceEnum"][];
+      /** @default false */
+      is_fallback: boolean;
+      /** @default 0 */
+      position: number;
+    };
+    ZoneOut: {
+      code: string;
+      name: string;
+      cities: string[];
+      provinces: string[];
+      is_fallback: boolean;
+      position: number;
+      rates: components["schemas"]["RateOut"][];
     };
   };
   responses: never;
@@ -4256,6 +5365,29 @@ export interface operations {
       };
     };
   };
+  contact: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ContactInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContactOut"];
+        };
+      };
+    };
+  };
   me_get: {
     parameters: {
       query?: never;
@@ -4426,6 +5558,48 @@ export interface operations {
       };
     };
   };
+  me_preferences_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PreferencesOut"];
+        };
+      };
+    };
+  };
+  me_preferences_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PreferencesInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PreferencesOut"];
+        };
+      };
+    };
+  };
   me_sessions: {
     parameters: {
       query?: never;
@@ -4480,6 +5654,25 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["RevokedOut"];
+        };
+      };
+    };
+  };
+  me_tickets: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MyTicketRowOut"][];
         };
       };
     };
@@ -4650,6 +5843,74 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StatusOut"];
+        };
+      };
+    };
+  };
+  order_returns: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderReturnsOut"];
+        };
+      };
+    };
+  };
+  order_return_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReturnRequestInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderReturnsOut"];
+        };
+      };
+    };
+  };
+  order_return_cancel: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+        return_number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderReturnsOut"];
         };
       };
     };
@@ -6263,6 +7524,73 @@ export interface operations {
       };
     };
   };
+  staff_coupons: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CouponOut"][];
+        };
+      };
+    };
+  };
+  staff_coupon_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["StaffCouponInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CouponOut"];
+        };
+      };
+    };
+  };
+  staff_coupon_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        coupon_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["StaffCouponInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CouponOut"];
+        };
+      };
+    };
+  };
   staff_couriers: {
     parameters: {
       query?: never;
@@ -6781,6 +8109,73 @@ export interface operations {
       };
     };
   };
+  staff_promotions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PromotionOut"][];
+        };
+      };
+    };
+  };
+  staff_promotion_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PromotionInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PromotionOut"];
+        };
+      };
+    };
+  };
+  staff_promotion_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        promotion_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PromotionInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PromotionOut"];
+        };
+      };
+    };
+  };
   staff_purchase_orders: {
     parameters: {
       query?: {
@@ -7061,6 +8456,125 @@ export interface operations {
       };
     };
   };
+  staff_reports_dashboard: {
+    parameters: {
+      query?: {
+        /** @description First day (Pakistan time); default 29 days before `to` */
+        from?: string;
+        /** @description Last day (Pakistan time); default today */
+        to?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DashboardOut"];
+        };
+      };
+    };
+  };
+  staff_reports_export: {
+    parameters: {
+      query?: {
+        /** @description First day (Pakistan time); default 29 days before `to` */
+        from?: string;
+        /** @description Last day (Pakistan time); default today */
+        to?: string;
+      };
+      header?: never;
+      path: {
+        kind: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description CSV file */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+    };
+  };
+  staff_returns: {
+    parameters: {
+      query?: {
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffReturnListOut"];
+        };
+      };
+    };
+  };
+  staff_return: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        return_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffReturnOut"];
+        };
+      };
+    };
+  };
+  staff_return_action: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        action: string;
+        return_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["ReturnActionInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffReturnOut"];
+        };
+      };
+    };
+  };
   staff_roles: {
     parameters: {
       query?: never;
@@ -7195,6 +8709,161 @@ export interface operations {
       };
     };
   };
+  staff_shipping_rate_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RateInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RateOut"];
+        };
+      };
+    };
+  };
+  staff_shipping_rate_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        rate_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RateInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RateOut"];
+        };
+      };
+    };
+  };
+  staff_shipping_rate_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        rate_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  staff_shipping_zones: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ZoneOut"][];
+        };
+      };
+    };
+  };
+  staff_shipping_zone_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ZoneInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ZoneOut"];
+        };
+      };
+    };
+  };
+  staff_shipping_zone_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        code: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ZoneInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ZoneOut"];
+        };
+      };
+    };
+  };
+  staff_shipping_zone_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        code: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   staff_suppliers: {
     parameters: {
       query?: never;
@@ -7258,6 +8927,255 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SupplierOut"];
+        };
+      };
+    };
+  };
+  staff_support_summary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SupportSummaryOut"];
+        };
+      };
+    };
+  };
+  staff_tax_rules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxRulesOut"];
+        };
+      };
+    };
+  };
+  staff_tax_rule_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TaxRuleInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxRulesOut"];
+        };
+      };
+    };
+  };
+  staff_tax_rule_end: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        rule_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TaxRuleEndInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxRulesOut"];
+        };
+      };
+    };
+  };
+  staff_tickets: {
+    parameters: {
+      query?: {
+        mine?: boolean;
+        q?: string;
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffTicketListOut"];
+        };
+      };
+    };
+  };
+  staff_ticket: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ticket_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffTicketOut"];
+        };
+      };
+    };
+  };
+  staff_ticket_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ticket_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedTicketUpdateInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffTicketOut"];
+        };
+      };
+    };
+  };
+  staff_ticket_message: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ticket_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TicketMessageInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffTicketOut"];
+        };
+      };
+    };
+  };
+  support_ticket_open: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SupportTokenInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TicketOut"];
+        };
+      };
+    };
+  };
+  support_ticket_reply: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TicketReplyInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TicketOut"];
+        };
+      };
+    };
+  };
+  unsubscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UnsubscribeInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UnsubscribeOut"];
         };
       };
     };

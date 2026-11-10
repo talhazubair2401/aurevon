@@ -1329,6 +1329,43 @@
                 }
             }
         },
+        "/api/v1/contact": {
+            "post": {
+                "operationId": "contact",
+                "description": "Uses the cart view's session handling so a signed-in customer's ticket is linked to their account.",
+                "tags": [
+                    "support"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/me": {
             "get": {
                 "operationId": "me_get",
@@ -1575,6 +1612,65 @@
                 }
             }
         },
+        "/api/v1/me/preferences": {
+            "get": {
+                "operationId": "me_preferences_get",
+                "description": "Message preferences (M11). Each choice is a consent record with its wording version and time.",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PreferencesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "me_preferences_update",
+                "description": "Message preferences (M11). Each choice is a consent record with its wording version and time.",
+                "tags": [
+                    "customer account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PreferencesInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PreferencesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/me/sessions": {
             "get": {
                 "operationId": "me_sessions",
@@ -1650,6 +1746,34 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/RevokedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/me/tickets": {
+            "get": {
+                "operationId": "me_tickets",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/MyTicketRowOut"
+                                    }
                                 }
                             }
                         },
@@ -1911,6 +2035,133 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/StatusOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{number}/returns": {
+            "get": {
+                "operationId": "order_returns",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "returns"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderReturnsOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "order_return_create",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "returns"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReturnRequestInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderReturnsOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{number}/returns/{return_number}/cancel": {
+            "post": {
+                "operationId": "order_return_cancel",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "return_number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "returns"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderReturnsOut"
                                 }
                             }
                         },
@@ -4601,6 +4852,113 @@
                 }
             }
         },
+        "/api/v1/staff/coupons": {
+            "get": {
+                "operationId": "staff_coupons",
+                "tags": [
+                    "staff promotions"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CouponOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_coupon_create",
+                "tags": [
+                    "staff promotions"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StaffCouponInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/coupons/{coupon_id}": {
+            "put": {
+                "operationId": "staff_coupon_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "coupon_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff promotions"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StaffCouponInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CouponOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/couriers": {
             "get": {
                 "operationId": "staff_couriers",
@@ -5465,6 +5823,113 @@
                 }
             }
         },
+        "/api/v1/staff/promotions": {
+            "get": {
+                "operationId": "staff_promotions",
+                "tags": [
+                    "staff promotions"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PromotionOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_promotion_create",
+                "tags": [
+                    "staff promotions"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PromotionInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PromotionOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/promotions/{promotion_id}": {
+            "put": {
+                "operationId": "staff_promotion_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "promotion_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff promotions"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PromotionInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PromotionOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/purchase-orders": {
             "get": {
                 "operationId": "staff_purchase_orders",
@@ -5925,6 +6390,229 @@
                 }
             }
         },
+        "/api/v1/staff/reports/dashboard": {
+            "get": {
+                "operationId": "staff_reports_dashboard",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "from",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "description": "First day (Pakistan time); default 29 days before `to`"
+                    },
+                    {
+                        "in": "query",
+                        "name": "to",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "description": "Last day (Pakistan time); default today"
+                    }
+                ],
+                "tags": [
+                    "staff reports"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DashboardOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/reports/export/{kind}": {
+            "get": {
+                "operationId": "staff_reports_export",
+                "description": "CSV download. Aggregate reports need `reports.aggregate`; the order list needs `reports.export_personal`.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "from",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "description": "First day (Pakistan time); default 29 days before `to`"
+                    },
+                    {
+                        "in": "path",
+                        "name": "kind",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "to",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "description": "Last day (Pakistan time); default today"
+                    }
+                ],
+                "tags": [
+                    "staff reports"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "CSV file"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/returns": {
+            "get": {
+                "operationId": "staff_returns",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff returns"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffReturnListOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/returns/{return_id}": {
+            "get": {
+                "operationId": "staff_return",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "return_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff returns"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffReturnOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/returns/{return_id}/{action}": {
+            "post": {
+                "operationId": "staff_return_action",
+                "description": "approve | reject | receive | inspect | complete.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "action",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "return_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff returns"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReturnActionInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffReturnOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/staff/roles": {
             "get": {
                 "operationId": "staff_roles",
@@ -6145,6 +6833,246 @@
                 }
             }
         },
+        "/api/v1/staff/shipping-rates": {
+            "post": {
+                "operationId": "staff_shipping_rate_create",
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RateInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/shipping-rates/{rate_id}": {
+            "put": {
+                "operationId": "staff_shipping_rate_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "rate_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RateInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "staff_shipping_rate_delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "rate_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/shipping-zones": {
+            "get": {
+                "operationId": "staff_shipping_zones",
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ZoneOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_shipping_zone_create",
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ZoneInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ZoneOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/shipping-zones/{code}": {
+            "put": {
+                "operationId": "staff_shipping_zone_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ZoneInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ZoneOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "staff_shipping_zone_delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "code",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/v1/staff/suppliers": {
             "get": {
                 "operationId": "staff_suppliers",
@@ -6244,6 +7172,418 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/SupplierOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/support/summary": {
+            "get": {
+                "operationId": "staff_support_summary",
+                "description": "Counts for the support dashboard; each figure is null when the role can't see that area.",
+                "tags": [
+                    "staff support"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SupportSummaryOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/tax-rules": {
+            "get": {
+                "operationId": "staff_tax_rules",
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaxRulesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "staff_tax_rule_create",
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaxRuleInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaxRulesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/tax-rules/{rule_id}/end": {
+            "post": {
+                "operationId": "staff_tax_rule_end",
+                "description": "Rules are never edited or deleted (orders were taxed with them); a rule is ended on a date instead.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "rule_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff shipping and tax"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaxRuleEndInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaxRulesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/tickets": {
+            "get": {
+                "operationId": "staff_tickets",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "mine",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "staff support"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffTicketListOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/tickets/{ticket_id}": {
+            "get": {
+                "operationId": "staff_ticket",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ticket_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff support"
+                ],
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffTicketOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "staff_ticket_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ticket_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff support"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedTicketUpdateInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffTicketOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/staff/tickets/{ticket_id}/messages": {
+            "post": {
+                "operationId": "staff_ticket_message",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ticket_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "staff support"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TicketMessageInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "staffSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StaffTicketOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/support/ticket": {
+            "post": {
+                "operationId": "support_ticket_open",
+                "description": "POST (not GET) so the token travels in the body, never in a URL or log.",
+                "tags": [
+                    "support"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupportTokenInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/support/ticket/reply": {
+            "post": {
+                "operationId": "support_ticket_reply",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "tags": [
+                    "support"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TicketReplyInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/unsubscribe": {
+            "post": {
+                "operationId": "unsubscribe",
+                "description": "One-click stop for any consented message (the link in each reminder). No sign-in needed.",
+                "tags": [
+                    "newsletter"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UnsubscribeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnsubscribeOut"
                                 }
                             }
                         },
@@ -6538,6 +7878,14 @@
                     "name",
                     "version"
                 ]
+            },
+            "AssignEnum": {
+                "enum": [
+                    "me",
+                    "nobody"
+                ],
+                "type": "string",
+                "description": "* `me` - me\n* `nobody` - nobody"
             },
             "AttemptOut": {
                 "type": "object",
@@ -6899,6 +8247,28 @@
                     "slug"
                 ]
             },
+            "CategoryRowOut": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "units": {
+                        "type": "integer"
+                    },
+                    "revenue": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "category",
+                    "revenue",
+                    "units"
+                ]
+            },
             "ChallengeOut": {
                 "type": "object",
                 "properties": {
@@ -6912,6 +8282,37 @@
                 "required": [
                     "challenge",
                     "expires_in"
+                ]
+            },
+            "ChangeOut": {
+                "type": "object",
+                "properties": {
+                    "orders": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "gross_sales": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "net_sales": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "average_order": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "average_order",
+                    "gross_sales",
+                    "net_sales",
+                    "orders"
                 ]
             },
             "ChangePasswordInRequest": {
@@ -6931,6 +8332,27 @@
                 "required": [
                     "current_password",
                     "new_password"
+                ]
+            },
+            "CityRowOut": {
+                "type": "object",
+                "properties": {
+                    "city": {
+                        "type": "string"
+                    },
+                    "orders": {
+                        "type": "integer"
+                    },
+                    "gross_sales": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "city",
+                    "gross_sales",
+                    "orders"
                 ]
             },
             "CodeInRequest": {
@@ -7077,6 +8499,83 @@
                     "token"
                 ]
             },
+            "ContactInRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "phone": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 30
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/TicketCategoryEnum"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "message": {
+                        "type": "string",
+                        "minLength": 10,
+                        "maxLength": 4000
+                    },
+                    "order_number": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "default": "",
+                                "pattern": "^(AV\\d{6,})?$"
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    },
+                    "locale": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LocaleEnum"
+                            }
+                        ],
+                        "default": "en"
+                    },
+                    "website": {
+                        "type": "string",
+                        "default": ""
+                    }
+                },
+                "required": [
+                    "category",
+                    "email",
+                    "message",
+                    "name",
+                    "subject"
+                ]
+            },
+            "ContactOut": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "number"
+                ]
+            },
             "ContentFieldKindEnum": {
                 "enum": [
                     "text",
@@ -7121,6 +8620,137 @@
                 },
                 "required": [
                     "code"
+                ]
+            },
+            "CouponOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "max_discount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "min_subtotal": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "usage_limit": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "per_customer_limit": {
+                        "type": "integer"
+                    },
+                    "times_used": {
+                        "type": "integer"
+                    },
+                    "discount_given": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "order_value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "categories",
+                    "code",
+                    "created_at",
+                    "created_by",
+                    "description",
+                    "discount_given",
+                    "ends_at",
+                    "id",
+                    "is_active",
+                    "kind",
+                    "max_discount",
+                    "min_subtotal",
+                    "order_value",
+                    "per_customer_limit",
+                    "starts_at",
+                    "state",
+                    "times_used",
+                    "usage_limit",
+                    "value"
+                ]
+            },
+            "CouponRowOut": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "uses": {
+                        "type": "integer"
+                    },
+                    "discount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "orders_value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "code",
+                    "discount",
+                    "orders_value",
+                    "uses"
                 ]
             },
             "CourierOut": {
@@ -7235,6 +8865,148 @@
                     "password"
                 ]
             },
+            "CustomersOut": {
+                "type": "object",
+                "properties": {
+                    "new_accounts": {
+                        "type": "integer"
+                    },
+                    "guest_orders": {
+                        "type": "integer"
+                    },
+                    "account_orders": {
+                        "type": "integer"
+                    },
+                    "buying_accounts": {
+                        "type": "integer"
+                    },
+                    "returning_accounts": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "account_orders",
+                    "buying_accounts",
+                    "guest_orders",
+                    "new_accounts",
+                    "returning_accounts"
+                ]
+            },
+            "DashboardOut": {
+                "type": "object",
+                "properties": {
+                    "start": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "previous_start": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "previous_end": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "summary": {
+                        "$ref": "#/components/schemas/SummaryOut"
+                    },
+                    "change": {
+                        "$ref": "#/components/schemas/ChangeOut"
+                    },
+                    "daily": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DayOut"
+                        }
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductRowOut"
+                        }
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryRowOut"
+                        }
+                    },
+                    "cities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CityRowOut"
+                        }
+                    },
+                    "customers": {
+                        "$ref": "#/components/schemas/CustomersOut"
+                    },
+                    "returns": {
+                        "$ref": "#/components/schemas/ReturnsReportOut"
+                    },
+                    "coupons": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CouponRowOut"
+                        }
+                    },
+                    "inventory": {
+                        "$ref": "#/components/schemas/InventoryReportOut"
+                    },
+                    "exports": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "definitions": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "categories",
+                    "change",
+                    "cities",
+                    "coupons",
+                    "customers",
+                    "daily",
+                    "definitions",
+                    "end",
+                    "exports",
+                    "inventory",
+                    "previous_end",
+                    "previous_start",
+                    "products",
+                    "returns",
+                    "start",
+                    "summary"
+                ]
+            },
+            "DayOut": {
+                "type": "object",
+                "properties": {
+                    "day": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "orders": {
+                        "type": "integer"
+                    },
+                    "gross_sales": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "day",
+                    "gross_sales",
+                    "orders"
+                ]
+            },
             "DepartmentEnum": {
                 "enum": [
                     "women",
@@ -7242,6 +9014,14 @@
                 ],
                 "type": "string",
                 "description": "* `women` - women\n* `men` - men"
+            },
+            "DiscountKindEnum": {
+                "enum": [
+                    "percent",
+                    "fixed"
+                ],
+                "type": "string",
+                "description": "* `percent` - percent\n* `fixed` - fixed"
             },
             "EditableBlockOut": {
                 "type": "object",
@@ -7327,6 +9107,29 @@
                 },
                 "required": [
                     "is_enabled"
+                ]
+            },
+            "ExchangeOptionOut": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "in_stock": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "colour",
+                    "in_stock",
+                    "size",
+                    "sku"
                 ]
             },
             "Facets": {
@@ -7565,6 +9368,43 @@
                     "updated"
                 ]
             },
+            "InventoryReportOut": {
+                "type": "object",
+                "properties": {
+                    "sellable_units": {
+                        "type": "integer"
+                    },
+                    "reserved_units": {
+                        "type": "integer"
+                    },
+                    "retail_value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "out_of_stock": {
+                        "type": "integer"
+                    },
+                    "low_stock": {
+                        "type": "integer"
+                    },
+                    "quarantine_units": {
+                        "type": "integer"
+                    },
+                    "damaged_units": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "damaged_units",
+                    "low_stock",
+                    "out_of_stock",
+                    "quarantine_units",
+                    "reserved_units",
+                    "retail_value",
+                    "sellable_units"
+                ]
+            },
             "InviteInRequest": {
                 "type": "object",
                 "properties": {
@@ -7670,6 +9510,43 @@
                     "label",
                     "menu"
                 ]
+            },
+            "MessageOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/TicketMessageKindEnum"
+                    },
+                    "author": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "author",
+                    "body",
+                    "created_at",
+                    "id",
+                    "kind"
+                ]
+            },
+            "MethodEnum": {
+                "enum": [
+                    "standard",
+                    "express"
+                ],
+                "type": "string",
+                "description": "* `standard` - standard\n* `express` - express"
             },
             "MfaVerifyInRequest": {
                 "type": "object",
@@ -7899,6 +9776,30 @@
                     "reference"
                 ]
             },
+            "MyTicketRowOut": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    },
+                    "subject": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "number",
+                    "status",
+                    "subject",
+                    "updated_at"
+                ]
+            },
             "NavLink": {
                 "type": "object",
                 "properties": {
@@ -7959,6 +9860,16 @@
                     "footer_shop",
                     "header"
                 ]
+            },
+            "NewsletterEnum": {
+                "enum": [
+                    "none",
+                    "pending",
+                    "confirmed",
+                    "withdrawn"
+                ],
+                "type": "string",
+                "description": "* `none` - none\n* `pending` - pending\n* `confirmed` - confirmed\n* `withdrawn` - withdrawn"
             },
             "NewsletterOut": {
                 "type": "object",
@@ -8187,6 +10098,48 @@
                     "tax",
                     "tax_included",
                     "total"
+                ]
+            },
+            "OrderReturnsOut": {
+                "type": "object",
+                "properties": {
+                    "can_return": {
+                        "type": "boolean"
+                    },
+                    "window_days": {
+                        "type": "integer"
+                    },
+                    "return_by": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "reasons": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReasonOut"
+                        }
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnableItemOut"
+                        }
+                    },
+                    "requests": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnOut"
+                        }
+                    }
+                },
+                "required": [
+                    "can_return",
+                    "items",
+                    "reasons",
+                    "requests",
+                    "return_by",
+                    "window_days"
                 ]
             },
             "OrderRowOut": {
@@ -8641,6 +10594,17 @@
                     }
                 }
             },
+            "PatchedTicketUpdateInRequest": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/TicketStatusEnum"
+                    },
+                    "assign": {
+                        "$ref": "#/components/schemas/AssignEnum"
+                    }
+                }
+            },
             "PaymentMethodEnum": {
                 "enum": [
                     "card",
@@ -8830,6 +10794,47 @@
                     "total_cost",
                     "units_ordered",
                     "units_received"
+                ]
+            },
+            "PreferencesInRequest": {
+                "type": "object",
+                "properties": {
+                    "newsletter": {
+                        "type": "boolean"
+                    },
+                    "cart_reminders": {
+                        "type": "boolean"
+                    },
+                    "sms_updates": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "PreferencesOut": {
+                "type": "object",
+                "properties": {
+                    "newsletter": {
+                        "$ref": "#/components/schemas/NewsletterEnum"
+                    },
+                    "cart_reminders": {
+                        "type": "boolean"
+                    },
+                    "sms_updates": {
+                        "type": "boolean"
+                    },
+                    "email_verified": {
+                        "type": "boolean"
+                    },
+                    "has_phone": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "cart_reminders",
+                    "email_verified",
+                    "has_phone",
+                    "newsletter",
+                    "sms_updates"
                 ]
             },
             "PriceFacet": {
@@ -9218,6 +11223,35 @@
                     "results"
                 ]
             },
+            "ProductRowOut": {
+                "type": "object",
+                "properties": {
+                    "product": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "units": {
+                        "type": "integer"
+                    },
+                    "revenue": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "returned_units": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "name",
+                    "product",
+                    "returned_units",
+                    "revenue",
+                    "units"
+                ]
+            },
             "ProductSummaryOut": {
                 "type": "object",
                 "properties": {
@@ -9293,6 +11327,157 @@
                     "full_name",
                     "phone",
                     "preferred_locale"
+                ]
+            },
+            "PromotionInRequest": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "$ref": "#/components/schemas/DiscountKindEnum"
+                    },
+                    "value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "max_discount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "min_subtotal": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "default": "0.00"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^[-a-zA-Z0-9_]+$"
+                        }
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "label_en": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "label_ur": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 80
+                    }
+                },
+                "required": [
+                    "kind",
+                    "label_en",
+                    "name",
+                    "value"
+                ]
+            },
+            "PromotionOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "label_en": {
+                        "type": "string"
+                    },
+                    "label_ur": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "max_discount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "min_subtotal": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "categories",
+                    "created_at",
+                    "created_by",
+                    "ends_at",
+                    "id",
+                    "is_active",
+                    "kind",
+                    "label_en",
+                    "label_ur",
+                    "max_discount",
+                    "min_subtotal",
+                    "name",
+                    "starts_at",
+                    "state",
+                    "value"
                 ]
             },
             "ProvinceEnum": {
@@ -9425,6 +11610,158 @@
                     "tax",
                     "tax_included",
                     "total"
+                ]
+            },
+            "RateInRequest": {
+                "type": "object",
+                "properties": {
+                    "zone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    },
+                    "method": {
+                        "$ref": "#/components/schemas/MethodEnum"
+                    },
+                    "fee": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "free_over": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "days_min": {
+                        "type": "integer",
+                        "maximum": 60,
+                        "minimum": 0
+                    },
+                    "days_max": {
+                        "type": "integer",
+                        "maximum": 60,
+                        "minimum": 0
+                    },
+                    "cod_allowed": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "cod_fee": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "default": "0.00"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "days_max",
+                    "days_min",
+                    "fee",
+                    "method",
+                    "zone"
+                ]
+            },
+            "RateOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "zone": {
+                        "type": "string"
+                    },
+                    "method": {
+                        "type": "string"
+                    },
+                    "fee": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "free_over": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "days_min": {
+                        "type": "integer"
+                    },
+                    "days_max": {
+                        "type": "integer"
+                    },
+                    "cod_allowed": {
+                        "type": "boolean"
+                    },
+                    "cod_fee": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "cod_allowed",
+                    "cod_fee",
+                    "days_max",
+                    "days_min",
+                    "fee",
+                    "free_over",
+                    "id",
+                    "is_active",
+                    "method",
+                    "zone"
+                ]
+            },
+            "ReasonCountOut": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "count",
+                    "reason"
+                ]
+            },
+            "ReasonEnum": {
+                "enum": [
+                    "size",
+                    "quality",
+                    "not_as_described",
+                    "wrong_item",
+                    "changed_mind",
+                    "other"
+                ],
+                "type": "string",
+                "description": "* `size` - size\n* `quality` - quality\n* `not_as_described` - not_as_described\n* `wrong_item` - wrong_item\n* `changed_mind` - changed_mind\n* `other` - other"
+            },
+            "ReasonOut": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "label"
                 ]
             },
             "RecoveryCodesOut": {
@@ -9613,6 +11950,301 @@
                     "second_approved_by",
                     "source",
                     "state"
+                ]
+            },
+            "ReturnActionInRequest": {
+                "type": "object",
+                "properties": {
+                    "note": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 300
+                    },
+                    "outcomes": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "refund_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    }
+                }
+            },
+            "ReturnItemOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "sku": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "exchange_sku": {
+                        "type": "string"
+                    },
+                    "exchange_label": {
+                        "type": "string"
+                    },
+                    "outcome": {
+                        "type": "string"
+                    },
+                    "inspection_note": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "colour",
+                    "exchange_label",
+                    "exchange_sku",
+                    "id",
+                    "inspection_note",
+                    "name",
+                    "outcome",
+                    "quantity",
+                    "size",
+                    "sku"
+                ]
+            },
+            "ReturnKindEnum": {
+                "enum": [
+                    "refund",
+                    "exchange"
+                ],
+                "type": "string",
+                "description": "* `refund` - refund\n* `exchange` - exchange"
+            },
+            "ReturnLineInRequest": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "exchange_sku": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "quantity",
+                    "sku"
+                ]
+            },
+            "ReturnOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/ReturnKindEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ReturnStatusEnum"
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "reason_label": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "decision_note": {
+                        "type": "string"
+                    },
+                    "refund_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "exchange_order": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnItemOut"
+                        }
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "decision_note",
+                    "details",
+                    "exchange_order",
+                    "id",
+                    "items",
+                    "kind",
+                    "number",
+                    "order",
+                    "reason",
+                    "reason_label",
+                    "refund_amount",
+                    "status",
+                    "updated_at"
+                ]
+            },
+            "ReturnRequestInRequest": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "$ref": "#/components/schemas/ReturnKindEnum"
+                    },
+                    "reason": {
+                        "$ref": "#/components/schemas/ReasonEnum"
+                    },
+                    "details": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 1000
+                    },
+                    "lines": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnLineInRequest"
+                        }
+                    }
+                },
+                "required": [
+                    "kind",
+                    "lines",
+                    "reason"
+                ]
+            },
+            "ReturnStatusEnum": {
+                "enum": [
+                    "requested",
+                    "approved",
+                    "rejected",
+                    "received",
+                    "inspected",
+                    "completed",
+                    "cancelled"
+                ],
+                "type": "string",
+                "description": "* `requested` - requested\n* `approved` - approved\n* `rejected` - rejected\n* `received` - received\n* `inspected` - inspected\n* `completed` - completed\n* `cancelled` - cancelled"
+            },
+            "ReturnableItemOut": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "available": {
+                        "type": "integer"
+                    },
+                    "exchange_options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExchangeOptionOut"
+                        }
+                    }
+                },
+                "required": [
+                    "available",
+                    "colour",
+                    "exchange_options",
+                    "image_url",
+                    "name",
+                    "quantity",
+                    "size",
+                    "sku"
+                ]
+            },
+            "ReturnsReportOut": {
+                "type": "object",
+                "properties": {
+                    "requests": {
+                        "type": "integer"
+                    },
+                    "refunds": {
+                        "type": "integer"
+                    },
+                    "exchanges": {
+                        "type": "integer"
+                    },
+                    "units_returned": {
+                        "type": "integer"
+                    },
+                    "return_rate_percent": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "by_reason": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReasonCountOut"
+                        }
+                    }
+                },
+                "required": [
+                    "by_reason",
+                    "exchanges",
+                    "refunds",
+                    "requests",
+                    "return_rate_percent",
+                    "units_returned"
                 ]
             },
             "RevokedOut": {
@@ -10084,6 +12716,80 @@
                     "status"
                 ]
             },
+            "StaffCouponInRequest": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "$ref": "#/components/schemas/DiscountKindEnum"
+                    },
+                    "value": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$"
+                    },
+                    "max_discount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "min_subtotal": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "default": "0.00"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^[-a-zA-Z0-9_]+$"
+                        }
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "code": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40,
+                        "pattern": "^[A-Za-z0-9_-]{3,40}$"
+                    },
+                    "description": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 200
+                    },
+                    "usage_limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "nullable": true
+                    },
+                    "per_customer_limit": {
+                        "type": "integer",
+                        "maximum": 100,
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                "required": [
+                    "code",
+                    "kind",
+                    "value"
+                ]
+            },
             "StaffOrderOut": {
                 "type": "object",
                 "properties": {
@@ -10166,6 +12872,164 @@
                     "status"
                 ]
             },
+            "StaffReturnListOut": {
+                "type": "object",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StaffReturnRowOut"
+                        }
+                    },
+                    "counts": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "counts",
+                    "results"
+                ]
+            },
+            "StaffReturnOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/ReturnKindEnum"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/ReturnStatusEnum"
+                    },
+                    "reason": {
+                        "type": "string"
+                    },
+                    "reason_label": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "string"
+                    },
+                    "decision_note": {
+                        "type": "string"
+                    },
+                    "refund_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "exchange_order": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReturnItemOut"
+                        }
+                    },
+                    "customer_email": {
+                        "type": "string"
+                    },
+                    "customer_name": {
+                        "type": "string"
+                    },
+                    "suggested_refund": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,10}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "can_complete_refund": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "can_complete_refund",
+                    "created_at",
+                    "customer_email",
+                    "customer_name",
+                    "decision_note",
+                    "details",
+                    "exchange_order",
+                    "id",
+                    "items",
+                    "kind",
+                    "number",
+                    "order",
+                    "reason",
+                    "reason_label",
+                    "refund_amount",
+                    "status",
+                    "suggested_refund",
+                    "updated_at"
+                ]
+            },
+            "StaffReturnRowOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "type": "string"
+                    },
+                    "customer": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "reason_label": {
+                        "type": "string"
+                    },
+                    "units": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "customer",
+                    "id",
+                    "kind",
+                    "number",
+                    "order",
+                    "reason_label",
+                    "status",
+                    "units"
+                ]
+            },
             "StaffSessionInfoOut": {
                 "type": "object",
                 "properties": {
@@ -10237,6 +13101,159 @@
                     "idle_timeout_seconds",
                     "mfa_reenrollment_required",
                     "stepped_up_until"
+                ]
+            },
+            "StaffTicketListOut": {
+                "type": "object",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StaffTicketRowOut"
+                        }
+                    },
+                    "counts": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "counts",
+                    "results"
+                ]
+            },
+            "StaffTicketOut": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/TicketCategoryEnum"
+                    },
+                    "subject": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TicketStatusEnum"
+                    },
+                    "order_number": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MessageOut"
+                        }
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "locale": {
+                        "type": "string"
+                    },
+                    "has_account": {
+                        "type": "boolean"
+                    },
+                    "assigned_to": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "assigned_to_me": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "assigned_to",
+                    "assigned_to_me",
+                    "category",
+                    "created_at",
+                    "email",
+                    "has_account",
+                    "id",
+                    "locale",
+                    "messages",
+                    "name",
+                    "number",
+                    "order_number",
+                    "phone",
+                    "status",
+                    "subject",
+                    "updated_at"
+                ]
+            },
+            "StaffTicketRowOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "subject": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "order_number": {
+                        "type": "string"
+                    },
+                    "assigned_to": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "messages": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "assigned_to",
+                    "category",
+                    "email",
+                    "id",
+                    "messages",
+                    "name",
+                    "number",
+                    "order_number",
+                    "status",
+                    "subject",
+                    "updated_at"
                 ]
             },
             "StatusEnum": {
@@ -10438,6 +13455,95 @@
                     "email"
                 ]
             },
+            "SummaryOut": {
+                "type": "object",
+                "properties": {
+                    "orders": {
+                        "type": "integer"
+                    },
+                    "units": {
+                        "type": "integer"
+                    },
+                    "gross_sales": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "discounts": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "shipping": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "cod_fees": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "tax": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "refunds": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "net_sales": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "average_order": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "cancelled": {
+                        "type": "integer"
+                    },
+                    "awaiting_payment": {
+                        "type": "integer"
+                    },
+                    "card_sales": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "cod_sales": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "cod_outstanding": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "average_order",
+                    "awaiting_payment",
+                    "cancelled",
+                    "card_sales",
+                    "cod_fees",
+                    "cod_outstanding",
+                    "cod_sales",
+                    "discounts",
+                    "gross_sales",
+                    "net_sales",
+                    "orders",
+                    "refunds",
+                    "shipping",
+                    "tax",
+                    "units"
+                ]
+            },
             "SupplierInRequest": {
                 "type": "object",
                 "properties": {
@@ -10527,6 +13633,66 @@
                     "phone"
                 ]
             },
+            "SupportSummaryOut": {
+                "type": "object",
+                "properties": {
+                    "tickets_open": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "tickets_mine": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "tickets_waiting": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "returns_requested": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "returns_to_receive": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "returns_to_inspect": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "returns_to_complete": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "refunds_waiting": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "refunds_waiting",
+                    "returns_requested",
+                    "returns_to_complete",
+                    "returns_to_inspect",
+                    "returns_to_receive",
+                    "tickets_mine",
+                    "tickets_open",
+                    "tickets_waiting"
+                ]
+            },
+            "SupportTokenInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
             "SuspendInRequest": {
                 "type": "object",
                 "properties": {
@@ -10540,6 +13706,120 @@
                     "reason"
                 ]
             },
+            "TaxRuleEndInRequest": {
+                "type": "object",
+                "properties": {
+                    "effective_to": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "required": [
+                    "effective_to"
+                ]
+            },
+            "TaxRuleInRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "rate_percent": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,4}(?:\\.\\d{0,2})?$"
+                    },
+                    "prices_include_tax": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "applies_to_shipping": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "effective_from",
+                    "name",
+                    "rate_percent"
+                ]
+            },
+            "TaxRuleOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "rate_percent": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,4}(?:\\.\\d{0,2})?$"
+                    },
+                    "prices_include_tax": {
+                        "type": "boolean"
+                    },
+                    "applies_to_shipping": {
+                        "type": "boolean"
+                    },
+                    "effective_from": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "effective_to": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "in_force": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "applies_to_shipping",
+                    "effective_from",
+                    "effective_to",
+                    "id",
+                    "in_force",
+                    "name",
+                    "prices_include_tax",
+                    "rate_percent"
+                ]
+            },
+            "TaxRulesOut": {
+                "type": "object",
+                "properties": {
+                    "rules": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TaxRuleOut"
+                        }
+                    },
+                    "in_force": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "in_force",
+                    "rules"
+                ]
+            },
             "ThreeDStatusEnum": {
                 "enum": [
                     "processing",
@@ -10550,6 +13830,128 @@
                 ],
                 "type": "string",
                 "description": "* `processing` - processing\n* `failed` - failed\n* `draft` - draft\n* `approved` - approved\n* `retired` - retired"
+            },
+            "TicketCategoryEnum": {
+                "enum": [
+                    "order",
+                    "delivery",
+                    "return",
+                    "payment",
+                    "product",
+                    "other"
+                ],
+                "type": "string",
+                "description": "* `order` - order\n* `delivery` - delivery\n* `return` - return\n* `payment` - payment\n* `product` - product\n* `other` - other"
+            },
+            "TicketMessageInRequest": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "$ref": "#/components/schemas/TicketReplyKindEnum"
+                    },
+                    "body": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 4000
+                    },
+                    "close": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "body",
+                    "kind"
+                ]
+            },
+            "TicketMessageKindEnum": {
+                "enum": [
+                    "customer",
+                    "staff",
+                    "note"
+                ],
+                "type": "string",
+                "description": "* `customer` - customer\n* `staff` - staff\n* `note` - note"
+            },
+            "TicketOut": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/TicketCategoryEnum"
+                    },
+                    "subject": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/TicketStatusEnum"
+                    },
+                    "order_number": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MessageOut"
+                        }
+                    }
+                },
+                "required": [
+                    "category",
+                    "created_at",
+                    "messages",
+                    "number",
+                    "order_number",
+                    "status",
+                    "subject",
+                    "updated_at"
+                ]
+            },
+            "TicketReplyInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 4000
+                    }
+                },
+                "required": [
+                    "message",
+                    "token"
+                ]
+            },
+            "TicketReplyKindEnum": {
+                "enum": [
+                    "staff",
+                    "note"
+                ],
+                "type": "string",
+                "description": "* `staff` - staff\n* `note` - note"
+            },
+            "TicketStatusEnum": {
+                "enum": [
+                    "open",
+                    "waiting",
+                    "closed"
+                ],
+                "type": "string",
+                "description": "* `open` - open\n* `waiting` - waiting\n* `closed` - closed"
             },
             "TokenInRequest": {
                 "type": "object",
@@ -10616,6 +14018,30 @@
                 ],
                 "type": "string",
                 "description": "* `heading` - heading\n* `paragraph` - paragraph\n* `list` - list"
+            },
+            "UnsubscribeInRequest": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
+            "UnsubscribeOut": {
+                "type": "object",
+                "properties": {
+                    "purpose": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "purpose"
+                ]
             },
             "Variant": {
                 "type": "object",
@@ -10714,6 +14140,94 @@
                 },
                 "required": [
                     "slug"
+                ]
+            },
+            "ZoneInRequest": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "cities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 60
+                        }
+                    },
+                    "provinces": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProvinceEnum"
+                        }
+                    },
+                    "is_fallback": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "position": {
+                        "type": "integer",
+                        "maximum": 10000,
+                        "minimum": 0,
+                        "default": 0
+                    }
+                },
+                "required": [
+                    "code",
+                    "name"
+                ]
+            },
+            "ZoneOut": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "cities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "provinces": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "is_fallback": {
+                        "type": "boolean"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "rates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RateOut"
+                        }
+                    }
+                },
+                "required": [
+                    "cities",
+                    "code",
+                    "is_fallback",
+                    "name",
+                    "position",
+                    "provinces",
+                    "rates"
                 ]
             }
         },

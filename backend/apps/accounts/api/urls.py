@@ -8,6 +8,11 @@ from apps.cms.api import staff as cms
 from apps.cms.api.views import SettingsView, SettingView
 from apps.inventory.api import staff as inventory
 from apps.orders.api import staff as orders
+from apps.promotions.api import staff as promotions
+from apps.reports.api import views as reports
+from apps.returns.api import views as returns
+from apps.shipping.api import staff as shipping
+from apps.support.api import views as support
 
 from . import customer, staff_admin, staff_auth, staff_me
 
@@ -95,6 +100,25 @@ staff_urlpatterns: list[URLPattern] = [
     path("purchase-orders", inventory.PurchaseOrdersView.as_view()),
     path("purchase-orders/<uuid:po_id>", inventory.PurchaseOrderView.as_view()),
     path("purchase-orders/<uuid:po_id>/<slug:action>", inventory.PurchaseOrderActionView.as_view()),
+    path("shipping-zones", shipping.ZonesView.as_view()),
+    path("shipping-zones/<slug:code>", shipping.ZoneView.as_view()),
+    path("shipping-rates", shipping.RatesView.as_view()),
+    path("shipping-rates/<uuid:rate_id>", shipping.RateView.as_view()),
+    path("tax-rules", shipping.TaxRulesView.as_view()),
+    path("tax-rules/<uuid:rule_id>/end", shipping.TaxRuleEndView.as_view()),
+    path("coupons", promotions.CouponsView.as_view()),
+    path("coupons/<uuid:coupon_id>", promotions.CouponView.as_view()),
+    path("promotions", promotions.PromotionsView.as_view()),
+    path("promotions/<uuid:promotion_id>", promotions.PromotionView.as_view()),
+    path("returns", returns.ReturnsView.as_view()),
+    path("returns/<uuid:return_id>", returns.ReturnView.as_view()),
+    path("returns/<uuid:return_id>/<slug:action>", returns.ReturnActionView.as_view()),
+    path("tickets", support.TicketsView.as_view()),
+    path("tickets/<uuid:ticket_id>", support.TicketView.as_view()),
+    path("tickets/<uuid:ticket_id>/messages", support.TicketMessagesView.as_view()),
+    path("support/summary", support.SupportSummaryView.as_view()),
+    path("reports/dashboard", reports.DashboardView.as_view()),
+    path("reports/export/<slug:kind>", reports.ExportView.as_view()),
     # Catalogue (M5; MTS §8 "Staff: catalogue"; decision 0006).
     path("catalog/colours", catalog.ColoursView.as_view()),
     path("catalog/colours/<slug:slug>", catalog.ColourView.as_view()),

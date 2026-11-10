@@ -1,0 +1,9 @@
+{% autoescape off %}Subject: We've received your message ({{ number }})
+
+Thank you for writing to AureVon. Your reference is {{ number }}: {{ subject }}
+We reply within one working day.
+
+Read the conversation or add to it here (this private link is just for you):
+{{ link }}
+
+— {{ site_name }}{% endautoescape %}

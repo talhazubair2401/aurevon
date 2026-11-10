@@ -114,7 +114,14 @@
     "confirming": "Confirming your subscription…",
     "confirmed": "You're subscribed. Welcome to AureVon.",
     "confirmFailed": "This link is invalid or has expired. Please subscribe again.",
-    "confirmTitle": "Newsletter"
+    "confirmTitle": "Newsletter",
+    "unsubscribing": "Stopping these emails…",
+    "unsubscribed": "Done. You won't receive these messages any more.",
+    "unsubscribeFailed": "This link isn't valid. Sign in to change what we send you.",
+    "unsubscribeTitle": "Unsubscribe",
+    "managePreferences": "You can change what we send you at any time in",
+    "myAccount": "My account",
+    "continue": "Continue to AureVon"
   },
   "collections": {
     "title": "Collections",
@@ -243,7 +250,16 @@
     "security": "Password",
     "currentPassword": "Current password",
     "newPassword": "New password",
-    "changePassword": "Change password"
+    "changePassword": "Change password",
+    "messages": "Messages",
+    "messagesBody": "Choose what we may send you. Order confirmations and delivery emails always arrive.",
+    "newsletterPref": "Newsletter: new collections and atelier stories",
+    "newsletterPending": "Check your inbox to confirm your newsletter subscription.",
+    "cartPref": "Remind me once by email about items left in my bag",
+    "smsPref": "Send order updates by SMS to my mobile number",
+    "needsVerified": "Confirm your email address to turn this on.",
+    "needsPhone": "Add a mobile number above to turn this on.",
+    "savePrefs": "Save preferences"
   },
   "cart": {
     "addToBag": "Add to bag",
@@ -381,7 +397,8 @@
     },
     "method": {
       "card": "Card",
-      "cod": "Cash on delivery"
+      "cod": "Cash on delivery",
+      "exchange": "Exchange (no charge)"
     },
     "awaitingPayment": "Awaiting payment",
     "codFee": "Cash-on-delivery fee",
@@ -415,5 +432,83 @@
     "total": "Total",
     "track": "Track",
     "tracking": "Tracking"
+  },
+  "returns": {
+    "title": "Returns and exchanges",
+    "start": "Return or exchange an item",
+    "window": "You can request a return until {date}.",
+    "whatWould": "What would you like?",
+    "kind": {
+      "refund": "A refund",
+      "exchange": "A different size or colour"
+    },
+    "status": {
+      "requested": "We're reviewing your request",
+      "approved": "Approved — please send it back",
+      "rejected": "Not accepted",
+      "received": "Received — we're checking it",
+      "inspected": "Checked — finishing up",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "keep": "Keep it",
+    "returnN": "{count, plural, one {Return # piece} other {Return # pieces}}",
+    "quantityOf": "How many of {name} to return",
+    "instead": "Instead, send me",
+    "choose": "Choose…",
+    "soldOut": "sold out",
+    "reason": "Reason",
+    "reasons": {
+      "size": "Size or fit",
+      "quality": "Quality problem",
+      "not_as_described": "Not as described",
+      "wrong_item": "Wrong item sent",
+      "changed_mind": "Changed my mind",
+      "other": "Other"
+    },
+    "details": "Anything we should know? (optional)",
+    "dontSend": "Please don't send anything yet: we'll email you instructions once the request is approved.",
+    "submit": "Send request",
+    "close": "Close",
+    "cancel": "Cancel this request",
+    "sent": "Request sent. We've emailed you a confirmation.",
+    "error": "Something went wrong. Please try again."
+  },
+  "support": {
+    "title": "Send us a message",
+    "name": "Your name",
+    "email": "Email",
+    "phone": "Mobile number (optional)",
+    "category": "What is it about?",
+    "choose": "Choose…",
+    "categories": {
+      "order": "An order",
+      "delivery": "Delivery",
+      "return": "Returns and exchanges",
+      "payment": "Payment or refund",
+      "product": "A product or sizing",
+      "other": "Something else"
+    },
+    "order": "Order number (optional)",
+    "subject": "Subject",
+    "message": "Message",
+    "privacy": "We use these details only to answer you.",
+    "send": "Send message",
+    "sending": "Sending…",
+    "sent": "Thank you. Your reference is {number}. We've emailed you a copy and will reply within one working day.",
+    "error": "Something went wrong. Please try again.",
+    "loading": "Loading…",
+    "ticketTitle": "Your message",
+    "linkInvalid": "This link isn't valid any more",
+    "linkInvalidBody": "Please use the link in the newest email we sent you, or send a new message from our contact page.",
+    "status": {
+      "open": "We'll reply soon",
+      "waiting": "We've replied",
+      "closed": "Resolved"
+    },
+    "you": "You",
+    "reply": "Your reply",
+    "sendReply": "Send reply",
+    "replySent": "Sent. We'll reply by email."
   }
 }

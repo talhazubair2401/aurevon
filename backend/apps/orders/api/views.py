@@ -24,7 +24,7 @@ from common.exceptions import ApiProblem
 from common.security import constant_time_equal, token_hash
 
 from .. import checkout
-from ..models import Order, PaymentMethod
+from ..models import CHECKOUT_METHODS, Order, PaymentMethod
 
 ORDER_COOKIE = "__Host-av_orders"
 TAG = ["checkout"]
@@ -55,7 +55,7 @@ class QuoteAddressIn(serializers.Serializer[Any]):
 class QuoteIn(serializers.Serializer[Any]):
     address = QuoteAddressIn(required=False, allow_null=True)
     shipping_method = serializers.CharField(max_length=12, required=False, allow_blank=True)
-    payment_method = serializers.ChoiceField(choices=PaymentMethod.values, required=False, allow_null=True)
+    payment_method = serializers.ChoiceField(choices=CHECKOUT_METHODS, required=False, allow_null=True)
 
 
 class QuoteOut(serializers.Serializer[Any]):
@@ -80,7 +80,7 @@ class PlaceIn(serializers.Serializer[Any]):
     phone = serializers.CharField(max_length=30)
     address = AddressSerializer()
     shipping_method = serializers.CharField(max_length=12)
-    payment_method = serializers.ChoiceField(choices=PaymentMethod.values)
+    payment_method = serializers.ChoiceField(choices=CHECKOUT_METHODS)
     note = serializers.CharField(max_length=300, required=False, allow_blank=True, default="")
     save_address = serializers.BooleanField(required=False, default=False)
 

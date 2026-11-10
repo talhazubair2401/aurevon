@@ -390,6 +390,7 @@ function Details() {
           </p>
         ) : null}
       </form>
+      <Preferences phoneSaved={Boolean(profile.phone)} />
       <form className={styles.addressForm} onSubmit={changePassword} method="post">
         <h2 className={styles.panelTitle}>{t("security")}</h2>
         <label className={styles.field}>
@@ -408,5 +409,87 @@ function Details() {
         ) : null}
       </form>
     </div>
+  );
+}
+
+type Prefs = {
+  newsletter: "none" | "pending" | "confirmed" | "withdrawn";
+  cart_reminders: boolean;
+  sms_updates: boolean;
+  email_verified: boolean;
+  has_phone: boolean;
+};
+
+/** Message preferences (M11): each switch is a consent record on the server; nothing is pre-ticked. */
+function Preferences({ phoneSaved }: { phoneSaved: boolean }) {
+  const t = useTranslations("account");
+  const [prefs, setPrefs] = useState<Prefs | null>(null);
+  const [draft, setDraft] = useState({
+    newsletter: false,
+    cart_reminders: false,
+    sms_updates: false,
+  });
+  const [message, setMessage] = useState("");
+  const load = useCallback(() => {
+    api<Prefs>("/me/preferences").then((p) => {
+      setPrefs(p);
+      setDraft({
+        newsletter: p.newsletter === "confirmed" || p.newsletter === "pending",
+        cart_reminders: p.cart_reminders,
+        sms_updates: p.sms_updates,
+      });
+    });
+  }, []);
+  useEffect(load, [load, phoneSaved]);
+  if (!prefs) return null;
+  const hasPhone = prefs.has_phone || phoneSaved;
+
+  async function save(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      const p = await api<Prefs>("/me/preferences", { method: "PUT", body: draft });
+      setPrefs(p);
+      setMessage(p.newsletter === "pending" ? t("newsletterPending") : t("saved"));
+    } catch (e) {
+      setMessage(e instanceof ApiError ? e.message : t("error"));
+    }
+  }
+
+  const box = (key: keyof typeof draft, label: string, hint: string | null) => (
+    <label className={styles.check}>
+      <input
+        type="checkbox"
+        name={key}
+        checked={draft[key]}
+        disabled={hint !== null && !draft[key]}
+        onChange={(e) => setDraft({ ...draft, [key]: e.target.checked })}
+      />
+      <span>
+        {label}
+        {hint && !draft[key] ? <span className={styles.muted}> — {hint}</span> : null}
+      </span>
+    </label>
+  );
+
+  return (
+    <form className={styles.addressForm} onSubmit={save} aria-labelledby="prefs-title">
+      <h2 className={styles.panelTitle} id="prefs-title">
+        {t("messages")}
+      </h2>
+      <p className={styles.muted}>{t("messagesBody")}</p>
+      {box("newsletter", t("newsletterPref"), null)}
+      {box("cart_reminders", t("cartPref"), prefs.email_verified ? null : t("needsVerified"))}
+      {box(
+        "sms_updates",
+        t("smsPref"),
+        !prefs.email_verified ? t("needsVerified") : hasPhone ? null : t("needsPhone"),
+      )}
+      <button className={styles.primary}>{t("savePrefs")}</button>
+      {message ? (
+        <p className={styles.muted} role="status">
+          {message}
+        </p>
+      ) : null}
+    </form>
   );
 }

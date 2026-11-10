@@ -202,6 +202,10 @@ test.describe("accessibility", () => {
     "/ur/account/sign-in",
     "/en/cart",
     "/en/checkout",
+    "/en/pages/contact",
+    "/ur/pages/contact",
+    "/en/support/ticket",
+    "/en/unsubscribe",
   ]) {
     test(`${path} has no automatically detectable WCAG 2.2 AA violations`, async ({ page }) => {
       if (path.endsWith("checkout")) await addToBag(page);

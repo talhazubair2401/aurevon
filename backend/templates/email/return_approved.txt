@@ -1,0 +1,11 @@
+{% autoescape off %}Subject: Your return {{ number }} is approved
+
+Your return {{ number }} for order {{ order }} has been approved.{% if note %}
+
+{{ note }}{% endif %}{% if instructions %}
+
+{{ instructions }}{% endif %}
+
+Follow your order: {{ link }}
+
+— {{ site_name }}{% endautoescape %}

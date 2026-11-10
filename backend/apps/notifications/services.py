@@ -107,3 +107,89 @@ def alert(
         return
     if severity == "critical":
         critical_alert.send(sender=None, kind=kind, message=message)
+
+
+# --- Signed-in preferences: cart reminders and SMS order updates (M11) ---------------------------------------
+
+PREFERENCE_WORDING_VERSION = "2026-11-10"
+UNSUBSCRIBE_SALT = "aurevon.unsubscribe"
+
+
+def consent_status(email: str, purpose: str) -> str:
+    """'confirmed', 'pending', 'withdrawn' or 'none'."""
+    record = ConsentRecord.objects.filter(email=email.strip().lower(), purpose=purpose).first()
+    return record.status if record else "none"
+
+
+def has_consent(email: str, purpose: str) -> bool:
+    return consent_status(email, purpose) == ConsentStatus.CONFIRMED
+
+
+@transaction.atomic
+def set_preference(email: str, purpose: str, on: bool, *, locale: str, source: str) -> None:
+    """For a signed-in customer whose email is verified: opting in is confirmed at once (they own the address).
+    The newsletter keeps double opt-in (request_newsletter); this is for cart reminders and SMS updates."""
+    email = email.strip().lower()
+    record, created = ConsentRecord.objects.select_for_update().get_or_create(
+        email=email,
+        purpose=purpose,
+        defaults={"wording_version": PREFERENCE_WORDING_VERSION, "source": source, "locale": locale},
+    )
+    now = timezone.now()
+    if on:
+        if record.status == ConsentStatus.CONFIRMED and not created:
+            return
+        record.status = ConsentStatus.CONFIRMED
+        record.confirmed_at = now
+        record.withdrawn_at = None
+        record.wording_version = PREFERENCE_WORDING_VERSION
+        record.source = source
+        record.locale = locale
+    else:
+        if record.status == ConsentStatus.WITHDRAWN and not created:
+            return
+        record.status = ConsentStatus.WITHDRAWN
+        record.withdrawn_at = now
+    record.save()
+
+
+def withdraw(email: str, purpose: str) -> None:
+    ConsentRecord.objects.filter(email=email.strip().lower(), purpose=purpose).exclude(
+        status=ConsentStatus.WITHDRAWN
+    ).update(
+        status=ConsentStatus.WITHDRAWN,
+        withdrawn_at=timezone.now(),
+        confirm_token_hash="",  # nosec B106  (clears an unused confirmation token hash, not a password)
+    )
+
+
+def unsubscribe_token(email: str, purpose: str) -> str:
+    from django.core import signing
+
+    return signing.dumps({"e": email.strip().lower(), "p": purpose}, salt=UNSUBSCRIBE_SALT, compress=True)
+
+
+def unsubscribe(token: str) -> str | None:
+    """One-click unsubscribe from a link in a message. Returns the purpose withdrawn, or None for a bad link.
+    Links don't expire: someone must always be able to stop messages."""
+    from django.core import signing
+
+    try:
+        data = signing.loads(token, salt=UNSUBSCRIBE_SALT)
+    except signing.BadSignature:
+        return None
+    purpose = data.get("p")
+    if purpose not in ConsentPurpose.values or not isinstance(data.get("e"), str):
+        return None
+    withdraw(data["e"], purpose)
+    return str(purpose)
+
+
+def send_sms(phone: str, text: str, *, consent_email: str) -> bool:
+    """Queues an order-update SMS after commit, only if the customer opted in. Returns whether one was queued."""
+    from .tasks import send_sms as task
+
+    if not phone or not has_consent(consent_email, ConsentPurpose.SMS_UPDATES):
+        return False
+    transaction.on_commit(lambda: task.delay(phone, text[:320]), robust=True)
+    return True

@@ -89,13 +89,16 @@ PAGES: list[tuple[str, str, dict[str, Any]]] = [
                         "Demo placeholder: contact details and support hours are added once the support "
                         "setup is decided."
                     ),
-                    _p("For now, the contact form arrives with customer support in M12."),
+                    _p("Send us a message with the form below and we'll reply by email."),
                 ],
             },
             "ur": {
                 "title": "رابطہ کریں",
                 "summary": "AureVon ٹیم سے رابطے کا طریقہ۔",
-                "body": [_p("رابطے کی تفصیلات جلد یہاں شائع کی جائیں گی۔")],
+                "body": [
+                    _p("رابطے کی تفصیلات جلد یہاں شائع کی جائیں گی۔"),
+                    _p("نیچے دیے گئے فارم سے پیغام بھیجیں، ہم ای میل پر جواب دیں گے۔"),
+                ],
             },
         },
     ),

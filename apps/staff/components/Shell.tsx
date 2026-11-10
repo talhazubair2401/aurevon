@@ -10,10 +10,13 @@ import ui from "./ui.module.css";
 const NAV = [
   { href: "/", label: "Overview", permission: null },
   { href: "/orders", label: "Orders", permission: "orders.view" },
+  { href: "/support", label: "Support", permission: "tickets.view" },
   { href: "/catalog", label: "Catalogue", permission: "catalog.view" },
   { href: "/inventory", label: "Inventory", permission: "inventory.view" },
   { href: "/content", label: "Content", permission: "cms.edit" },
+  { href: "/marketing", label: "Marketing", permission: "promotions.edit" },
   { href: "/seo", label: "SEO", permission: "seo.edit" },
+  { href: "/reports", label: "Reports", permission: "reports.aggregate" },
   { href: "/team", label: "Team", permission: "staff.view" },
   { href: "/audit", label: "Audit log", permission: "audit.view" },
   { href: "/settings", label: "Settings", permission: "settings.store" },

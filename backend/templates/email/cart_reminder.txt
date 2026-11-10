@@ -1,0 +1,16 @@
+{% autoescape off %}Subject: Your AureVon bag is waiting
+
+{% if name %}Hello {{ name }},
+
+{% endif %}You left these in your bag:
+{% for item in items %}
+- {{ item }}{% endfor %}{% if more %}
+- and {{ more }} more{% endif %}
+
+Prices and availability can change, and nothing is held for you until you order.
+
+Return to your bag: {{ link }}
+
+You're receiving this because you asked for bag reminders. Stop them with one click: {{ unsubscribe }}
+
+— {{ site_name }}{% endautoescape %}

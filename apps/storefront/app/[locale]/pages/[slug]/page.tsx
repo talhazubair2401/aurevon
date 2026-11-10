@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { formatDate, isLocale, type Locale } from "@aurevon/i18n";
 import { Breadcrumbs } from "@/components/content/Breadcrumbs";
+import { ContactForm } from "@/components/support/ContactForm";
 import styles from "@/components/content/Content.module.css";
 import { getPage, type CmsPage } from "@/lib/api";
 import { redirectOrNotFound } from "@/lib/redirects";
@@ -88,6 +89,7 @@ export default async function ContentPage({ params }: PageProps<"/[locale]/pages
             return <p key={index}>{block.text}</p>;
           })}
         </div>
+        {page.slug === "contact" ? <ContactForm /> : null}
       </article>
     </div>
   );

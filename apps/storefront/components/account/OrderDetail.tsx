@@ -7,6 +7,7 @@ import { formatDate, type Locale } from "@aurevon/i18n";
 import { Price } from "@aurevon/ui";
 import { Link } from "@/i18n/navigation";
 import { ApiError, api, type Order } from "@/lib/client";
+import { Returns } from "./Returns";
 import styles from "./Account.module.css";
 
 /** One order, for its owner (signed in) or the guest browser that placed it (order cookie). */
@@ -218,7 +219,7 @@ export function OrderDetail({ number }: { number: string }) {
                 ))}
             </ul>
           </div>
-          {order.can_return ? <p className={styles.muted}>{t("returnHint")}</p> : null}
+          <Returns number={order.number} />
         </aside>
       </div>
     </div>

@@ -35,6 +35,10 @@ class PaymentStatus(models.TextChoices):
 class PaymentMethod(models.TextChoices):
     CARD = "card", "Card or wallet (online)"
     COD = "cod", "Cash on delivery"
+    EXCHANGE = "exchange", "Exchange (no charge)"  # replacement sent for a returned item (M12)
+
+
+CHECKOUT_METHODS = [PaymentMethod.CARD.value, PaymentMethod.COD.value]  # what a customer can choose
 
 
 class Order(models.Model):

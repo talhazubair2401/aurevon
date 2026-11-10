@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SectionNav, SETTINGS_LINKS } from "../../components/SectionNav";
 import { Shell } from "../../components/Shell";
 import ui from "../../components/ui.module.css";
 import { api, call, errorMessage, useApiData, type Schemas } from "../../lib/api";
@@ -24,6 +25,7 @@ function Settings() {
   return (
     <>
       <h1 className={ui.title}>Settings</h1>
+      <SectionNav label="Settings" links={SETTINGS_LINKS} />
       {error && <p className={ui.error}>{error}</p>}
       {rows.map((row) => (
         <SettingRow key={row.key} setting={row} onSaved={onSaved} />

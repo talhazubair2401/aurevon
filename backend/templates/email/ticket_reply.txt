@@ -1,0 +1,10 @@
+{% autoescape off %}Subject: Re: {{ subject }} ({{ number }})
+
+{{ body }}
+{% if closed %}
+We've marked this conversation as resolved. If you need anything else, reply using the link below and it will reopen.{% endif %}
+
+Reply or read the whole conversation here (this private link is just for you; earlier links no longer work):
+{{ link }}
+
+— {{ site_name }}{% endautoescape %}

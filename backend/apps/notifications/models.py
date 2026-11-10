@@ -9,6 +9,8 @@ from django.db.models import Q
 
 class ConsentPurpose(models.TextChoices):
     NEWSLETTER = "newsletter", "Newsletter"
+    CART_REMINDERS = "cart_reminders", "Reminders about items left in the bag"
+    SMS_UPDATES = "sms_updates", "Order updates by SMS"
 
 
 class ConsentStatus(models.TextChoices):

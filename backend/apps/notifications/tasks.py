@@ -19,3 +19,10 @@ def render(template: str, context: dict[str, Any]) -> tuple[str, str]:
 def send_templated_email(to: list[str], template: str, context: dict[str, Any]) -> None:
     subject, body = render(template, context)
     send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, to)
+
+
+@shared_task(autoretry_for=(OSError,), retry_backoff=True, max_retries=5)  # type: ignore[untyped-decorator]
+def send_sms(to: str, text: str) -> None:
+    from integrations import sms
+
+    sms.provider().send(to, text)

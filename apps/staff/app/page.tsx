@@ -26,28 +26,82 @@ function Overview() {
         no later than {formatTime(session.expires_at)}.
       </p>
       <div className={ui.panel}>
-        <h2 className={ui.subtitle}>Available now</h2>
+        <h2 className={ui.subtitle}>Your areas</h2>
         <ul className={ui.muted}>
-          {can("staff.view") && (
-            <li>
-              <Link href="/team">Team</Link>: staff accounts, roles, suspension, sessions and
-              recovery.
+          {AREAS.filter((a) => can(a.permission)).map((a) => (
+            <li key={a.href}>
+              <Link href={a.href}>{a.label}</Link>: {a.text}
             </li>
-          )}
-          {can("audit.view") && (
-            <li>
-              <Link href="/audit">Audit log</Link>: every sensitive action, who did it and when.
-            </li>
-          )}
+          ))}
           <li>
             <Link href="/account">My account</Link>: your sessions, password, authenticator and
             recovery codes.
           </li>
         </ul>
-        <p className={ui.muted}>
-          Catalogue, orders, inventory and finance screens arrive with their milestones.
-        </p>
       </div>
     </>
   );
 }
+
+const AREAS = [
+  {
+    href: "/orders",
+    label: "Orders",
+    permission: "orders.view",
+    text: "packing, dispatch, tracking, cash-on-delivery money, refunds and alerts.",
+  },
+  {
+    href: "/support",
+    label: "Support",
+    permission: "tickets.view",
+    text: "customer messages, returns and exchanges.",
+  },
+  {
+    href: "/catalog",
+    label: "Catalogue",
+    permission: "catalog.view",
+    text: "products, prices, images, sizes and 3D models.",
+  },
+  {
+    href: "/inventory",
+    label: "Inventory",
+    permission: "inventory.view",
+    text: "stock, corrections, reorder alerts, suppliers and purchase orders.",
+  },
+  {
+    href: "/content",
+    label: "Content",
+    permission: "cms.edit",
+    text: "homepage, pages, navigation and banners.",
+  },
+  {
+    href: "/marketing",
+    label: "Marketing",
+    permission: "promotions.edit",
+    text: "coupon codes and scheduled promotions.",
+  },
+  {
+    href: "/reports",
+    label: "Reports",
+    permission: "reports.aggregate",
+    text: "sales, products, customers, returns, stock and CSV downloads.",
+  },
+  {
+    href: "/team",
+    label: "Team",
+    permission: "staff.view",
+    text: "staff accounts, roles, suspension, sessions and recovery.",
+  },
+  {
+    href: "/audit",
+    label: "Audit log",
+    permission: "audit.view",
+    text: "every sensitive action, who did it and when.",
+  },
+  {
+    href: "/settings",
+    label: "Settings",
+    permission: "settings.store",
+    text: "store settings, delivery zones and rates, and tax.",
+  },
+];

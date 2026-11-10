@@ -1,0 +1,8 @@
+{% autoescape off %}Subject: We've received your return request {{ number }}
+
+Thank you. We've received your {{ kind }} request {{ number }} for order {{ order }}.
+Our team will review it and email you within two working days. Please don't send anything back until we confirm.
+
+Follow your order: {{ link }}
+
+— {{ site_name }}{% endautoescape %}

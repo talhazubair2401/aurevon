@@ -9,7 +9,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.audit.services import Actor, record
-from apps.notifications.services import alert, send_email
+from apps.notifications.services import alert, send_email, send_sms
 from common.exceptions import ApiProblem
 from integrations import couriers
 
@@ -149,7 +149,14 @@ def dispatch(
                 "link": orders._link(order),
             },
         )
+        send_sms(order.phone, dispatch_sms(order.number, order.locale, booking.tracking_url), consent_email=order.email)
     return shipment
+
+
+def dispatch_sms(number: str, locale: str, tracking_url: str) -> str:
+    if locale == "ur":
+        return f"AureVon: آپ کا آرڈر {number} روانہ کر دیا گیا ہے۔ ٹریک کریں: {tracking_url}"  # noqa: RUF001
+    return f"AureVon: your order {number} is on its way. Track it: {tracking_url}"
 
 
 def add_event(

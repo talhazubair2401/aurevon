@@ -14,6 +14,8 @@ from apps.catalog import selectors as catalog_selectors
 from apps.catalog.api.views import ProductCardSerializer
 from apps.catalog.models import ProductStatus
 from apps.catalog.presenters import product_card
+from apps.notifications import services as consent
+from apps.notifications.models import ConsentPurpose
 from common.api import LOCALES, request_locale
 from common.exceptions import ApiProblem
 
@@ -164,3 +166,59 @@ class WishlistItemView(CustomerAPIView):
     def delete(self, request: Request, slug: str) -> Response:
         services.remove_from_wishlist(self.account, slug)
         return Response(status=204)
+
+
+class PreferencesOut(serializers.Serializer[Any]):
+    newsletter = serializers.ChoiceField(choices=["none", "pending", "confirmed", "withdrawn"])
+    cart_reminders = serializers.BooleanField()
+    sms_updates = serializers.BooleanField()
+    email_verified = serializers.BooleanField()
+    has_phone = serializers.BooleanField()
+
+
+class PreferencesIn(serializers.Serializer[Any]):
+    newsletter = serializers.BooleanField(required=False)
+    cart_reminders = serializers.BooleanField(required=False)
+    sms_updates = serializers.BooleanField(required=False)
+
+
+def _preferences(view: CustomerAPIView) -> dict[str, Any]:
+    email = view.account.email
+    return {
+        "newsletter": consent.consent_status(email, ConsentPurpose.NEWSLETTER),
+        "cart_reminders": consent.has_consent(email, ConsentPurpose.CART_REMINDERS),
+        "sms_updates": consent.has_consent(email, ConsentPurpose.SMS_UPDATES),
+        "email_verified": view.account.email_verified_at is not None,
+        "has_phone": bool(services.profile(view.account).phone),
+    }
+
+
+class PreferencesView(CustomerAPIView):
+    """Message preferences (M11). Each choice is a consent record with its wording version and time."""
+
+    @extend_schema(tags=TAG, responses={200: PreferencesOut}, operation_id="me_preferences_get")
+    def get(self, request: Request) -> Response:
+        return Response(_preferences(self))
+
+    @extend_schema(
+        tags=TAG, request=PreferencesIn, responses={200: PreferencesOut}, operation_id="me_preferences_update"
+    )
+    def put(self, request: Request) -> Response:
+        data = _valid(PreferencesIn, request)
+        account = self.account
+        locale = services.profile(account).preferred_locale
+        wants_more = data.get("cart_reminders") or data.get("sms_updates")
+        if wants_more and account.email_verified_at is None:
+            raise ApiProblem(400, "email-unverified", "Verify your email address first.")
+        if data.get("sms_updates") and not services.profile(account).phone:
+            raise ApiProblem(400, "phone", "Add a mobile number to your profile first.")
+        for purpose in (ConsentPurpose.CART_REMINDERS, ConsentPurpose.SMS_UPDATES):
+            if purpose.value in data:
+                consent.set_preference(account.email, purpose, data[purpose.value], locale=locale, source="account")
+        if "newsletter" in data:
+            if data["newsletter"]:
+                if consent.consent_status(account.email, ConsentPurpose.NEWSLETTER) != "confirmed":
+                    consent.request_newsletter(account.email, locale, "account")
+            else:
+                consent.withdraw(account.email, ConsentPurpose.NEWSLETTER)
+        return Response(_preferences(self))

@@ -1,0 +1,11 @@
+{% autoescape off %}Subject: About your return request {{ number }}
+
+We're sorry, we can't accept return {{ number }} for order {{ order }}.
+
+{{ note }}
+
+If you have questions, reply through our contact page and quote {{ number }}.
+
+Follow your order: {{ link }}
+
+— {{ site_name }}{% endautoescape %}

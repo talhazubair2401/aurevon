@@ -6,6 +6,7 @@ import {
   money,
   ORDER_STATUS,
   OrdersNav,
+  PAYMENT_METHOD,
   PAYMENT_STATUS,
   StatusTag,
 } from "../../components/OrdersNav";
@@ -169,7 +170,7 @@ function Orders() {
                     <StatusTag value={o.payment_status} labels={PAYMENT_STATUS} />
                     <br />
                     <span className={ui.muted}>
-                      {o.payment_method === "cod" ? "Cash on delivery" : "Card"}
+                      {PAYMENT_METHOD[o.payment_method] ?? o.payment_method}
                     </span>
                   </td>
                 </tr>

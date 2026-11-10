@@ -58,6 +58,12 @@ export const PAYMENT_STATUS: Record<string, string> = {
   cod_cancelled: "COD: nothing to collect",
 };
 
+export const PAYMENT_METHOD: Record<string, string> = {
+  cod: "Cash on delivery",
+  card: "Card",
+  exchange: "Exchange (no charge)",
+};
+
 export const SHIPMENT_STATUS: Record<string, string> = {
   booked: "Booked with courier",
   in_transit: "In transit",

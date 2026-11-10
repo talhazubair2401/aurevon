@@ -1,0 +1,8 @@
+{% autoescape off %}Subject: Your return {{ number }} is complete
+
+We've received and checked the items from return {{ number }} (order {{ order }}).
+{% if kind == "refund" %}A refund of Rs {{ amount }} has been raised. It reaches you once approved and processed by your payment provider; cash-on-delivery refunds are paid to you directly and we'll contact you for the details.{% else %}Your replacement is on its way as order {{ exchange }}. We'll email you when it is dispatched.{% endif %}
+
+Follow your order: {{ link }}
+
+— {{ site_name }}{% endautoescape %}

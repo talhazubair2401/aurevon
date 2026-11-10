@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     "apps.sandbox",
     "apps.promotions",
     "apps.returns",
+    "apps.support",
+    "apps.reports",
 ]
 
 # Customer and staff identities (MTS v2.1 A-22). Sign-in is handled by AureVon's own realm services, never
@@ -120,6 +122,12 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=False)
 EMAIL_TIMEOUT = 10
+# SMS (P-08 open): "log" sends nothing and only logs. Order updates go out only to customers who opted in.
+SMS_PROVIDER = env("SMS_PROVIDER", default="log")
+# Abandoned-bag reminders (provisional, docs/decisions/provisional-settings.md): one email, to signed-in customers
+# who opted in, this many hours after the bag last changed; bags untouched for longer than the window are skipped.
+CART_REMINDER_AFTER_HOURS = env.int("CART_REMINDER_AFTER_HOURS", default=24)
+CART_REMINDER_WINDOW_DAYS = env.int("CART_REMINDER_WINDOW_DAYS", default=7)
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="AureVon <no-reply@aurevon.pk>")
 
 # Argon2 first (MTS §9); the others only verify older hashes.
@@ -162,6 +170,14 @@ SPECTACULAR_SETTINGS = {
         "StatusEnum": ["draft", "published", "archived"],
         "LocaleEnum": ["en", "ur"],
         "PaymentMethodEnum": ["card", "cod"],
+        "ProvinceEnum": "apps.customers.models.PROVINCE_CODES",
+        "DiscountKindEnum": ["percent", "fixed"],
+        "ReturnKindEnum": ["refund", "exchange"],
+        "ReturnStatusEnum": ["requested", "approved", "rejected", "received", "inspected", "completed", "cancelled"],
+        "TicketStatusEnum": ["open", "waiting", "closed"],
+        "TicketCategoryEnum": ["order", "delivery", "return", "payment", "product", "other"],
+        "TicketMessageKindEnum": ["customer", "staff", "note"],
+        "TicketReplyKindEnum": ["staff", "note"],
     },
 }
 
@@ -186,6 +202,8 @@ CELERY_BEAT_SCHEDULE = {
     "check-pending-payments": {"task": "payments.check_pending", "schedule": 60.0},
     "expire-unpaid-orders": {"task": "orders.expire_unpaid", "schedule": 60.0},
     "retry-refunds": {"task": "payments.retry_refunds", "schedule": 300.0},
+    # Consented abandoned-bag reminders (M11).
+    "send-cart-reminders": {"task": "cart.send_reminders", "schedule": 900.0},
 }
 
 SECURE_CONTENT_TYPE_NOSNIFF = True

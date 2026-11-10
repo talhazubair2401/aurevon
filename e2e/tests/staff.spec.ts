@@ -422,6 +422,102 @@ test("Owner buys stock from a supplier and receives it", async ({ browser }) => 
   await expect(owner.getByRole("cell", { name: /^PO-\d+$/ }).first()).toBeVisible();
 });
 
+test("Owner adds a delivery zone with a rate, and a coupon code", async ({ browser }) => {
+  test.setTimeout(120_000);
+  const owner = await signInOwner(browser);
+  const stamp = Date.now().toString(36);
+  await owner.goto("/staff/settings/delivery");
+  const newZone = owner.getByRole("region", { name: "New zone" });
+  await newZone.getByLabel("Code").fill(`hyd-${stamp}`);
+  await newZone.getByLabel("Name").fill(`Hyderabad ${stamp}`);
+  await newZone.getByLabel("Cities (comma separated)").fill(`Hyderabad ${stamp}`);
+  await newZone.getByRole("button", { name: "Add zone" }).click();
+  const zone = owner.getByRole("region", { name: `Hyderabad ${stamp}` });
+  await expect(zone.getByText("No rates: addresses in this zone can't check out.")).toBeVisible();
+  await zone.getByLabel("Fee (Rs)").fill("300");
+  await zone.getByRole("button", { name: "Add rate" }).click();
+  await expect(zone.getByRole("cell", { name: "Rs 300" })).toBeVisible();
+
+  await owner.goto("/staff/marketing");
+  const form = owner.getByRole("region", { name: "New coupon" });
+  const code = `E2E${stamp.toUpperCase()}`.slice(0, 20);
+  await form.getByLabel("Code").fill(code);
+  await form.getByLabel("Percent (at most 90)").fill("10");
+  await form.getByRole("button", { name: "Create coupon" }).click();
+  await expect(owner.getByRole("cell", { name: new RegExp(code) })).toBeVisible();
+  await expect(owner.getByText("10% off").first()).toBeVisible();
+});
+
+test("a customer's contact message is answered by staff and the reply reaches them", async ({
+  browser,
+  page,
+}) => {
+  test.setTimeout(150_000);
+  const email = `contact-${Date.now()}@aurevon.test`;
+  await page.goto("/en/pages/contact");
+  await page.getByLabel("Your name").fill("Sana Mir");
+  await page.getByLabel("Email", { exact: true }).fill(email);
+  await page.getByLabel("What is it about?").selectOption("delivery");
+  await page.getByLabel("Subject", { exact: true }).fill("When will my dupatta arrive?");
+  await page
+    .getByLabel("Message", { exact: true })
+    .fill("I ordered last week and would like an update, please.");
+  await page.getByRole("button", { name: "Send message" }).click();
+  const sent = page.getByTestId("contact-sent");
+  await expect(sent).toContainText(/T-\d{6}/);
+  const number = (await sent.textContent())!.match(/T-\d{6}/)![0];
+
+  const owner = await signInOwner(browser);
+  await owner.goto("/staff/support/tickets");
+  await owner.getByRole("link", { name: number }).click();
+  await expect(owner.getByText("I ordered last week")).toBeVisible();
+  await owner.getByLabel("Internal note (staff only)").check();
+  await owner.getByLabel("Note", { exact: true }).fill("Checked with the courier: Thursday.");
+  await owner.getByRole("button", { name: "Add note" }).click();
+  await expect(owner.getByText("Note added.")).toBeVisible();
+  await owner.getByLabel("Reply to the customer (emailed)").check();
+  await owner
+    .getByLabel("Reply", { exact: true })
+    .fill("It arrives on Thursday. Thank you for waiting.");
+  await owner.getByRole("button", { name: "Send reply" }).click();
+  await expect(owner.getByText("Reply emailed to the customer.")).toBeVisible();
+
+  let link = "";
+  for (let attempt = 0; attempt < 40 && !link; attempt++) {
+    const search = await page.request.get(
+      `${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:"${email}" subject:"Re:"`)}`,
+    );
+    const { messages } = (await search.json()) as { messages: { ID: string }[] };
+    if (messages.length) {
+      const body = (await (
+        await page.request.get(`${MAILPIT}/api/v1/message/${messages[0]!.ID}`)
+      ).json()) as { Text: string };
+      link = body.Text.match(/https?:\/\/\S+\/support\/ticket#token=[\w-]+/)?.[0] ?? "";
+    }
+    if (!link) await page.waitForTimeout(250);
+  }
+  expect(link).not.toBe("");
+  await page.goto(link.replace(/^https?:\/\/[^/]+/, ""));
+  await expect(page.getByText("It arrives on Thursday.")).toBeVisible();
+  await expect(page.getByText("Checked with the courier")).toHaveCount(0); // internal notes stay internal
+  await page.getByLabel("Your reply").fill("Wonderful, thank you!");
+  await page.getByRole("button", { name: "Send reply" }).click();
+  await expect(page.getByText("Sent. We'll reply by email.")).toBeVisible();
+});
+
+test("Owner reads the sales report and downloads a CSV", async ({ browser }) => {
+  const owner = await signInOwner(browser);
+  await owner.goto("/staff/reports");
+  await expect(owner.getByText("gross sales", { exact: true })).toBeVisible();
+  await expect(owner.getByRole("heading", { name: "Gross sales by day" })).toBeVisible();
+  await owner.getByRole("button", { name: "Show as table" }).click();
+  await expect(owner.getByRole("columnheader", { name: "Day" })).toBeVisible();
+  const download = owner.waitForEvent("download");
+  await owner.getByRole("link", { name: "Daily sales" }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toMatch(/^aurevon-daily-sales-.*\.csv$/);
+});
+
 test("a customer session is never accepted by the staff API", async ({ request }) => {
   const email = `shopper-${Date.now()}@aurevon.test`;
   await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });

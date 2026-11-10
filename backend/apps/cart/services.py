@@ -159,3 +159,76 @@ def lines(cart: Cart, locale: str = "en") -> list[Line]:
             problem = "insufficient"
         result.append(Line(i, v, name, avail[v.pk] if ok else 0, problem))
     return result
+
+
+# --- Abandoned-bag reminders (M11) ------------------------------------------------------------------------------
+
+
+def due_for_reminder(now: Any = None) -> list[Cart]:
+    """Signed-in customers' bags, unchanged for CART_REMINDER_AFTER_HOURS but not older than the window, never
+    reminded since the last change, with something still buyable in them, whose owner opted in to reminders."""
+    from datetime import timedelta
+
+    from django.conf import settings
+    from django.utils import timezone
+
+    from apps.notifications.models import ConsentPurpose
+    from apps.notifications.services import has_consent
+
+    now = now or timezone.now()
+    newest = now - timedelta(hours=settings.CART_REMINDER_AFTER_HOURS)
+    oldest = now - timedelta(days=settings.CART_REMINDER_WINDOW_DAYS)
+    carts = (
+        Cart.objects.select_related("account")
+        .filter(account__isnull=False, account__status="active", account__email_verified_at__isnull=False)
+        .filter(reminded_at__isnull=True, updated_at__lte=newest, updated_at__gte=oldest, items__isnull=False)
+        .distinct()
+    )
+    due = []
+    for cart in carts:
+        if cart.account is None:
+            continue
+        if not has_consent(cart.account.email, ConsentPurpose.CART_REMINDERS):
+            continue
+        if cart.account.orders.filter(placed_at__gte=cart.updated_at).exists():
+            continue  # they ordered after the bag last changed
+        due.append(cart)
+    return due
+
+
+def send_reminders() -> int:
+    """Sends at most one reminder per bag change. Returns how many were sent."""
+    from django.conf import settings
+    from django.utils import timezone
+
+    from apps.customers.services import profile
+    from apps.notifications.models import ConsentPurpose
+    from apps.notifications.services import send_email, unsubscribe_token
+
+    sent = 0
+    for cart in due_for_reminder():
+        account = cart.account
+        if account is None:
+            continue
+        locale = profile(account).preferred_locale
+        buyable = [ln for ln in lines(cart, locale) if ln.problem is None]
+        with transaction.atomic():
+            claimed = Cart.objects.filter(pk=cart.pk, reminded_at__isnull=True).update(reminded_at=timezone.now())
+            if not claimed:
+                continue
+            if not buyable:
+                continue  # nothing left to buy: mark as handled, don't email
+            send_email(
+                [account.email],
+                "cart_reminder",
+                {
+                    "name": account.full_name,
+                    "items": [f"{ln.name} (qty {ln.item.quantity})" for ln in buyable[:5]],
+                    "more": max(len(buyable) - 5, 0),
+                    "link": f"{settings.SITE_URL}/{locale}/cart",
+                    "unsubscribe": f"{settings.SITE_URL}/{locale}/unsubscribe#token="
+                    + unsubscribe_token(account.email, ConsentPurpose.CART_REMINDERS),
+                },
+            )
+            sent += 1
+    return sent

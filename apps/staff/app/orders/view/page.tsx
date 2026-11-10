@@ -8,6 +8,7 @@ import {
   money,
   ORDER_STATUS,
   OrdersNav,
+  PAYMENT_METHOD,
   PAYMENT_STATUS,
   REFUND_STATE,
   SHIPMENT_STATUS,
@@ -194,7 +195,7 @@ function OrderDetail({ detail, onChange }: { detail: Detail; onChange: (d: Detai
         <dl className={c.facts}>
           <dt>Customer</dt>
           <dd>
-            {a.name} · {o.email} · {o.phone}
+            {a.full_name} · {o.email} · {o.phone}
             {detail.account_email ? " (account)" : " (guest)"}
           </dd>
           <dt>Deliver to</dt>
@@ -208,7 +209,7 @@ function OrderDetail({ detail, onChange }: { detail: Detail; onChange: (d: Detai
             {o.shipping_method} {o.delivery_days ? `· ${o.delivery_days} days` : ""}
           </dd>
           <dt>Payment</dt>
-          <dd>{o.payment_method === "cod" ? "Cash on delivery" : "Card or wallet"}</dd>
+          <dd>{PAYMENT_METHOD[o.payment_method] ?? o.payment_method}</dd>
         </dl>
         <table className={ui.table}>
           <thead>

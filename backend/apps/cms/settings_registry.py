@@ -55,6 +55,12 @@ def _count(value: Any) -> Any:
     return value
 
 
+def _long_text(value: Any) -> Any:
+    if not isinstance(value, str) or len(value) > 1000:
+        raise ValueError("Enter up to 1,000 characters.")
+    return value.strip()
+
+
 def _short_text(value: Any) -> Any:
     if not isinstance(value, str) or len(value) > 200:
         raise ValueError("Use text of up to 200 characters.")
@@ -104,6 +110,14 @@ SETTINGS: dict[str, SettingSpec] = {
             "Days after delivery a customer can request a return (P-14, provisional: 7; 0 turns returns off)",
             7,
             _count,
+        ),
+        SettingSpec(
+            "returns.instructions",
+            "store",
+            "Where and how customers send an approved return (emailed with the approval; P-14 pending)",
+            "Pack the items with all tags attached and write your return number on the parcel. "
+            "We will email you the courier pickup or drop-off details.",
+            _long_text,
         ),
         SettingSpec(
             "inventory.low_stock_default",

@@ -62,3 +62,28 @@ class NewsletterConfirmView(PublicAPIView):
         if not services.confirm_newsletter(data.validated_data["token"]):
             raise ApiProblem(400, "invalid-link", "This confirmation link is invalid or has expired.")
         return Response({"status": "confirmed"})
+
+
+class UnsubscribeIn(serializers.Serializer[Any]):
+    token = serializers.CharField(max_length=500)
+
+
+class UnsubscribeOut(serializers.Serializer[Any]):
+    purpose = serializers.CharField()
+
+
+class UnsubscribeView(PublicAPIView):
+    """One-click stop for any consented message (the link in each reminder). No sign-in needed."""
+
+    @extend_schema(
+        tags=["newsletter"], operation_id="unsubscribe", request=UnsubscribeIn, responses={200: UnsubscribeOut}
+    )
+    def post(self, request: Request) -> Response:
+        if hit("unsubscribe", client_ip(request) or "unknown", PER_ADDRESS) > PER_ADDRESS.count:
+            raise ApiProblem(429, "rate-limited", "Too many requests. Please try again later.")
+        data = UnsubscribeIn(data=request.data)
+        data.is_valid(raise_exception=True)
+        purpose = services.unsubscribe(data.validated_data["token"])
+        if purpose is None:
+            raise ApiProblem(400, "invalid-link", "This link isn't valid. Sign in to change your preferences.")
+        return Response({"purpose": purpose})
