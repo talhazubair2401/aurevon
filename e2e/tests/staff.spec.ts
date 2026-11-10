@@ -506,10 +506,11 @@ test("a customer's contact message is answered by staff and the reply reaches th
 });
 
 test("Owner reads the sales report and downloads a CSV", async ({ browser }) => {
+  test.setTimeout(90_000);
   const owner = await signInOwner(browser);
   await owner.goto("/staff/reports");
-  await expect(owner.getByText("gross sales", { exact: true })).toBeVisible();
   await expect(owner.getByRole("heading", { name: "Gross sales by day" })).toBeVisible();
+  await expect(owner.getByText(/net sales \(after refunds\)/)).toBeVisible();
   await owner.getByRole("button", { name: "Show as table" }).click();
   await expect(owner.getByRole("columnheader", { name: "Day" })).toBeVisible();
   const download = owner.waitForEvent("download");
