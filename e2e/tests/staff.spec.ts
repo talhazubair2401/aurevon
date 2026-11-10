@@ -434,7 +434,7 @@ test("Owner adds a delivery zone with a rate, and a coupon code", async ({ brows
   await newZone.getByRole("button", { name: "Add zone" }).click();
   const zone = owner.getByRole("region", { name: `Hyderabad ${stamp}` });
   await expect(zone.getByText("No rates: addresses in this zone can't check out.")).toBeVisible();
-  await zone.getByLabel("Fee (Rs)").fill("300");
+  await zone.getByLabel("Fee (Rs)", { exact: true }).fill("300");
   await zone.getByRole("button", { name: "Add rate" }).click();
   await expect(zone.getByRole("cell", { name: "Rs 300" })).toBeVisible();
 
