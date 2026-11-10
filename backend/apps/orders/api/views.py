@@ -17,6 +17,7 @@ from apps.accounts.models import Account, CustomerSession
 from apps.cart import services as cart_services
 from apps.cart.api.views import LOCALE, CartAPIView, MoneyOut
 from apps.customers import services as customers
+from apps.customers.models import PROVINCE_CODES
 from apps.customers.validators import AddressSerializer, normalize_phone
 from common.api import money, request_locale
 from common.exceptions import ApiProblem
@@ -41,8 +42,18 @@ class ShippingOptionOut(serializers.Serializer[Any]):
     cod_fee = MoneyOut()
 
 
+class QuoteAddressIn(serializers.Serializer[Any]):
+    """A quote only needs where the parcel goes; the full address is checked when the order is placed."""
+
+    city = serializers.CharField(max_length=80)
+    province = serializers.ChoiceField(choices=PROVINCE_CODES)
+
+    def validate_city(self, value: str) -> str:
+        return value.strip().title()
+
+
 class QuoteIn(serializers.Serializer[Any]):
-    address = AddressSerializer(required=False, allow_null=True)
+    address = QuoteAddressIn(required=False, allow_null=True)
     shipping_method = serializers.CharField(max_length=12, required=False, allow_blank=True)
     payment_method = serializers.ChoiceField(choices=PaymentMethod.values, required=False, allow_null=True)
 
@@ -64,7 +75,7 @@ class QuoteOut(serializers.Serializer[Any]):
     guest_checkout_allowed = serializers.BooleanField()
 
 
-class PlaceIn(QuoteIn):
+class PlaceIn(serializers.Serializer[Any]):
     email = serializers.EmailField(max_length=254, required=False)
     phone = serializers.CharField(max_length=30)
     address = AddressSerializer()

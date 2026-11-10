@@ -2535,12 +2535,12 @@ export interface components {
       qr_svg: string;
     };
     PlaceInRequest: {
-      address: components["schemas"]["AddressRequest"];
-      shipping_method: string;
-      payment_method: components["schemas"]["PaymentMethodEnum"];
       /** Format: email */
       email?: string;
       phone: string;
+      address: components["schemas"]["AddressRequest"];
+      shipping_method: string;
+      payment_method: components["schemas"]["PaymentMethodEnum"];
       /** @default  */
       note: string;
       /** @default false */
@@ -2667,8 +2667,13 @@ export interface components {
      * @enum {string}
      */
     ProvinceEnum: "punjab" | "sindh" | "kp" | "balochistan" | "ict" | "gb" | "ajk";
+    /** @description A quote only needs where the parcel goes; the full address is checked when the order is placed. */
+    QuoteAddressInRequest: {
+      city: string;
+      province: components["schemas"]["ProvinceEnum"];
+    };
     QuoteInRequest: {
-      address?: components["schemas"]["AddressRequest"] | null;
+      address?: components["schemas"]["QuoteAddressInRequest"] | null;
       shipping_method?: string;
       payment_method?:
         (components["schemas"]["PaymentMethodEnum"] | components["schemas"]["NullEnum"]) | null;

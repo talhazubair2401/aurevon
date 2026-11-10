@@ -5,6 +5,6 @@
 export const routeReady = {
   products: true, // product detail: M5
   search: true, // search: M5 (R-07)
-  account: false, // account pages: M7
-  cart: false, // bag and checkout: M7
+  account: true, // account pages: M7
+  cart: true, // bag and checkout: M7
 } as const;

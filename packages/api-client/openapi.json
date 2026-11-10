@@ -7273,17 +7273,6 @@
             "PlaceInRequest": {
                 "type": "object",
                 "properties": {
-                    "address": {
-                        "$ref": "#/components/schemas/AddressRequest"
-                    },
-                    "shipping_method": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 12
-                    },
-                    "payment_method": {
-                        "$ref": "#/components/schemas/PaymentMethodEnum"
-                    },
                     "email": {
                         "type": "string",
                         "format": "email",
@@ -7294,6 +7283,17 @@
                         "type": "string",
                         "minLength": 1,
                         "maxLength": 30
+                    },
+                    "address": {
+                        "$ref": "#/components/schemas/AddressRequest"
+                    },
+                    "shipping_method": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 12
+                    },
+                    "payment_method": {
+                        "$ref": "#/components/schemas/PaymentMethodEnum"
                     },
                     "note": {
                         "type": "string",
@@ -7803,13 +7803,31 @@
                 "type": "string",
                 "description": "* `punjab` - punjab\n* `sindh` - sindh\n* `kp` - kp\n* `balochistan` - balochistan\n* `ict` - ict\n* `gb` - gb\n* `ajk` - ajk"
             },
+            "QuoteAddressInRequest": {
+                "type": "object",
+                "description": "A quote only needs where the parcel goes; the full address is checked when the order is placed.",
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "province": {
+                        "$ref": "#/components/schemas/ProvinceEnum"
+                    }
+                },
+                "required": [
+                    "city",
+                    "province"
+                ]
+            },
             "QuoteInRequest": {
                 "type": "object",
                 "properties": {
                     "address": {
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/AddressRequest"
+                                "$ref": "#/components/schemas/QuoteAddressInRequest"
                             }
                         ],
                         "nullable": true

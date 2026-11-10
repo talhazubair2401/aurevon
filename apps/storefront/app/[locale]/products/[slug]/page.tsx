@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AddToBag } from "@/components/cart/AddToBag";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, type Locale } from "@aurevon/i18n";
@@ -11,7 +12,6 @@ import { CollectionTone } from "@/components/home/HomeSections";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Link } from "@/i18n/navigation";
 import { getAvailability, getProduct, type ProductDetail } from "@/lib/api";
-import { routeReady } from "@/lib/features";
 import { redirectOrNotFound } from "@/lib/redirects";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
 
@@ -303,15 +303,12 @@ export default async function ProductPage({
           </fieldset>
 
           <div className={styles.group}>
-            {/* Inert until the bag exists (M7); a server-rendered page needs no click handler for it. */}
-            <button type="button" className={styles.bag} disabled aria-describedby="bag-note">
-              {t("addToBag")}
-            </button>
-            {!routeReady.cart ? (
-              <p id="bag-note" className={styles.note}>
-                {t("bagSoon")}
-              </p>
-            ) : null}
+            <AddToBag
+              sku={selected?.sku}
+              available={selected?.available}
+              slug={product.slug}
+              className={styles.bag}
+            />
           </div>
 
           {product.size_chart.length > 0 ? (

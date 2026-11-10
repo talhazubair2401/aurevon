@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 // No control on the storefront may lead to a broken page. Routes from later milestones (product pages, search,
-// account, bag) aren't linked until they exist (apps/storefront/lib/features.ts).
+// account, bag) link only to pages that exist (apps/storefront/lib/features.ts).
 
 const PAGES = [
   "/en/products/relaxed-chino",
@@ -33,14 +33,15 @@ test("every internal link on the main pages opens a working page", async ({ page
   expect(broken).toEqual([]);
 });
 
-test("unbuilt header utilities are shown but don't link anywhere", async ({ page }) => {
+test("header utilities link to search, account and the bag", async ({ page }) => {
   await page.goto("/en");
   const header = page.getByRole("banner");
   await expect(header.getByRole("link", { name: "Search" })).toHaveAttribute("href", "/en/search");
-  for (const name of ["Account", "Bag"]) {
-    await expect(header.getByRole("img", { name: `${name}: coming soon` })).toBeVisible();
-    await expect(header.getByRole("link", { name })).toHaveCount(0);
-  }
+  await expect(header.getByRole("link", { name: "Account" })).toHaveAttribute(
+    "href",
+    "/en/account",
+  );
+  await expect(header.getByTestId("bag-link")).toHaveAttribute("href", "/en/cart");
 });
 
 test("product cards open their product pages (M5)", async ({ page }) => {

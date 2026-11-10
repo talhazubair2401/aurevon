@@ -1,0 +1,337 @@
+/*
+ * Bag, add-to-bag and shared commerce styles (M7). Editorial and quiet: generous space, Playfair headings,
+ * small uppercase labels, hairline dividers, charcoal actions; gold only as a hairline accent (A-03).
+ */
+.layout {
+  display: grid;
+  gap: var(--av-space-10);
+  inline-size: 100%;
+  box-sizing: border-box;
+  max-inline-size: var(--av-max-width);
+  margin-inline: auto;
+  padding: var(--av-space-10) var(--av-gutter) var(--av-space-16);
+}
+
+@media (min-width: 60rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    gap: var(--av-space-16);
+    align-items: start;
+  }
+}
+
+.kicker {
+  margin: 0 0 var(--av-space-2);
+  color: var(--av-text-muted);
+  font-size: var(--av-text-caption);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.heading {
+  margin: 0 0 var(--av-space-8);
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h1);
+  font-weight: 400;
+  line-height: var(--av-line-height-tight);
+}
+
+.muted {
+  color: var(--av-text-muted);
+}
+
+.loading {
+  padding: var(--av-space-24) var(--av-gutter);
+  color: var(--av-text-muted);
+  text-align: center;
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--av-space-3);
+  padding: var(--av-space-24) var(--av-gutter);
+  text-align: center;
+}
+
+.empty .heading {
+  margin: 0;
+}
+
+.lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--av-divider);
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr) auto;
+  gap: var(--av-space-5);
+  padding-block: var(--av-space-6);
+  border-block-end: 1px solid var(--av-divider);
+  align-items: start;
+}
+
+@media (min-width: 40rem) {
+  .line {
+    grid-template-columns: 8rem minmax(0, 1fr) auto;
+  }
+}
+
+.thumb {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--av-color-stone);
+}
+
+.thumb img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.lineBody {
+  display: grid;
+  gap: var(--av-space-2);
+}
+
+.lineName {
+  color: inherit;
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h3);
+  text-decoration: none;
+}
+
+.lineName:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.lineMeta {
+  margin: 0;
+  color: var(--av-text-muted);
+  font-size: var(--av-text-small);
+}
+
+.lineControls {
+  display: flex;
+  gap: var(--av-space-5);
+  align-items: center;
+  margin-block-start: var(--av-space-2);
+}
+
+.qty,
+.input {
+  min-block-size: var(--av-tap-target);
+  padding-inline: var(--av-space-3);
+  border: 1px solid var(--av-field-border);
+  background: var(--av-surface-raised);
+  color: inherit;
+  font: inherit;
+}
+
+.linePrice {
+  font-size: var(--av-text-body);
+}
+
+.summary {
+  display: grid;
+  gap: var(--av-space-5);
+  padding: var(--av-space-8);
+  background: var(--av-surface-raised);
+  border-block-start: 2px solid var(--av-accent);
+}
+
+@media (min-width: 60rem) {
+  .summary {
+    position: sticky;
+    inset-block-start: var(--av-space-24);
+  }
+}
+
+.summaryTitle {
+  margin: 0;
+  font-family: var(--av-font-display);
+  font-size: var(--av-text-h3);
+  font-weight: 400;
+}
+
+.totals {
+  display: grid;
+  gap: var(--av-space-3);
+  margin: 0;
+}
+
+.totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--av-space-4);
+}
+
+.totals dt {
+  color: var(--av-text-muted);
+}
+
+.totals dd {
+  margin: 0;
+}
+
+.grand {
+  padding-block-start: var(--av-space-4);
+  border-block-start: 1px solid var(--av-divider);
+  font-size: var(--av-text-h3);
+}
+
+.grand dt {
+  color: var(--av-text);
+}
+
+.label {
+  display: block;
+  margin-block-end: var(--av-space-2);
+  font-size: var(--av-text-caption);
+  letter-spacing: var(--av-tracking-caps);
+  text-transform: uppercase;
+}
+
+.couponRow {
+  display: flex;
+  gap: var(--av-space-2);
+}
+
+.couponRow .input {
+  flex: 1;
+  min-inline-size: 0;
+  text-transform: uppercase;
+}
+
+.coupon {
+  margin: 0;
+  font-size: var(--av-text-small);
+}
+
+.primary,
+.primaryLink,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--av-tap-target);
+  padding-inline: var(--av-space-6);
+  border: 1px solid var(--av-color-charcoal);
+  font: inherit;
+  font-size: var(--av-text-small);
+  letter-spacing: var(--av-tracking-caps);
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--av-duration-fast) ease,
+    color var(--av-duration-fast) ease;
+}
+
+.primary,
+.primaryLink {
+  inline-size: 100%;
+  background: var(--av-color-charcoal);
+  color: var(--av-color-off-white);
+}
+
+.primary:hover:not(:disabled),
+.primaryLink:hover {
+  background: var(--av-color-deep-brown);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--av-text);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--av-color-charcoal);
+  color: var(--av-color-off-white);
+}
+
+.primary:disabled,
+.secondary:disabled,
+.disabledLink {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.textButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--av-text);
+  font: inherit;
+  font-size: var(--av-text-small);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.inlineLink {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.errorText {
+  margin: 0;
+  color: var(--av-error);
+  font-size: var(--av-text-small);
+}
+
+.assurance {
+  margin: 0;
+  color: var(--av-text-muted);
+  font-size: var(--av-text-caption);
+  text-align: center;
+}
+
+.addWrap {
+  display: grid;
+  gap: var(--av-space-2);
+}
+
+.addRow {
+  display: flex;
+  gap: var(--av-space-2);
+}
+
+.addRow .primary {
+  flex: 1;
+}
+
+.saveButton {
+  display: grid;
+  place-items: center;
+  inline-size: var(--av-tap-target);
+  min-block-size: var(--av-tap-target);
+  border: 1px solid var(--av-color-charcoal);
+  background: transparent;
+  color: var(--av-color-charcoal);
+  cursor: pointer;
+}
+
+.saveButton[aria-pressed="true"] {
+  color: var(--av-reg-burgundy);
+}
+
+.addStatus {
+  min-block-size: 1.5em;
+  margin: 0;
+  font-size: var(--av-text-small);
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

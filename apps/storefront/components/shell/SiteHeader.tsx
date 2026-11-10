@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
 import { getNavigation } from "@/lib/api";
+import { BagLink } from "@/components/cart/BagLink";
 import { routeReady } from "@/lib/features";
 import { safeHref, utilityLinks } from "./navigation";
 import styles from "./Shell.module.css";
@@ -60,7 +61,15 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
               ["bag", "bag", routeReady.cart],
             ] as const
           ).map(([key, icon, ready]) =>
-            ready ? (
+            ready && key === "bag" ? (
+              <BagLink
+                key={key}
+                label={t(key)}
+                className={styles.iconLink ?? ""}
+                countClass={styles.bagCount ?? ""}
+                hiddenClass={styles.srOnly ?? ""}
+              />
+            ) : ready ? (
               <Link
                 key={key}
                 href={utilityLinks[key]}

@@ -17,6 +17,11 @@ const PAGES = [
   "/en/products/relaxed-chino",
   "/en/products/block-print-kurta", // 3D viewer (M6) when 3D is on for shoppers
   "/ur/search?q=kurta",
+  "/en/cart",
+  "/en/checkout",
+  "/en/account/sign-in",
+  "/en/account/register",
+  "/ur/account/forgot-password",
   "/staff/sign-in",
   "/staff/forgot-password",
   "/staff/enroll",
@@ -56,11 +61,15 @@ function expectNotPubliclyCacheable(response: APIResponse | null | undefined, pa
 }
 
 test("every page enforces the nonce policy with zero violations", async ({ page }, testInfo) => {
+  test.setTimeout(120_000);
   await watchViolations(page);
   const results: Record<string, { policy: string; violations: Violation[] }> = {};
 
   for (const path of PAGES) {
-    const response = await page.goto(path, { waitUntil: "networkidle" });
+    const response = await page.goto(path, { waitUntil: "load" });
+    // Playwright never marks a fetch answered 401 + WWW-Authenticate (the signed-out session check) as finished,
+    // so "networkidle" can't be awaited on pages that ask for the session; give them a bounded settle instead.
+    await page.waitForLoadState("networkidle", { timeout: 4000 }).catch(() => undefined);
     const headers = response!.headers();
     const policy = headers["content-security-policy"] ?? "";
     expect(headers["content-security-policy-report-only"], path).toBeUndefined();
