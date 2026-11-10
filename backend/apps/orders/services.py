@@ -211,6 +211,86 @@ def advance(order_id: Any, to: str, actor: Actor, reason: str = "", request: Any
     return order
 
 
+def mark_dispatched(order: Order, actor: Actor, reason: str) -> None:
+    """Called by shipping.services.dispatch inside its transaction, with the order locked."""
+    _move(order, S.DISPATCHED, actor.label, reason)
+    if order.payment_method == PaymentMethod.COD and order.payment_status != PaymentStatus.COD_COLLECT:
+        set_payment_status(order, PaymentStatus.COD_COLLECT, actor.label, "Courier collects on delivery")
+
+
+def restock_undelivered(order: Order, actor_label: str) -> None:
+    """An undelivered parcel came back unopened: its units return to sellable stock."""
+    from apps.inventory.models import MovementReason
+
+    stock.restore(order.pk, order.number, actor_label, reason=MovementReason.RETURN)
+
+
+COD_NEXT: dict[str, set[str]] = {
+    PaymentStatus.COD_REMITTANCE_PENDING: {PaymentStatus.COD_REMITTANCE_RECEIVED, PaymentStatus.COD_DISCREPANCY},
+    PaymentStatus.COD_REMITTANCE_RECEIVED: {PaymentStatus.COD_RECONCILED, PaymentStatus.COD_DISCREPANCY},
+    PaymentStatus.COD_DISCREPANCY: {PaymentStatus.COD_RECONCILED},
+}
+
+
+@transaction.atomic
+def cod_remittance(
+    order_id: Any,
+    action: str,
+    actor: Actor,
+    *,
+    amount: Any = None,
+    reference: str = "",
+    note: str = "",
+    request: Any = None,
+) -> Order:
+    """Cash on delivery money from the courier (MTS §10): received (with the amount and the courier's reference),
+    then reconciled. A short or wrong amount becomes a discrepancy and alerts finance; reconciling a discrepancy
+    needs a note saying how it was settled."""
+    from decimal import Decimal, InvalidOperation
+
+    order = lock(order_id)
+    if order.payment_method != PaymentMethod.COD:
+        raise ApiProblem(400, "not-cod", "This order wasn't paid by cash on delivery.")
+    if action == "received":
+        try:
+            received = Decimal(str(amount)).quantize(Decimal("0.01"))
+        except (InvalidOperation, ValueError):
+            raise ApiProblem(400, "amount", "Enter the amount the courier remitted.") from None
+        if not reference.strip():
+            raise ApiProblem(400, "reference", "Enter the courier's remittance reference.")
+        to = PaymentStatus.COD_REMITTANCE_RECEIVED if received == order.total else PaymentStatus.COD_DISCREPANCY
+        why = f"Remitted Rs {received:,.2f} (ref {reference.strip()[:60]})"
+    elif action == "reconciled":
+        to = PaymentStatus.COD_RECONCILED
+        if order.payment_status == PaymentStatus.COD_DISCREPANCY and not note.strip():
+            raise ApiProblem(400, "note", "Say how the discrepancy was settled.")
+        why = note.strip()[:200] or "Reconciled with the courier statement"
+    else:
+        raise ApiProblem(400, "action", "Unknown remittance action.")
+    if to not in COD_NEXT.get(order.payment_status, set()):
+        raise ApiProblem(
+            409, "invalid-transition", f"Nothing to do: this order is {order.get_payment_status_display().lower()}."
+        )
+    set_payment_status(order, to, actor.label, why)
+    if to == PaymentStatus.COD_DISCREPANCY:
+        alert(
+            "cod_discrepancy",
+            f"Cash on delivery remittance for {order.number} doesn't match the order total.",
+            target_type="order",
+            target_id=order.number,
+            dedupe_key=f"cod_discrepancy:{order.number}",
+        )
+    record(
+        f"order.cod_{action}",
+        actor,
+        target_type="order",
+        target_id=order.number,
+        after={"amount": None if amount is None else str(amount), "reference": reference, "note": note},
+        request=request,
+    )
+    return order
+
+
 def expire_due(now: Any = None, limit: int = 100) -> int:
     """Unpaid online orders past their reservation (MTS §11). One at a time, row-locked with SKIP LOCKED, and the
     provider is always asked first, so expiry never races a payment."""

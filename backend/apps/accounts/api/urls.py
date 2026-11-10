@@ -6,6 +6,7 @@ from apps.audit.api.views import AuditLogView
 from apps.catalog.api import staff as catalog
 from apps.cms.api import staff as cms
 from apps.cms.api.views import SettingsView, SettingView
+from apps.orders.api import staff as orders
 
 from . import customer, staff_admin, staff_auth, staff_me
 
@@ -65,6 +66,23 @@ staff_urlpatterns: list[URLPattern] = [
     path("seo/<str:key>", cms.SeoView.as_view()),
     path("redirects", cms.RedirectsView.as_view()),
     path("redirects/<uuid:redirect_id>", cms.RedirectView.as_view()),
+    # Orders, fulfilment, refunds and alerts (M8/M10; MTS §8 "Staff: orders and payments").
+    path("orders", orders.OrdersView.as_view()),
+    path("orders/<str:number>", orders.OrderView.as_view()),
+    path("orders/<str:number>/status", orders.OrderStatusView.as_view()),
+    path("orders/<str:number>/cancel", orders.OrderCancelView.as_view()),
+    path("orders/<str:number>/dispatch", orders.OrderDispatchView.as_view()),
+    path("orders/<str:number>/cod", orders.OrderCodView.as_view()),
+    path("orders/<str:number>/refunds", orders.OrderRefundsView.as_view()),
+    path("shipments/<uuid:shipment_id>/events", orders.ShipmentEventsView.as_view()),
+    path("couriers", orders.CouriersView.as_view()),
+    path("refunds", orders.RefundsView.as_view()),
+    path("refunds/<uuid:refund_id>/approve", orders.RefundApproveView.as_view()),
+    path("refunds/<uuid:refund_id>/reject", orders.RefundRejectView.as_view()),
+    path("refunds/<uuid:refund_id>/manual", orders.RefundManualView.as_view()),
+    path("payments/<uuid:payment_id>/resolve", orders.PaymentReviewView.as_view()),
+    path("alerts", orders.AlertsView.as_view()),
+    path("alerts/<uuid:alert_id>/resolve", orders.AlertResolveView.as_view()),
     # Catalogue (M5; MTS §8 "Staff: catalogue"; decision 0006).
     path("catalog/colours", catalog.ColoursView.as_view()),
     path("catalog/colours/<slug:slug>", catalog.ColourView.as_view()),

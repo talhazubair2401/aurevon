@@ -9,6 +9,7 @@ import ui from "./ui.module.css";
 
 const NAV = [
   { href: "/", label: "Overview", permission: null },
+  { href: "/orders", label: "Orders", permission: "orders.view" },
   { href: "/catalog", label: "Catalogue", permission: "catalog.view" },
   { href: "/content", label: "Content", permission: "cms.edit" },
   { href: "/seo", label: "SEO", permission: "seo.edit" },

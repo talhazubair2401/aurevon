@@ -932,6 +932,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/alerts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_alerts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/alerts/{alert_id}/resolve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_alert_resolve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/audit-log": {
     parameters: {
       query?: never;
@@ -1680,6 +1712,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/couriers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_couriers"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/me/mfa/confirm": {
     parameters: {
       query?: never;
@@ -1800,6 +1848,135 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_orders"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/orders/{number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_order"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/orders/{number}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_order_cancel"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/orders/{number}/cod": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_order_cod"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/orders/{number}/dispatch": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_order_dispatch"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/orders/{number}/refunds": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_order_refund"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/orders/{number}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Packing, back to confirmed, delivered, undelivered or returned. Dispatch and cancel have their own actions. */
+    post: operations["staff_order_status"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/payments/{payment_id}/resolve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_payment_resolve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/staff/redirects": {
     parameters: {
       query?: never;
@@ -1827,6 +2004,71 @@ export interface paths {
     put?: never;
     post?: never;
     delete: operations["staff_redirect_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/refunds": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["staff_refunds"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/refunds/{refund_id}/approve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_refund_approve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/refunds/{refund_id}/manual": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description A refund the provider couldn't make, paid by bank transfer and recorded here. */
+    post: operations["staff_refund_manual"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/staff/refunds/{refund_id}/reject": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_refund_reject"];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -1912,6 +2154,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/staff/shipments/{shipment_id}/events": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["staff_shipment_event"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1967,6 +2225,20 @@ export interface components {
       city: string;
       province: components["schemas"]["ProvinceEnum"];
       postal_code?: string;
+    };
+    AlertOut: {
+      /** Format: uuid */
+      id: string;
+      kind: string;
+      severity: string;
+      message: string;
+      target_type: string;
+      target_id: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      resolved_at: string | null;
+      resolved_by: string;
     };
     ApiIndex: {
       name: string;
@@ -2127,6 +2399,11 @@ export interface components {
     };
     CouponInRequest: {
       code: string;
+    };
+    CourierOut: {
+      code: string;
+      label: string;
+      books_automatically: boolean;
     };
     CustomerAccountOut: {
       /** Format: uuid */
@@ -2374,6 +2651,13 @@ export interface components {
       quantity: number;
       line_total: components["schemas"]["MoneyOut"];
     };
+    OrderListOut: {
+      count: number;
+      results: components["schemas"]["OrderRowOut"][];
+      counts: {
+        [key: string]: number;
+      };
+    };
     OrderOut: {
       number: string;
       status: string;
@@ -2404,6 +2688,19 @@ export interface components {
       can_return: boolean;
       history: components["schemas"]["OrderEventOut"][];
       shipments: components["schemas"]["ShipmentOut"][];
+    };
+    OrderRowOut: {
+      number: string;
+      /** Format: date-time */
+      placed_at: string;
+      customer: string;
+      email: string;
+      city: string;
+      status: string;
+      payment_status: string;
+      payment_method: string;
+      total: string;
+      items: number;
     };
     OrderSummaryOut: {
       number: string;
@@ -2723,6 +3020,26 @@ export interface components {
       /** Format: date-time */
       created_at: string;
     };
+    RefundRowOut: {
+      /** Format: uuid */
+      id: string;
+      order: string;
+      amount: string;
+      reason: string;
+      state: string;
+      source: string;
+      requested_by: string;
+      approved_by: string;
+      second_approved_by: string;
+      decision_note: string;
+      manual_reference: string;
+      last_error: string;
+      attempts: number;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      completed_at: string | null;
+    };
     RevokedOut: {
       revoked: number;
     };
@@ -2861,6 +3178,21 @@ export interface components {
       full_name: string;
       status: string;
       role: components["schemas"]["RoleOut"];
+    };
+    StaffOrderOut: {
+      order: unknown;
+      account_email: string | null;
+      history: unknown;
+      payments: unknown;
+      refunds: unknown;
+      shipments: unknown;
+      alerts: unknown;
+      next_statuses: string[];
+      can_cancel: boolean;
+      can_dispatch: boolean;
+      cod_actions: string[];
+      refundable: string;
+      returns: unknown;
     };
     StaffRecoveryStateOut: {
       /** Format: uuid */
@@ -4374,6 +4706,48 @@ export interface operations {
       };
     };
   };
+  staff_alerts: {
+    parameters: {
+      query?: {
+        resolved?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AlertOut"][];
+        };
+      };
+    };
+  };
+  staff_alert_resolve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        alert_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AlertOut"];
+        };
+      };
+    };
+  };
   staff_audit_log: {
     parameters: {
       query?: {
@@ -5638,6 +6012,25 @@ export interface operations {
       };
     };
   };
+  staff_couriers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CourierOut"][];
+        };
+      };
+    };
+  };
   staff_me_mfa_confirm: {
     parameters: {
       query?: never;
@@ -5802,6 +6195,216 @@ export interface operations {
       };
     };
   };
+  staff_orders: {
+    parameters: {
+      query?: {
+        date_from?: string;
+        date_to?: string;
+        offset?: number;
+        payment_method?: string;
+        payment_status?: string;
+        q?: string;
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderListOut"];
+        };
+      };
+    };
+  };
+  staff_order: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_order_cancel: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_order_cod: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_order_dispatch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_order_refund: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_order_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
+  staff_payment_resolve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        payment_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
+        };
+      };
+    };
+  };
   staff_redirects: {
     parameters: {
       query?: never;
@@ -5861,6 +6464,102 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  staff_refunds: {
+    parameters: {
+      query?: {
+        state?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RefundRowOut"][];
+        };
+      };
+    };
+  };
+  staff_refund_approve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        refund_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RefundRowOut"];
+        };
+      };
+    };
+  };
+  staff_refund_manual: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        refund_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RefundRowOut"];
+        };
+      };
+    };
+  };
+  staff_refund_reject: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        refund_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RefundRowOut"];
+        };
       };
     };
   };
@@ -5967,6 +6666,33 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SettingOut"];
+        };
+      };
+    };
+  };
+  staff_shipment_event: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        shipment_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          [key: string]: unknown;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderOut"];
         };
       };
     };

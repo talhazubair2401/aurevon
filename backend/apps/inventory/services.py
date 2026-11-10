@@ -141,8 +141,9 @@ def rereserve(order_id: Any, reference: str, expires_at: Any) -> bool:
 
 
 @transaction.atomic
-def restore(order_id: Any, reference: str, actor_label: str = "") -> None:
-    """Cancelled before dispatch after stock was committed: the units go straight back to sellable (A-25)."""
+def restore(order_id: Any, reference: str, actor_label: str = "", reason: str = MovementReason.CANCELLATION) -> None:
+    """Cancelled before dispatch after stock was committed: the units go straight back to sellable (A-25).
+    Also used for an undelivered parcel that came back unopened (reason: return)."""
 
     for r in (
         StockReservation.objects.select_for_update()
@@ -150,6 +151,6 @@ def restore(order_id: Any, reference: str, actor_label: str = "") -> None:
         .filter(order_id=order_id, status=ReservationStatus.COMMITTED)
     ):
         InventoryItem.objects.filter(pk=r.item_id).update(on_hand=F("on_hand") + r.quantity)
-        _move(r.item, r.quantity, MovementReason.CANCELLATION, reference, actor_label)
+        _move(r.item, r.quantity, reason, reference, actor_label)
         r.status = ReservationStatus.RELEASED
         r.save(update_fields=["status"])

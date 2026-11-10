@@ -311,6 +311,75 @@ test("Owner uploads, previews and approves a 3D model", async ({ browser }) => {
   await expect(panel.locator('[data-model3d="approved"]').first()).toBeVisible();
 });
 
+/*
+ * M8/M10 order operations: a guest orders with cash on delivery on the storefront; the Owner finds it, packs it,
+ * dispatches it with the courier's tracking number and records delivery. The customer is emailed at dispatch.
+ */
+test("Owner packs, dispatches and delivers a cash-on-delivery order", async ({ browser, page }) => {
+  test.setTimeout(180_000);
+  // Storefront: a guest checkout with cash on delivery.
+  const slugs = ["silk-column-dress", "relaxed-chino", "oxford-poplin-shirt", "wool-wrap-coat"];
+  let target = "";
+  for (const slug of slugs) {
+    const res = await page.request.get(`/api/v1/catalog/products/${slug}/availability`);
+    const v = (
+      (await res.json()) as { variants: { colour: string; size: string; available: boolean }[] }
+    ).variants.find((x) => x.available);
+    if (v) {
+      target = `/en/products/${slug}?colour=${v.colour}&size=${encodeURIComponent(v.size)}`;
+      break;
+    }
+  }
+  expect(target).not.toBe("");
+  await page.goto(target);
+  await page.getByTestId("add-to-bag").click();
+  await expect(page.getByText("Added to your bag")).toBeVisible();
+  const email = `ops.${Date.now()}@aurevon.test`;
+  await page.goto("/en/checkout");
+  await page.locator('input[name="email"]').fill(email);
+  await page.locator('input[name="full_name"]').fill("Hira Shah");
+  await page.locator('input[name="phone"]').fill("0300 7654321");
+  await page.locator('input[name="line1"]').fill("Flat 3, Block B");
+  await page.locator('input[name="area"]').fill("Gulberg");
+  await page.locator('input[name="city"]').fill("Lahore");
+  await page.locator('select[name="province"]').selectOption("punjab");
+  await page.getByText("Cash on delivery", { exact: true }).click();
+  await page.getByTestId("place-order").click();
+  const number = (await page.getByTestId("order-number").textContent())!.trim();
+  expect(number).toMatch(/^AV\d{6,}$/);
+
+  // Staff: find it, pack, dispatch, deliver.
+  const owner = await signInOwner(browser);
+  await owner
+    .getByRole("navigation", { name: "Staff" })
+    .getByRole("link", { name: "Orders" })
+    .click();
+  await owner
+    .getByLabel("Search by order number, name, email, phone or tracking number")
+    .fill(number);
+  await owner.getByRole("button", { name: "Search" }).click();
+  await owner.getByRole("link", { name: number }).click();
+  await expect(owner.getByText("Hira Shah", { exact: false }).first()).toBeVisible();
+  await owner.getByRole("button", { name: "Start packing" }).click();
+  await expect(owner.getByText("Order is now packing.")).toBeVisible();
+  await owner.getByLabel("Courier tracking number").fill(`TRK${Date.now()}`);
+  await owner.getByRole("button", { name: "Dispatch", exact: true }).click();
+  await expect(owner.getByText(/Dispatched\. The customer has been emailed/)).toBeVisible();
+  await owner.getByLabel("New tracking status").selectOption("delivered");
+  await owner.getByRole("button", { name: "Add tracking update" }).click();
+  await expect(owner.getByText("Tracking updated.")).toBeVisible();
+  await expect(
+    owner.getByRole("heading", { name: new RegExp(number) }).locator(".."),
+  ).toContainText("Delivered");
+  await expect(owner.getByText("COD: remittance pending").first()).toBeVisible();
+
+  // The customer got the dispatch email with the tracking number.
+  const search = await fetch(
+    `${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:"${email}" subject:"on its way"`)}`,
+  );
+  expect(((await search.json()) as { messages: unknown[] }).messages.length).toBeGreaterThan(0);
+});
+
 test("a customer session is never accepted by the staff API", async ({ request }) => {
   const email = `shopper-${Date.now()}@aurevon.test`;
   await request.post("/api/v1/auth/register", { data: { email, password: PASSWORD } });
