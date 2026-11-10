@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from apps.notifications.services import send_email
 
-from ..models import Account, AccountStatus, StaffProfile
+from ..models import Account, AccountStatus, AccountType, StaffProfile
 from ..permissions import RoleCode
 
 
@@ -34,3 +34,13 @@ def to_account(account: Account, template: str, **context: Any) -> None:
 
 def to_owners(template: str, *, exclude: Account | None = None, **context: Any) -> None:
     send_email(owner_emails(exclude), template, {"at": timezone.now().isoformat(), **context})
+
+
+def email_admins_about_alert(sender: Any, kind: str, message: str, **_: Any) -> None:
+    """Critical operational alerts go to every active Owner and Store Admin (MTS §14)."""
+    to = list(
+        Account.objects.filter(
+            account_type=AccountType.STAFF, status=AccountStatus.ACTIVE, staff__role_id__in=["owner", "store_admin"]
+        ).values_list("email", flat=True)
+    )
+    send_email(to, "staff_alert", {"kind": kind, "message": message})

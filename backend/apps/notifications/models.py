@@ -41,3 +41,36 @@ class ConsentRecord(models.Model):
 
     def __str__(self) -> str:
         return f"{self.purpose}:{self.status}"
+
+
+class AlertSeverity(models.TextChoices):
+    INFO = "info", "Info"
+    WARNING = "warning", "Warning"
+    CRITICAL = "critical", "Critical"
+
+
+class StaffAlert(models.Model):
+    """Operational alerts (MTS §14): payment conflicts, manual refunds, COD discrepancies, low stock …
+    Shown on the staff dashboard until resolved; critical ones are also emailed to Owners and Store Admins."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    kind = models.CharField(max_length=40)
+    severity = models.CharField(max_length=10, choices=AlertSeverity.choices, default=AlertSeverity.WARNING)
+    message = models.CharField(max_length=300)
+    target_type = models.CharField(max_length=40, blank=True)
+    target_id = models.CharField(max_length=64, blank=True)
+    dedupe_key = models.CharField(max_length=120, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.CharField(max_length=254, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["dedupe_key"], condition=Q(resolved_at__isnull=True) & ~Q(dedupe_key=""), name="alert_open_once"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.kind}:{self.message[:40]}"

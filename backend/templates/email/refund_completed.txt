@@ -1,0 +1,5 @@
+{% autoescape off %}Subject: Your AureVon refund for order {{ number }}
+
+We've refunded Rs {{ amount }} for order {{ number }}. Depending on your bank or wallet, it can take a few days to appear.
+
+— {{ site_name }}{% endautoescape %}

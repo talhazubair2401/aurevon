@@ -37,6 +37,24 @@ def _money_or_none(value: Any) -> Any:
     return {"amount": f"{amount:.2f}", "currency": value["currency"]}
 
 
+def _bool(value: Any) -> Any:
+    if not isinstance(value, bool):
+        raise ValueError("Use true or false.")
+    return value
+
+
+def _minutes(value: Any) -> Any:
+    if not isinstance(value, int) or isinstance(value, bool) or not 30 <= value <= 1440:
+        raise ValueError("Use whole minutes between 30 and 1440.")
+    return value
+
+
+def _count(value: Any) -> Any:
+    if not isinstance(value, int) or isinstance(value, bool) or not 0 <= value <= 10000:
+        raise ValueError("Use a whole number between 0 and 10000.")
+    return value
+
+
 def _short_text(value: Any) -> Any:
     if not isinstance(value, str) or len(value) > 200:
         raise ValueError("Use text of up to 200 characters.")
@@ -55,5 +73,44 @@ SETTINGS: dict[str, SettingSpec] = {
             _money_or_none,
         ),
         SettingSpec("store.support_email", "store", "Customer support email address", "", _short_text),
+        # PROVISIONAL until decided (recorded in docs/decisions/provisional-settings.md). Staff can change them.
+        SettingSpec(
+            "checkout.guest_allowed",
+            "store",
+            "Guests can check out without an account (P-15, provisional: on)",
+            True,
+            _bool,
+        ),
+        SettingSpec(
+            "checkout.reservation_minutes",
+            "store",
+            "Minutes an unpaid online order holds its stock (D-06, provisional: 30; at least 30)",
+            30,
+            _minutes,
+        ),
+        SettingSpec(
+            "payments.cod_enabled", "store", "Cash on delivery is offered at checkout (provisional: on)", True, _bool
+        ),
+        SettingSpec(
+            "payments.cod_max_order",
+            "store",
+            "Largest order total that may use cash on delivery (null: no limit)",
+            None,
+            _money_or_none,
+        ),
+        SettingSpec(
+            "returns.window_days",
+            "store",
+            "Days after delivery a customer can request a return (P-14, provisional: 7; 0 turns returns off)",
+            7,
+            _count,
+        ),
+        SettingSpec(
+            "inventory.low_stock_default",
+            "store",
+            "Default low-stock alert level per variant (0: no alerts unless set per variant)",
+            2,
+            _count,
+        ),
     ]
 }

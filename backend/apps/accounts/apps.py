@@ -13,3 +13,9 @@ class AccountsConfig(AppConfig):
 
         # The six system roles always match permissions.ROLE_PERMISSIONS after every migrate.
         post_migrate.connect(sync_system_roles, sender=self, dispatch_uid="accounts.sync_system_roles")
+
+        from apps.notifications.services import critical_alert
+
+        from .services.notify import email_admins_about_alert
+
+        critical_alert.connect(email_admins_about_alert, dispatch_uid="accounts.alert_emails")

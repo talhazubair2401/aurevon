@@ -1,0 +1,11 @@
+{% autoescape off %}Subject: Your AureVon order {{ number }} is confirmed
+
+Thank you for shopping with AureVon.
+
+Order {{ number }} · Total {{ currency }} {{ total }}
+{% if paid %}We've received your payment.{% else %}You'll pay in cash when your order is delivered.{% endif %}
+
+We'll email you again when it's on its way. You can follow your order here:
+{{ link }}
+
+— {{ site_name }}{% endautoescape %}

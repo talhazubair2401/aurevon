@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: AureVon order {{ number }} has been cancelled
+
+{% if expired %}Your order {{ number }} was cancelled because payment wasn't completed in time. Nothing was charged.{% else %}Your order {{ number }} has been cancelled: {{ reason }}
+If you had already paid, your refund is on its way and we'll email you when it's complete.{% endif %}
+
+— {{ site_name }}{% endautoescape %}

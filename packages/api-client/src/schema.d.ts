@@ -133,6 +133,76 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/cart": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    get: operations["cart_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cart/coupon": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["cart_coupon_apply"];
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    delete: operations["cart_coupon_remove"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cart/items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["cart_add"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/cart/items/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    delete: operations["cart_remove"];
+    options?: never;
+    head?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    patch: operations["cart_update"];
+    trace?: never;
+  };
   "/api/v1/catalog/categories": {
     parameters: {
       query?: never;
@@ -246,6 +316,40 @@ export interface paths {
     get: operations["catalog_product_availability"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/checkout/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["checkout_place_order"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/checkout/quote": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["checkout_quote"];
     delete?: never;
     options?: never;
     head?: never;
@@ -371,6 +475,86 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["me_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["me_update"];
+    trace?: never;
+  };
+  "/api/v1/me/addresses": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["me_addresses"];
+    put?: never;
+    post: operations["me_address_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/me/addresses/{address_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["me_address_delete"];
+    options?: never;
+    head?: never;
+    patch: operations["me_address_update"];
+    trace?: never;
+  };
+  "/api/v1/me/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["me_orders"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/me/password": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["me_password_change"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/me/sessions": {
     parameters: {
       query?: never;
@@ -420,6 +604,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/me/wishlist": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["me_wishlist"];
+    put?: never;
+    post: operations["me_wishlist_add"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/me/wishlist/{slug}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["me_wishlist_remove"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/newsletter/confirm": {
     parameters: {
       query?: never;
@@ -448,6 +664,74 @@ export interface paths {
     put?: never;
     /** @description Read-only public endpoint: no cookies are read, so no session is ever touched (MTS §8). */
     post: operations["newsletter_subscribe"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{number}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    get: operations["order_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{number}/payment-attempts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    post: operations["payment_attempt_start"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{number}/payment-status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description The shopper's return page: triggers an immediate provider check of a pending payment (A-23). */
+    get: operations["payment_status"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/shipping/options": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart. */
+    get: operations["shipping_options"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1635,9 +1919,62 @@ export interface components {
     AcceptedOut: {
       detail: string;
     };
+    AddInRequest: {
+      sku: string;
+      /** @default 1 */
+      quantity: number;
+    };
+    AddressInRequest: {
+      full_name: string;
+      phone: string;
+      line1: string;
+      /** @default  */
+      line2: string;
+      /** @default  */
+      area: string;
+      city: string;
+      province: components["schemas"]["ProvinceEnum"];
+      postal_code?: string;
+      /** @default  */
+      label: string;
+      /** @default false */
+      make_default: boolean;
+    };
+    AddressOut: {
+      full_name: string;
+      phone: string;
+      line1: string;
+      /** @default  */
+      line2: string;
+      /** @default  */
+      area: string;
+      city: string;
+      province: components["schemas"]["ProvinceEnum"];
+      postal_code?: string;
+      /** Format: uuid */
+      id: string;
+      label: string;
+      is_default: boolean;
+    };
+    AddressRequest: {
+      full_name: string;
+      phone: string;
+      line1: string;
+      /** @default  */
+      line2: string;
+      /** @default  */
+      area: string;
+      city: string;
+      province: components["schemas"]["ProvinceEnum"];
+      postal_code?: string;
+    };
     ApiIndex: {
       name: string;
       version: string;
+    };
+    AttemptOut: {
+      /** Format: uri */
+      redirect_url: string;
     };
     AuditLogOut: {
       /** Format: uuid */
@@ -1670,6 +2007,35 @@ export interface components {
       content: {
         [key: string]: unknown;
       };
+    };
+    CartLineOut: {
+      /** Format: uuid */
+      id: string;
+      sku: string;
+      product_slug: string;
+      name: string;
+      size: string;
+      colour: {
+        [key: string]: unknown;
+      };
+      image: {
+        [key: string]: unknown;
+      } | null;
+      unit_price: components["schemas"]["MoneyOut"];
+      quantity: number;
+      line_total: components["schemas"]["MoneyOut"];
+      available: number;
+      problem: string | null;
+    };
+    CartOut: {
+      /** Format: uuid */
+      id: string | null;
+      /** @description Guests send this as X-CSRF-Token on writes. */
+      csrf_token: string | null;
+      items: components["schemas"]["CartLineOut"][];
+      count: number;
+      subtotal: components["schemas"]["MoneyOut"];
+      coupon_code: string;
     };
     CategoryFacet: {
       slug: string;
@@ -1758,6 +2124,9 @@ export interface components {
     CountFacet: {
       value: string;
       count: number;
+    };
+    CouponInRequest: {
+      code: string;
     };
     CustomerAccountOut: {
       /** Format: uuid */
@@ -1958,6 +2327,10 @@ export interface components {
       amount: string;
       currency: string;
     };
+    MoneyOut: {
+      amount: string;
+      currency: string;
+    };
     NavLink: {
       label: string;
       href: string;
@@ -1975,6 +2348,72 @@ export interface components {
     };
     NewsletterOut: {
       status: string;
+    };
+    /**
+     * @description * `pay` - pay
+     *     * `confirmed` - confirmed
+     * @enum {string}
+     */
+    NextEnum: "pay" | "confirmed";
+    /** @enum {unknown} */
+    NullEnum: null;
+    OrderEventOut: {
+      kind: string;
+      status: string;
+      /** Format: date-time */
+      at: string;
+    };
+    OrderLineOut: {
+      product_slug: string;
+      name: string;
+      sku: string;
+      size: string;
+      colour: string;
+      image_url: string;
+      unit_price: components["schemas"]["MoneyOut"];
+      quantity: number;
+      line_total: components["schemas"]["MoneyOut"];
+    };
+    OrderOut: {
+      number: string;
+      status: string;
+      payment_status: string;
+      payment_method: string;
+      /** Format: date-time */
+      placed_at: string;
+      /** Format: email */
+      email: string;
+      phone: string;
+      items: components["schemas"]["OrderLineOut"][];
+      subtotal: components["schemas"]["MoneyOut"];
+      discount: components["schemas"]["MoneyOut"];
+      discount_label: string;
+      shipping_fee: components["schemas"]["MoneyOut"];
+      cod_fee: components["schemas"]["MoneyOut"];
+      tax: components["schemas"]["MoneyOut"];
+      tax_included: boolean;
+      total: components["schemas"]["MoneyOut"];
+      shipping_address: {
+        [key: string]: unknown;
+      };
+      shipping_method: string;
+      delivery_days: string;
+      /** Format: date-time */
+      pay_by: string | null;
+      can_pay: boolean;
+      can_return: boolean;
+      history: components["schemas"]["OrderEventOut"][];
+      shipments: components["schemas"]["ShipmentOut"][];
+    };
+    OrderSummaryOut: {
+      number: string;
+      status: string;
+      payment_status: string;
+      /** Format: date-time */
+      placed_at: string;
+      total: components["schemas"]["MoneyOut"];
+      item_count: number;
+      first_image: string;
     };
     OwnRecoveryOut: {
       status: string;
@@ -2052,6 +2491,40 @@ export interface components {
       /** Format: date-time */
       updated_at: string;
     };
+    PasswordChangeInRequest: {
+      current_password: string;
+      new_password: string;
+    };
+    PatchedAddressInRequest: {
+      full_name?: string;
+      phone?: string;
+      line1?: string;
+      /** @default  */
+      line2: string;
+      /** @default  */
+      area: string;
+      city?: string;
+      province?: components["schemas"]["ProvinceEnum"];
+      postal_code?: string;
+      /** @default  */
+      label: string;
+      /** @default false */
+      make_default: boolean;
+    };
+    PatchedProfileInRequest: {
+      full_name?: string;
+      phone?: string;
+      preferred_locale?: components["schemas"]["LocaleEnum"];
+    };
+    PatchedQuantityInRequest: {
+      quantity?: number;
+    };
+    /**
+     * @description * `card` - card
+     *     * `cod` - cod
+     * @enum {string}
+     */
+    PaymentMethodEnum: "card" | "cod";
     PendingDeviceOut: {
       /** Format: email */
       email: string;
@@ -2060,6 +2533,22 @@ export interface components {
       otpauth_uri: string;
       /** @description The otpauth URI as an inline SVG QR code. */
       qr_svg: string;
+    };
+    PlaceInRequest: {
+      address: components["schemas"]["AddressRequest"];
+      shipping_method: string;
+      payment_method: components["schemas"]["PaymentMethodEnum"];
+      /** Format: email */
+      email?: string;
+      phone: string;
+      /** @default  */
+      note: string;
+      /** @default false */
+      save_address: boolean;
+    };
+    PlacedOut: {
+      order: components["schemas"]["OrderOut"];
+      next: components["schemas"]["NextEnum"];
     };
     PriceFacet: {
       min: string | null;
@@ -2159,6 +2648,47 @@ export interface components {
       /** Format: date-time */
       updated_at: string;
     };
+    ProfileOut: {
+      /** Format: email */
+      email: string;
+      full_name: string;
+      email_verified: boolean;
+      phone: string;
+      preferred_locale: components["schemas"]["LocaleEnum"];
+    };
+    /**
+     * @description * `punjab` - punjab
+     *     * `sindh` - sindh
+     *     * `kp` - kp
+     *     * `balochistan` - balochistan
+     *     * `ict` - ict
+     *     * `gb` - gb
+     *     * `ajk` - ajk
+     * @enum {string}
+     */
+    ProvinceEnum: "punjab" | "sindh" | "kp" | "balochistan" | "ict" | "gb" | "ajk";
+    QuoteInRequest: {
+      address?: components["schemas"]["AddressRequest"] | null;
+      shipping_method?: string;
+      payment_method?:
+        (components["schemas"]["PaymentMethodEnum"] | components["schemas"]["NullEnum"]) | null;
+    };
+    QuoteOut: {
+      subtotal: components["schemas"]["MoneyOut"];
+      discount: components["schemas"]["MoneyOut"];
+      discount_label: string;
+      coupon_error: string;
+      shipping_fee: components["schemas"]["MoneyOut"];
+      cod_fee: components["schemas"]["MoneyOut"];
+      tax: components["schemas"]["MoneyOut"];
+      tax_included: boolean;
+      total: components["schemas"]["MoneyOut"];
+      shipping_options: components["schemas"]["ShippingOptionOut"][];
+      shipping_method: string | null;
+      payment_methods: string[];
+      problems: string[];
+      guest_checkout_allowed: boolean;
+    };
     RecoveryCodesOut: {
       recovery_codes: string[];
     };
@@ -2254,6 +2784,23 @@ export interface components {
       session: components["schemas"]["StaffSessionInfoOut"];
       recovery_codes: string[];
     };
+    ShipmentOut: {
+      courier: string;
+      tracking_number: string;
+      tracking_url: string;
+      status: string;
+    };
+    ShippingOptionOut: {
+      method: string;
+      label: string;
+      fee: components["schemas"]["MoneyOut"];
+      standard_fee: components["schemas"]["MoneyOut"];
+      free_over: components["schemas"]["MoneyOut"] | null;
+      days_min: number;
+      days_max: number;
+      cod_allowed: boolean;
+      cod_fee: components["schemas"]["MoneyOut"];
+    };
     SizeChartRow: {
       name: string;
       values: {
@@ -2345,6 +2892,12 @@ export interface components {
      * @enum {string}
      */
     StatusEnum: "draft" | "published" | "archived";
+    StatusOut: {
+      order_status: string;
+      payment_status: string;
+      /** @description created | pending | succeeded | not_paid … */
+      attempt: string | null;
+    };
     StepUpOut: {
       /** Format: date-time */
       stepped_up_until: string;
@@ -2410,6 +2963,9 @@ export interface components {
       price_overridden: boolean;
       is_active: boolean;
       available: number;
+    };
+    WishlistInRequest: {
+      slug: string;
     };
   };
   responses: never;
@@ -2589,6 +3145,148 @@ export interface operations {
       };
     };
   };
+  cart_get: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CartOut"];
+        };
+      };
+    };
+  };
+  cart_coupon_apply: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CouponInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CartOut"];
+        };
+      };
+    };
+  };
+  cart_coupon_remove: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CartOut"];
+        };
+      };
+    };
+  };
+  cart_add: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CartOut"];
+        };
+      };
+    };
+  };
+  cart_remove: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CartOut"];
+        };
+      };
+    };
+  };
+  cart_update: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedQuantityInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CartOut"];
+        };
+      };
+    };
+  };
   catalog_categories: {
     parameters: {
       query?: {
@@ -2765,6 +3463,58 @@ export interface operations {
       };
     };
   };
+  checkout_place_order: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PlaceInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PlacedOut"];
+        };
+      };
+    };
+  };
+  checkout_quote: {
+    parameters: {
+      query?: {
+        locale?: "en" | "ur";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["QuoteInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuoteOut"];
+        };
+      };
+    };
+  };
   cms_banner: {
     parameters: {
       query?: {
@@ -2918,6 +3668,176 @@ export interface operations {
       };
     };
   };
+  me_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProfileOut"];
+        };
+      };
+    };
+  };
+  me_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedProfileInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProfileOut"];
+        };
+      };
+    };
+  };
+  me_addresses: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AddressOut"][];
+        };
+      };
+    };
+  };
+  me_address_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AddressInRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AddressOut"];
+        };
+      };
+    };
+  };
+  me_address_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        address_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  me_address_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        address_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedAddressInRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AddressOut"];
+        };
+      };
+    };
+  };
+  me_orders: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderSummaryOut"][];
+        };
+      };
+    };
+  };
+  me_password_change: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PasswordChangeInRequest"];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   me_sessions: {
     parameters: {
       query?: never;
@@ -2976,6 +3896,67 @@ export interface operations {
       };
     };
   };
+  me_wishlist: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProductCard"][];
+        };
+      };
+    };
+  };
+  me_wishlist_add: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["WishlistInRequest"];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  me_wishlist_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   newsletter_confirm: {
     parameters: {
       query?: never;
@@ -3018,6 +3999,91 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["NewsletterOut"];
+        };
+      };
+    };
+  };
+  order_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderOut"];
+        };
+      };
+    };
+  };
+  payment_attempt_start: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttemptOut"];
+        };
+      };
+    };
+  };
+  payment_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        number: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StatusOut"];
+        };
+      };
+    };
+  };
+  shipping_options: {
+    parameters: {
+      query: {
+        city: string;
+        province: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ShippingOptionOut"][];
         };
       };
     };

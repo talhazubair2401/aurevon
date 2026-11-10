@@ -581,6 +581,9 @@ class Command(BaseCommand):
             raise CommandError("Demo data is only for local development and review environments.")
         with transaction.atomic():
             self._seed()
+            from apps.shipping import demo as shipping_demo
+
+            shipping_demo.seed()  # demo delivery zones (P-13 pending)
         self.stdout.write(self.style.SUCCESS(f"Demo catalogue ready: {len(PRODUCTS)} products."))
 
     def _seed(self) -> None:

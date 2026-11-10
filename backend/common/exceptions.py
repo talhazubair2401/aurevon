@@ -33,9 +33,10 @@ def problem_response(status_code: int, title: str, detail: str | None = None, co
 class ApiProblem(exceptions.APIException):
     """A business-rule failure with a stable machine-readable code, rendered as problem details."""
 
-    def __init__(self, status_code: int, code: str, detail: str, retry_after: int | None = None) -> None:
+    def __init__(self, status_code: int, code: str, detail: str, retry_after: int | None = None, **extra: Any) -> None:
         self.status_code = status_code
         self.retry_after = retry_after
+        self.extra = extra  # extra machine-readable members, e.g. the SKUs that sold out
         super().__init__(detail=detail, code=code)
 
 
@@ -67,6 +68,7 @@ def problem_details_handler(exc: Exception, context: dict[str, Any]) -> Response
             _title_for(response.status_code),
             _first_message(exc.detail),
             code=str(code).replace("_", "-") if isinstance(code, str) else None,
+            **getattr(exc, "extra", {}),
         )
     else:  # Http404 / PermissionDenied converted by DRF
         body = problem(response.status_code, _title_for(response.status_code), _first_message(response.data))

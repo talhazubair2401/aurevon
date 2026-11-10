@@ -1,0 +1,6 @@
+{% autoescape off %}Subject: Your AureVon order {{ number }} has been delivered
+
+We hope you love it. If anything isn't right, you can request a return from your order page:
+{{ link }}
+
+— {{ site_name }}{% endautoescape %}

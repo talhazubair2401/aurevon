@@ -57,6 +57,14 @@ class MovementReason(models.TextChoices):
     RECEIPT = "receipt", "Receipt"
     ADJUSTMENT = "adjustment", "Adjustment"
     DEMO = "demo", "Demo stock (local review only)"
+    SALE = "sale", "Sale"
+    CANCELLATION = "cancellation", "Cancellation (restored before dispatch)"
+    RETURN = "return", "Return to stock"
+    QUARANTINE = "quarantine", "Into quarantine"
+    RELEASE = "release", "Released from quarantine"
+    DAMAGED = "damaged", "Damaged"
+    WRITE_OFF = "write_off", "Written off"
+    TRANSFER = "transfer", "Transfer between locations"
 
 
 class StockMovement(models.Model):
@@ -65,6 +73,7 @@ class StockMovement(models.Model):
     quantity = models.IntegerField()  # positive in, negative out
     reason = models.CharField(max_length=20, choices=MovementReason.choices)
     note = models.CharField(max_length=200, blank=True)
+    reference = models.CharField(max_length=40, blank=True)  # order number, purchase order, return
     actor_label = models.CharField(max_length=254, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -77,3 +86,32 @@ class StockMovement(models.Model):
 
     def __str__(self) -> str:
         return f"{self.quantity:+d} {self.reason}"
+
+
+class ReservationStatus(models.TextChoices):
+    ACTIVE = "active", "Holding stock"
+    COMMITTED = "committed", "Sold (stock taken)"
+    RELEASED = "released", "Released"
+
+
+class StockReservation(models.Model):
+    """Stock held for one order line while it waits for payment (MTS §11). Only sellable stock can be reserved."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    item = models.ForeignKey(InventoryItem, on_delete=models.PROTECT, related_name="reservations")
+    order_id = models.UUIDField(db_index=True)
+    quantity = models.PositiveIntegerField()
+    status = models.CharField(max_length=10, choices=ReservationStatus.choices, default=ReservationStatus.ACTIVE)
+    expires_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    closed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=Q(quantity__gt=0), name="reservation_quantity_positive"),
+            models.CheckConstraint(condition=Q(status__in=ReservationStatus.values), name="reservation_status_valid"),
+        ]
+        indexes = [models.Index(fields=["status", "expires_at"])]
+
+    def __str__(self) -> str:
+        return f"{self.order_id}:{self.quantity}"

@@ -1,0 +1,7 @@
+{% autoescape off %}Subject: AureVon alert: {{ kind }}
+
+{{ message }}
+
+Open the staff dashboard to review and resolve it.
+
+— {{ site_name }}{% endautoescape %}

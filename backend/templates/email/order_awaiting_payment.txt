@@ -1,0 +1,8 @@
+{% autoescape off %}Subject: Complete payment for AureVon order {{ number }}
+
+Your order {{ number }} (total {{ currency }} {{ total }}) is reserved for {{ minutes }} minutes while you pay.
+
+If your payment didn't go through, you can try again from your order page:
+{{ link }}
+
+— {{ site_name }}{% endautoescape %}

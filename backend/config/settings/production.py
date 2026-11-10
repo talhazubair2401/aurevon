@@ -1,5 +1,7 @@
 """Production. Everything security-relevant is on by default; hosts and secrets come from the environment."""
 
+import os
+
 from .base import *  # noqa: F403
 from .base import env
 
@@ -24,3 +26,10 @@ if not SECURE_HSTS_PRELOAD:
     SILENCED_SYSTEM_CHECKS = [*SILENCED_SYSTEM_CHECKS, "security.W021"]
 
 MFA_ENCRYPTION_KEY = env("MFA_ENCRYPTION_KEY")  # required: Fernet key, see .env.example
+
+# The payment sandbox simulates a provider and would accept fake payments: never in production.
+# (Staging imports this module and re-enables the sandbox afterwards, so only real production is checked.)
+if os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.production":
+    if env.bool("PAYMENTS_SANDBOX_ENABLED", default=False):
+        raise RuntimeError("PAYMENTS_SANDBOX_ENABLED must not be set in production.")
+    PAYMENTS_SANDBOX_ENABLED = False

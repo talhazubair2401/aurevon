@@ -6,12 +6,16 @@ from typing import Any
 
 from django.conf import settings
 from django.db import transaction
+from django.dispatch import Signal
 from django.utils import timezone
 
 from common.security import new_token, token_hash
 
 from .models import ConsentPurpose, ConsentRecord, ConsentStatus
 from .tasks import send_templated_email
+
+# Sent for critical alerts; the accounts app emails Owners and Store Admins (notifications never imports accounts).
+critical_alert = Signal()
 
 
 def send_email(to: list[str], template: str, context: dict[str, Any]) -> None:
@@ -70,3 +74,36 @@ def confirm_newsletter(token: str) -> bool:
     record.confirm_expires_at = None
     record.save()
     return True
+
+
+# --- Staff alerts (MTS §14) -----------------------------------------------------------------------------------
+
+
+def alert(
+    kind: str,
+    message: str,
+    *,
+    severity: str = "warning",
+    target_type: str = "",
+    target_id: Any = "",
+    dedupe_key: str = "",
+) -> None:
+    """Raises an operational alert once (an open alert with the same dedupe key isn't duplicated)."""
+    from django.db import IntegrityError
+
+    from .models import StaffAlert
+
+    try:
+        with transaction.atomic():
+            StaffAlert.objects.create(
+                kind=kind,
+                severity=severity,
+                message=message[:300],
+                target_type=target_type,
+                target_id=str(target_id),
+                dedupe_key=dedupe_key,
+            )
+    except IntegrityError:
+        return
+    if severity == "critical":
+        critical_alert.send(sender=None, kind=kind, message=message)

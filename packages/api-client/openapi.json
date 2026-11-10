@@ -221,6 +221,289 @@
                 }
             }
         },
+        "/api/v1/cart": {
+            "get": {
+                "operationId": "cart_get",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cart/coupon": {
+            "post": {
+                "operationId": "cart_coupon_apply",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CouponInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "cart_coupon_remove",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cart/items": {
+            "post": {
+                "operationId": "cart_add",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cart/items/{item_id}": {
+            "patch": {
+                "operationId": "cart_update",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "item_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedQuantityInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "cart_remove",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "item_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "cart"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CartOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/catalog/categories": {
             "get": {
                 "operationId": "catalog_categories",
@@ -656,6 +939,113 @@
                 }
             }
         },
+        "/api/v1/checkout/orders": {
+            "post": {
+                "operationId": "checkout_place_order",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "Idempotency-Key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "checkout"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PlaceInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PlacedOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/checkout/quote": {
+            "post": {
+                "operationId": "checkout_quote",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "locale",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ur"
+                            ]
+                        }
+                    }
+                ],
+                "tags": [
+                    "checkout"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuoteInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuoteOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/cms/banners/{key}": {
             "get": {
                 "operationId": "cms_banner",
@@ -939,6 +1329,252 @@
                 }
             }
         },
+        "/api/v1/me": {
+            "get": {
+                "operationId": "me_get",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProfileOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "me_update",
+                "tags": [
+                    "customer account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedProfileInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProfileOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/me/addresses": {
+            "get": {
+                "operationId": "me_addresses",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AddressOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "me_address_create",
+                "tags": [
+                    "customer account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddressInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddressOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/me/addresses/{address_id}": {
+            "patch": {
+                "operationId": "me_address_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "address_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "customer account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedAddressInRequest"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddressOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "me_address_delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "address_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/me/orders": {
+            "get": {
+                "operationId": "me_orders",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OrderSummaryOut"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/me/password": {
+            "post": {
+                "operationId": "me_password_change",
+                "tags": [
+                    "customer account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PasswordChangeInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/v1/me/sessions": {
             "get": {
                 "operationId": "me_sessions",
@@ -1022,6 +1658,88 @@
                 }
             }
         },
+        "/api/v1/me/wishlist": {
+            "get": {
+                "operationId": "me_wishlist",
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductCard"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "me_wishlist_add",
+                "tags": [
+                    "customer account"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WishlistInRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/me/wishlist/{slug}": {
+            "delete": {
+                "operationId": "me_wishlist_remove",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "customer account"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
         "/api/v1/newsletter/confirm": {
             "post": {
                 "operationId": "newsletter_confirm",
@@ -1082,6 +1800,165 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/NewsletterOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{number}": {
+            "get": {
+                "operationId": "order_get",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{number}/payment-attempts": {
+            "post": {
+                "operationId": "payment_attempt_start",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AttemptOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{number}/payment-status": {
+            "get": {
+                "operationId": "payment_status",
+                "description": "The shopper's return page: triggers an immediate provider check of a pending payment (A-23).",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "number",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatusOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/shipping/options": {
+            "get": {
+                "operationId": "shipping_options",
+                "description": "Resolves the current cart: the customer's (merging any guest cart once) or the guest's cookie cart.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "city",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "province",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "checkout"
+                ],
+                "security": [
+                    {
+                        "customerSession": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ShippingOptionOut"
+                                    }
                                 }
                             }
                         },
@@ -4159,6 +5036,217 @@
                     "detail"
                 ]
             },
+            "AddInRequest": {
+                "type": "object",
+                "properties": {
+                    "sku": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "maximum": 10,
+                        "minimum": 1,
+                        "default": 1
+                    }
+                },
+                "required": [
+                    "sku"
+                ]
+            },
+            "AddressInRequest": {
+                "type": "object",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "phone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                    },
+                    "line1": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "line2": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 200
+                    },
+                    "area": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 100
+                    },
+                    "city": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "province": {
+                        "$ref": "#/components/schemas/ProvinceEnum"
+                    },
+                    "postal_code": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "default": "",
+                                "pattern": "^\\d{5}$"
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    },
+                    "label": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 40
+                    },
+                    "make_default": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "city",
+                    "full_name",
+                    "line1",
+                    "phone",
+                    "province"
+                ]
+            },
+            "AddressOut": {
+                "type": "object",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "maxLength": 150
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "line1": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "line2": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 200
+                    },
+                    "area": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 100
+                    },
+                    "city": {
+                        "type": "string",
+                        "maxLength": 80
+                    },
+                    "province": {
+                        "$ref": "#/components/schemas/ProvinceEnum"
+                    },
+                    "postal_code": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "default": "",
+                                "pattern": "^\\d{5}$"
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "is_default": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "city",
+                    "full_name",
+                    "id",
+                    "is_default",
+                    "label",
+                    "line1",
+                    "phone",
+                    "province"
+                ]
+            },
+            "AddressRequest": {
+                "type": "object",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "phone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                    },
+                    "line1": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "line2": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 200
+                    },
+                    "area": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 100
+                    },
+                    "city": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "province": {
+                        "$ref": "#/components/schemas/ProvinceEnum"
+                    },
+                    "postal_code": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "default": "",
+                                "pattern": "^\\d{5}$"
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "city",
+                    "full_name",
+                    "line1",
+                    "phone",
+                    "province"
+                ]
+            },
             "ApiIndex": {
                 "type": "object",
                 "properties": {
@@ -4172,6 +5260,18 @@
                 "required": [
                     "name",
                     "version"
+                ]
+            },
+            "AttemptOut": {
+                "type": "object",
+                "properties": {
+                    "redirect_url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "required": [
+                    "redirect_url"
                 ]
             },
             "AuditLogOut": {
@@ -4284,6 +5384,104 @@
                 "required": [
                     "content",
                     "key"
+                ]
+            },
+            "CartLineOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "sku": {
+                        "type": "string"
+                    },
+                    "product_slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "image": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "nullable": true
+                    },
+                    "unit_price": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "line_total": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "available": {
+                        "type": "integer"
+                    },
+                    "problem": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "available",
+                    "colour",
+                    "id",
+                    "image",
+                    "line_total",
+                    "name",
+                    "problem",
+                    "product_slug",
+                    "quantity",
+                    "size",
+                    "sku",
+                    "unit_price"
+                ]
+            },
+            "CartOut": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "csrf_token": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Guests send this as X-CSRF-Token on writes."
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CartLineOut"
+                        }
+                    },
+                    "count": {
+                        "type": "integer"
+                    },
+                    "subtotal": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "coupon_code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "count",
+                    "coupon_code",
+                    "csrf_token",
+                    "id",
+                    "items",
+                    "subtotal"
                 ]
             },
             "CategoryFacet": {
@@ -4633,6 +5831,19 @@
                 "required": [
                     "count",
                     "value"
+                ]
+            },
+            "CouponInRequest": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "code"
                 ]
             },
             "CustomerAccountOut": {
@@ -5341,6 +6552,21 @@
                     "currency"
                 ]
             },
+            "MoneyOut": {
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "amount",
+                    "currency"
+                ]
+            },
             "NavLink": {
                 "type": "object",
                 "properties": {
@@ -5411,6 +6637,235 @@
                 },
                 "required": [
                     "status"
+                ]
+            },
+            "NextEnum": {
+                "enum": [
+                    "pay",
+                    "confirmed"
+                ],
+                "type": "string",
+                "description": "* `pay` - pay\n* `confirmed` - confirmed"
+            },
+            "NullEnum": {
+                "enum": [
+                    null
+                ]
+            },
+            "OrderEventOut": {
+                "type": "object",
+                "properties": {
+                    "kind": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "at",
+                    "kind",
+                    "status"
+                ]
+            },
+            "OrderLineOut": {
+                "type": "object",
+                "properties": {
+                    "product_slug": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "sku": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "colour": {
+                        "type": "string"
+                    },
+                    "image_url": {
+                        "type": "string"
+                    },
+                    "unit_price": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "line_total": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    }
+                },
+                "required": [
+                    "colour",
+                    "image_url",
+                    "line_total",
+                    "name",
+                    "product_slug",
+                    "quantity",
+                    "size",
+                    "sku",
+                    "unit_price"
+                ]
+            },
+            "OrderOut": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "payment_status": {
+                        "type": "string"
+                    },
+                    "payment_method": {
+                        "type": "string"
+                    },
+                    "placed_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderLineOut"
+                        }
+                    },
+                    "subtotal": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "discount": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "discount_label": {
+                        "type": "string"
+                    },
+                    "shipping_fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "cod_fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "tax": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "tax_included": {
+                        "type": "boolean"
+                    },
+                    "total": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "shipping_address": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "shipping_method": {
+                        "type": "string"
+                    },
+                    "delivery_days": {
+                        "type": "string"
+                    },
+                    "pay_by": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "can_pay": {
+                        "type": "boolean"
+                    },
+                    "can_return": {
+                        "type": "boolean"
+                    },
+                    "history": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderEventOut"
+                        }
+                    },
+                    "shipments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ShipmentOut"
+                        }
+                    }
+                },
+                "required": [
+                    "can_pay",
+                    "can_return",
+                    "cod_fee",
+                    "delivery_days",
+                    "discount",
+                    "discount_label",
+                    "email",
+                    "history",
+                    "items",
+                    "number",
+                    "pay_by",
+                    "payment_method",
+                    "payment_status",
+                    "phone",
+                    "placed_at",
+                    "shipments",
+                    "shipping_address",
+                    "shipping_fee",
+                    "shipping_method",
+                    "status",
+                    "subtotal",
+                    "tax",
+                    "tax_included",
+                    "total"
+                ]
+            },
+            "OrderSummaryOut": {
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "payment_status": {
+                        "type": "string"
+                    },
+                    "placed_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "total": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "item_count": {
+                        "type": "integer"
+                    },
+                    "first_image": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_image",
+                    "item_count",
+                    "number",
+                    "payment_status",
+                    "placed_at",
+                    "status",
+                    "total"
                 ]
             },
             "OwnRecoveryOut": {
@@ -5675,6 +7130,120 @@
                     "updated_at"
                 ]
             },
+            "PasswordChangeInRequest": {
+                "type": "object",
+                "properties": {
+                    "current_password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                    }
+                },
+                "required": [
+                    "current_password",
+                    "new_password"
+                ]
+            },
+            "PatchedAddressInRequest": {
+                "type": "object",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "phone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                    },
+                    "line1": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "line2": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 200
+                    },
+                    "area": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 100
+                    },
+                    "city": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80
+                    },
+                    "province": {
+                        "$ref": "#/components/schemas/ProvinceEnum"
+                    },
+                    "postal_code": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "default": "",
+                                "pattern": "^\\d{5}$"
+                            },
+                            {
+                                "type": "string",
+                                "maxLength": 0
+                            }
+                        ]
+                    },
+                    "label": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 40
+                    },
+                    "make_default": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                }
+            },
+            "PatchedProfileInRequest": {
+                "type": "object",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 150
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "preferred_locale": {
+                        "$ref": "#/components/schemas/LocaleEnum"
+                    }
+                }
+            },
+            "PatchedQuantityInRequest": {
+                "type": "object",
+                "properties": {
+                    "quantity": {
+                        "type": "integer",
+                        "maximum": 10,
+                        "minimum": 1
+                    }
+                }
+            },
+            "PaymentMethodEnum": {
+                "enum": [
+                    "card",
+                    "cod"
+                ],
+                "type": "string",
+                "description": "* `card` - card\n* `cod` - cod"
+            },
             "PendingDeviceOut": {
                 "type": "object",
                 "properties": {
@@ -5699,6 +7268,63 @@
                     "otpauth_uri",
                     "qr_svg",
                     "secret"
+                ]
+            },
+            "PlaceInRequest": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "$ref": "#/components/schemas/AddressRequest"
+                    },
+                    "shipping_method": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 12
+                    },
+                    "payment_method": {
+                        "$ref": "#/components/schemas/PaymentMethodEnum"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "minLength": 1,
+                        "maxLength": 254
+                    },
+                    "phone": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                    },
+                    "note": {
+                        "type": "string",
+                        "default": "",
+                        "maxLength": 300
+                    },
+                    "save_address": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "address",
+                    "payment_method",
+                    "phone",
+                    "shipping_method"
+                ]
+            },
+            "PlacedOut": {
+                "type": "object",
+                "properties": {
+                    "order": {
+                        "$ref": "#/components/schemas/OrderOut"
+                    },
+                    "next": {
+                        "$ref": "#/components/schemas/NextEnum"
+                    }
+                },
+                "required": [
+                    "next",
+                    "order"
                 ]
             },
             "PriceFacet": {
@@ -6136,6 +7762,148 @@
                     "variants"
                 ]
             },
+            "ProfileOut": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email_verified": {
+                        "type": "boolean"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "preferred_locale": {
+                        "$ref": "#/components/schemas/LocaleEnum"
+                    }
+                },
+                "required": [
+                    "email",
+                    "email_verified",
+                    "full_name",
+                    "phone",
+                    "preferred_locale"
+                ]
+            },
+            "ProvinceEnum": {
+                "enum": [
+                    "punjab",
+                    "sindh",
+                    "kp",
+                    "balochistan",
+                    "ict",
+                    "gb",
+                    "ajk"
+                ],
+                "type": "string",
+                "description": "* `punjab` - punjab\n* `sindh` - sindh\n* `kp` - kp\n* `balochistan` - balochistan\n* `ict` - ict\n* `gb` - gb\n* `ajk` - ajk"
+            },
+            "QuoteInRequest": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/AddressRequest"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "shipping_method": {
+                        "type": "string",
+                        "maxLength": 12
+                    },
+                    "payment_method": {
+                        "nullable": true,
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PaymentMethodEnum"
+                            },
+                            {
+                                "$ref": "#/components/schemas/NullEnum"
+                            }
+                        ]
+                    }
+                }
+            },
+            "QuoteOut": {
+                "type": "object",
+                "properties": {
+                    "subtotal": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "discount": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "discount_label": {
+                        "type": "string"
+                    },
+                    "coupon_error": {
+                        "type": "string"
+                    },
+                    "shipping_fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "cod_fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "tax": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "tax_included": {
+                        "type": "boolean"
+                    },
+                    "total": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "shipping_options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ShippingOptionOut"
+                        }
+                    },
+                    "shipping_method": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "payment_methods": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "problems": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "guest_checkout_allowed": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "cod_fee",
+                    "coupon_error",
+                    "discount",
+                    "discount_label",
+                    "guest_checkout_allowed",
+                    "payment_methods",
+                    "problems",
+                    "shipping_fee",
+                    "shipping_method",
+                    "shipping_options",
+                    "subtotal",
+                    "tax",
+                    "tax_included",
+                    "total"
+                ]
+            },
             "RecoveryCodesOut": {
                 "type": "object",
                 "properties": {
@@ -6486,6 +8254,77 @@
                     "session"
                 ]
             },
+            "ShipmentOut": {
+                "type": "object",
+                "properties": {
+                    "courier": {
+                        "type": "string"
+                    },
+                    "tracking_number": {
+                        "type": "string"
+                    },
+                    "tracking_url": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "courier",
+                    "status",
+                    "tracking_number",
+                    "tracking_url"
+                ]
+            },
+            "ShippingOptionOut": {
+                "type": "object",
+                "properties": {
+                    "method": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "standard_fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    },
+                    "free_over": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/MoneyOut"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "days_min": {
+                        "type": "integer"
+                    },
+                    "days_max": {
+                        "type": "integer"
+                    },
+                    "cod_allowed": {
+                        "type": "boolean"
+                    },
+                    "cod_fee": {
+                        "$ref": "#/components/schemas/MoneyOut"
+                    }
+                },
+                "required": [
+                    "cod_allowed",
+                    "cod_fee",
+                    "days_max",
+                    "days_min",
+                    "fee",
+                    "free_over",
+                    "label",
+                    "method",
+                    "standard_fee"
+                ]
+            },
             "SizeChartRow": {
                 "type": "object",
                 "properties": {
@@ -6763,6 +8602,27 @@
                 "type": "string",
                 "description": "* `draft` - draft\n* `published` - published\n* `archived` - archived"
             },
+            "StatusOut": {
+                "type": "object",
+                "properties": {
+                    "order_status": {
+                        "type": "string"
+                    },
+                    "payment_status": {
+                        "type": "string"
+                    },
+                    "attempt": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "created | pending | succeeded | not_paid …"
+                    }
+                },
+                "required": [
+                    "attempt",
+                    "order_status",
+                    "payment_status"
+                ]
+            },
             "StepUpOut": {
                 "type": "object",
                 "properties": {
@@ -6980,6 +8840,20 @@
                     "price_overridden",
                     "size",
                     "sku"
+                ]
+            },
+            "WishlistInRequest": {
+                "type": "object",
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 120,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    }
+                },
+                "required": [
+                    "slug"
                 ]
             }
         },

@@ -5,9 +5,14 @@ from django.urls import URLPattern, URLResolver, include, path, re_path
 from drf_spectacular.views import SpectacularAPIView
 
 from apps.accounts.api.urls import customer_urlpatterns, staff_urlpatterns
+from apps.cart.api import views as cart
 from apps.catalog.api import views as catalog
 from apps.cms.api import public as cms
+from apps.customers.api import views as me
 from apps.notifications.api import views as newsletter
+from apps.orders.api import views as orders
+from apps.payments.api import views as payments
+from apps.sandbox.api.views import sandbox_pay
 from common.csp_reports import csp_report
 from common.views import ApiIndexView, api_not_found
 
@@ -35,6 +40,28 @@ urlpatterns: list[URLPattern | URLResolver] = [
     path("cms/redirects/resolve", cms.RedirectResolveView.as_view(), name="cms-redirect-resolve"),
     path("newsletter/subscribe", newsletter.NewsletterSubscribeView.as_view(), name="newsletter-subscribe"),
     path("newsletter/confirm", newsletter.NewsletterConfirmView.as_view(), name="newsletter-confirm"),
+    # Customer account (M7)
+    path("me", me.MeView.as_view()),
+    path("me/password", me.PasswordView.as_view()),
+    path("me/addresses", me.AddressesView.as_view()),
+    path("me/addresses/<uuid:address_id>", me.AddressView.as_view()),
+    path("me/wishlist", me.WishlistView.as_view()),
+    path("me/wishlist/<slug:slug>", me.WishlistItemView.as_view()),
+    path("me/orders", orders.MyOrdersView.as_view()),
+    # Cart, checkout, orders, payments (M7, M8)
+    path("cart", cart.CartView.as_view()),
+    path("cart/items", cart.CartItemsView.as_view()),
+    path("cart/items/<uuid:item_id>", cart.CartItemView.as_view()),
+    path("cart/coupon", cart.CartCouponView.as_view()),
+    path("shipping/options", orders.ShippingOptionsView.as_view()),
+    path("checkout/quote", orders.QuoteView.as_view()),
+    path("checkout/orders", orders.PlaceOrderView.as_view()),
+    path("orders/<str:number>", orders.OrderView.as_view()),
+    path("orders/<str:number>/payment-attempts", payments.PaymentAttemptView.as_view()),
+    path("orders/<str:number>/payment-status", payments.PaymentStatusView.as_view()),
+    path("webhooks/payments/<slug:provider>", payments.payment_webhook),
+    # Simulated provider (sandbox only; 404 elsewhere). Not part of the API contract.
+    path("sandbox/pay/<str:ref>", sandbox_pay),
 ]
 
 if settings.API_SCHEMA_PUBLIC:

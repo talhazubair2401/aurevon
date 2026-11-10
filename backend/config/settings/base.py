@@ -26,6 +26,15 @@ INSTALLED_APPS = [
     "apps.catalog",
     "apps.inventory",
     "apps.accounts",
+    "apps.customers",
+    "apps.localization",
+    "apps.shipping",
+    "apps.cart",
+    "apps.orders",
+    "apps.payments",
+    "apps.sandbox",
+    "apps.promotions",
+    "apps.returns",
 ]
 
 # Customer and staff identities (MTS v2.1 A-22). Sign-in is handled by AureVon's own realm services, never
@@ -151,8 +160,16 @@ SPECTACULAR_SETTINGS = {
         "ContentFieldKindEnum": ["text", "textarea", "href"],
         "ThreeDStatusEnum": ["processing", "failed", "draft", "approved", "retired"],
         "StatusEnum": ["draft", "published", "archived"],
+        "LocaleEnum": ["en", "ur"],
+        "PaymentMethodEnum": ["card", "cod"],
     },
 }
+
+# Payments (MTS §10). The online provider is pending P-06; the sandbox simulates one end to end and must never
+# be enabled in production (config/settings/production.py refuses it).
+PAYMENTS_ONLINE_PROVIDER = env("PAYMENTS_ONLINE_PROVIDER", default="sandbox")
+PAYMENTS_SANDBOX_ENABLED = env.bool("PAYMENTS_SANDBOX_ENABLED", default=False)
+PAYMENTS_SANDBOX_SECRET = env("PAYMENTS_SANDBOX_SECRET", default="sandbox-only-not-a-secret")  # nosec B105
 
 # Whether /api/v1/schema/ is reachable. Off in production; the schema is generated in CI instead.
 API_SCHEMA_PUBLIC = False
@@ -165,6 +182,10 @@ CELERY_TIMEZONE = "UTC"
 CELERY_BEAT_SCHEDULE = {
     # Owner recoveries whose 24-hour wait has ended (decision 0003, 4.3).
     "release-due-staff-recoveries": {"task": "accounts.release_due_recoveries", "schedule": 60.0},
+    # Payment status checks for pending payments, and expiry of unpaid reservations (MTS §10, §11).
+    "check-pending-payments": {"task": "payments.check_pending", "schedule": 60.0},
+    "expire-unpaid-orders": {"task": "orders.expire_unpaid", "schedule": 60.0},
+    "retry-refunds": {"task": "payments.retry_refunds", "schedule": 300.0},
 }
 
 SECURE_CONTENT_TYPE_NOSNIFF = True

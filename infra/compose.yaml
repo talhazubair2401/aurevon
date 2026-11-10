@@ -5,6 +5,8 @@ name: aurevon
 
 x-backend-env: &backend-env
   DJANGO_SETTINGS_MODULE: config.settings.local
+  # Simulated payment provider for local review (P-06 pending); never set in production.
+  PAYMENTS_SANDBOX_ENABLED: "true"
   DJANGO_SECRET_KEY: local-development-only-not-a-secret
   DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,api
   DATABASE_URL: postgres://aurevon:aurevon@postgres:5432/aurevon
