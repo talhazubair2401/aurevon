@@ -86,7 +86,8 @@ test.describe("bag", () => {
     await page.goto("/en/cart");
     await page.getByLabel("Discount code").fill("NOT-A-CODE");
     await page.getByRole("button", { name: "Apply" }).click();
-    await expect(page.getByRole("alert")).toBeVisible();
+    // Next.js also renders an (empty) route-announcer alert, so match ours by its text.
+    await expect(page.getByRole("alert").filter({ hasText: /isn't valid/ })).toBeVisible();
   });
 });
 
