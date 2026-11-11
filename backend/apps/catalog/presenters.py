@@ -20,6 +20,8 @@ def product_card(product: Product, locale: str) -> dict[str, Any]:
     images = list(product.images.all())
     # A real photograph comes first; the illustrated stand-ins only when there is none (decision 0006, #9).
     image = next((i for i in images if i.url), images[0] if images else None)
+    photos = [i for i in images if i.url]
+    hover = photos[1] if len(photos) > 1 else None  # a second photograph, shown on hover
     first_colour = colours[0] if colours else None
     sizes = sorted({v.size for v in variants}, key=selectors.size_sort_key)
     return {
@@ -39,9 +41,12 @@ def product_card(product: Product, locale: str) -> dict[str, Any]:
         else {
             "url": (image.thumb_url or image.url) or None,
             "demo_art": image.demo_art or None,
-            "tone": first_colour.colour.hex if first_colour else "#E5E0DB",
+            "tone": first_colour.colour.hex if first_colour else "#E4E1D9",
             "alt": _pick(image.alt_en, image.alt_ur, locale),
         },
+        "hover_image": None
+        if hover is None
+        else {"url": hover.thumb_url or hover.url, "alt": _pick(hover.alt_en, hover.alt_ur, locale)},
         "is_new": selectors.is_new(product),
         "is_featured": product.is_featured,
     }
@@ -58,7 +63,24 @@ def collection(col: Collection, locale: str) -> dict[str, Any]:
         "description": _pick(col.description_en, col.description_ur, locale),
         "demo_art": col.demo_art or None,
         "tone": col.tone,
+        "image": collection_image(col, locale),
     }
+
+
+def collection_image(col: Collection, locale: str) -> dict[str, str] | None:
+    """The collection's cover: the first photograph of its first published product that has one. Collections
+    have no image of their own yet (no schema change in the homepage redesign)."""
+    from .models import ProductImage, ProductStatus
+
+    image = (
+        ProductImage.objects.filter(product__collectionitem__collection=col, product__status=ProductStatus.PUBLISHED)
+        .exclude(url="")
+        .order_by("product__collectionitem__position", "position")
+        .first()
+    )
+    if image is None:
+        return None
+    return {"url": image.url, "alt": _pick(image.alt_en, image.alt_ur, locale)}
 
 
 def localise_facets(facets: dict[str, Any], locale: str) -> dict[str, Any]:
@@ -103,7 +125,7 @@ def product_detail(product: Product, locale: str) -> dict[str, Any]:
                 "url": i.url or None,
                 "demo_art": i.demo_art or None,
                 "colour": i.colour_slug or None,
-                "tone": colour_hex.get(i.colour_slug, "#E5E0DB"),
+                "tone": colour_hex.get(i.colour_slug, "#E4E1D9"),
                 "alt": _pick(i.alt_en, i.alt_ur, locale),
             }
             for i in product.images.all()

@@ -4,6 +4,7 @@ import { Icon, Wordmark } from "@aurevon/ui";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
+import { ScrollState } from "./ScrollState";
 import { getNavigation } from "@/lib/api";
 import { BagLink } from "@/components/cart/BagLink";
 import { routeReady } from "@/lib/features";
@@ -11,8 +12,8 @@ import { safeHref, utilityLinks } from "./navigation";
 import styles from "./Shell.module.css";
 
 /**
- * Site header. PROVISIONAL LAYOUT (decision 0004, item 5): semantics, behaviour and accessibility are final;
- * placement and styling are neutral defaults until the A-04 homepage reference is supplied.
+ * Site header, "Midnight Indigo & Amber" (decision 0008): a Midnight Indigo bar with Warm Ivory type; amber
+ * marks hover and the current page. It tightens and gains a hairline once the page scrolls (ScrollState).
  */
 export async function SiteHeader({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "shell" });
@@ -20,7 +21,8 @@ export async function SiteHeader({ locale }: { locale: Locale }) {
   const items = menus.header.map((item) => ({ href: safeHref(item.href), label: item.label }));
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} data-surface="dark">
+      <ScrollState />
       <div className={styles.headerInner}>
         <div className={styles.headerStart}>
           <MobileMenu

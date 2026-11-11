@@ -188,7 +188,7 @@ function Line({
         ) : (
           <GarmentArt
             kind={(image?.demo_art ?? "kurta") as ArtKind}
-            colour={image?.tone ?? "#E5E0DB"}
+            colour={image?.tone ?? "#E4E1D9"}
             float={false}
           />
         )}

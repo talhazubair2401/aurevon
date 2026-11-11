@@ -33,7 +33,7 @@
   overflow: hidden;
   background:
     radial-gradient(ellipse 70% 55% at 50% 38%, var(--av-color-white) 0%, transparent 70%),
-    var(--av-color-stone);
+    var(--av-color-ivory-shade);
 }
 
 .photo {
@@ -64,7 +64,7 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border: var(--av-border-width) solid transparent;
-  background: var(--av-color-stone);
+  background: var(--av-color-ivory-shade);
 }
 
 .thumbActive {
@@ -253,8 +253,8 @@
   inline-size: 100%;
   min-block-size: var(--av-tap-target);
   border: 0;
-  background: var(--av-color-charcoal);
-  color: var(--av-color-off-white);
+  background: var(--av-color-midnight-indigo);
+  color: var(--av-color-warm-ivory);
   font: inherit;
   font-size: var(--av-text-small);
   letter-spacing: var(--av-tracking-caps);

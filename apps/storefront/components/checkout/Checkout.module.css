@@ -149,12 +149,12 @@
 }
 
 .choice:has(input:checked) {
-  border-color: var(--av-color-charcoal);
+  border-color: var(--av-color-midnight-indigo);
   box-shadow: inset 3px 0 0 var(--av-accent);
 }
 
 .choice input {
-  accent-color: var(--av-color-charcoal);
+  accent-color: var(--av-color-midnight-indigo);
 }
 
 .choiceBody {
@@ -233,8 +233,8 @@
 .place {
   min-block-size: 3.25rem;
   border: 0;
-  background: var(--av-color-charcoal);
-  color: var(--av-color-off-white);
+  background: var(--av-color-midnight-indigo);
+  color: var(--av-color-warm-ivory);
   font: inherit;
   font-size: var(--av-text-small);
   letter-spacing: var(--av-tracking-caps);
@@ -244,7 +244,7 @@
 }
 
 .place:hover:not(:disabled) {
-  background: var(--av-color-deep-brown);
+  background: var(--av-color-deep-indigo);
 }
 
 .place:disabled {
@@ -295,7 +295,7 @@
   inline-size: 2rem;
   block-size: 2rem;
   border: 1px solid var(--av-divider);
-  border-block-start-color: var(--av-color-charcoal);
+  border-block-start-color: var(--av-color-midnight-indigo);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

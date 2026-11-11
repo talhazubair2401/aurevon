@@ -5,6 +5,15 @@ import { expect, test, type Page } from "@playwright/test";
 // tokens and fonts from decision 0004.
 
 async function axe(page: Page) {
+  // Contrast is judged at rest: let the entrance fades finish (infinite loops are ignored).
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+        .map((a) => a.finished.catch(() => undefined)),
+    ),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
@@ -57,12 +66,18 @@ test("the skip link is the first focusable element and moves focus to main", asy
   await expect(page.locator("main#main")).toBeFocused();
 });
 
-test("focus ring is charcoal, not gold (decision 0004, item 1)", async ({ page }) => {
+test("focus ring is never amber: ivory on the dark header, indigo on light pages (0004, 0008)", async ({
+  page,
+}) => {
   await page.goto("/en");
   await page.keyboard.press("Tab");
-  await page.keyboard.press("Tab"); // past the skip link to the next control
-  const outline = await page.evaluate(() => getComputedStyle(document.activeElement!).outlineColor);
-  expect(outline).toBe("rgb(18, 18, 18)");
+  await page.keyboard.press("Tab"); // past the skip link to the header's first control
+  const onDark = await page.evaluate(() => getComputedStyle(document.activeElement!).outlineColor);
+  expect(onDark).toBe("rgb(245, 243, 238)"); // Warm Ivory
+  await page.goto("/en/shop");
+  await page.locator("main article a").first().focus(); // a product card, on Warm Ivory
+  const onLight = await page.evaluate(() => getComputedStyle(document.activeElement!).outlineColor);
+  expect(onLight).toBe("rgb(17, 19, 34)"); // Midnight Indigo
 });
 
 test("the language switch keeps the page and changes direction", async ({ page }) => {

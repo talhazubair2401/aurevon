@@ -13,23 +13,26 @@ import { contrastRatio } from "./contrast";
 const css = readFileSync(new URL("./tokens.css", import.meta.url), "utf8");
 
 describe("design tokens", () => {
-  it("match the approved brand palette (A-03)", () => {
+  it("match the approved Midnight Indigo & Amber palette (decision 0008)", () => {
     expect(colors).toEqual({
-      offWhite: "#F9F8F6",
-      charcoal: "#121212",
-      stone: "#E5E0DB",
-      deepBrown: "#3B2F2F",
-      champagneGold: "#C2A676",
+      midnightIndigo: "#111322",
+      deepIndigo: "#191D35",
+      amber: "#D99A32",
+      softAmber: "#E8B968",
+      warmIvory: "#F5F3EE",
+      mutedSlate: "#85879A",
     });
   });
 
-  it("match the approved functional colours (decision 0004, item 1)", () => {
+  it("match the approved functional colours (decisions 0004 and 0008)", () => {
     expect(functionalColors).toEqual({
       white: "#FFFFFF",
-      mutedText: "#6B6461",
-      fieldBorder: "#8C7F78",
+      mutedText: "#5C5F74",
+      fieldBorder: "#7A7D91",
+      ivoryShade: "#E4E1D9",
       error: "#9A2B2B",
       success: "#2E5E3A",
+      errorOnDark: "#E8A3A3",
     });
   });
 
@@ -57,27 +60,38 @@ describe("design tokens", () => {
     );
   }
 
-  it("uses charcoal for the focus ring, never gold (decision 0004, item 1)", () => {
-    expect(css).toContain("--av-focus: var(--av-color-charcoal);");
-    expect(css).not.toMatch(/--av-focus:\s*var\(--av-color-champagne-gold\)/);
+  it("uses indigo for the focus ring on light surfaces, never amber (decisions 0004 and 0008)", () => {
+    expect(css).toContain("--av-focus: var(--av-color-midnight-indigo);");
+    expect(css).not.toMatch(/--av-focus:\s*var\(--av-color-(amber|soft-amber)\)/);
+  });
+
+  it("keeps no trace of the retired palette", () => {
+    expect(css).not.toMatch(/off-white|charcoal|champagne|deep-brown|--av-color-stone/);
   });
 });
 
 // WCAG 2.2: 4.5:1 for normal text (1.4.3), 3:1 for UI component boundaries and focus indicators (1.4.11).
 describe("contrast of approved pairings", () => {
   const text: Array<[string, string, string]> = [
-    ["charcoal on off-white", colors.charcoal, colors.offWhite],
-    ["charcoal on white", colors.charcoal, functionalColors.white],
-    ["deep brown on off-white", colors.deepBrown, colors.offWhite],
-    ["muted text on off-white", functionalColors.mutedText, colors.offWhite],
+    ["midnight indigo on warm ivory", colors.midnightIndigo, colors.warmIvory],
+    ["midnight indigo on white", colors.midnightIndigo, functionalColors.white],
+    ["deep indigo on warm ivory", colors.deepIndigo, colors.warmIvory],
+    ["muted text on warm ivory", functionalColors.mutedText, colors.warmIvory],
     ["muted text on white", functionalColors.mutedText, functionalColors.white],
-    ["error on off-white", functionalColors.error, colors.offWhite],
+    ["muted text on ivory shade", functionalColors.mutedText, functionalColors.ivoryShade],
+    ["error on warm ivory", functionalColors.error, colors.warmIvory],
     ["error on white", functionalColors.error, functionalColors.white],
-    ["success on off-white", functionalColors.success, colors.offWhite],
+    ["success on warm ivory", functionalColors.success, colors.warmIvory],
     ["success on white", functionalColors.success, functionalColors.white],
-    ["off-white on charcoal (primary button)", colors.offWhite, colors.charcoal],
-    ["off-white on deep brown", colors.offWhite, colors.deepBrown],
-    ["gold on charcoal (accent on dark)", colors.champagneGold, colors.charcoal],
+    ["warm ivory on midnight indigo", colors.warmIvory, colors.midnightIndigo],
+    ["warm ivory on deep indigo", colors.warmIvory, colors.deepIndigo],
+    ["muted slate on midnight indigo", colors.mutedSlate, colors.midnightIndigo],
+    ["muted slate on deep indigo", colors.mutedSlate, colors.deepIndigo],
+    ["amber on midnight indigo", colors.amber, colors.midnightIndigo],
+    ["amber on deep indigo", colors.amber, colors.deepIndigo],
+    ["soft amber on midnight indigo", colors.softAmber, colors.midnightIndigo],
+    ["midnight indigo on amber (amber button)", colors.midnightIndigo, colors.amber],
+    ["error on dark surfaces", functionalColors.errorOnDark, colors.deepIndigo],
     ["registration ink on ivory", registrationColors.ink, registrationColors.ivory],
     ["registration burgundy on ivory", registrationColors.burgundy, registrationColors.ivory],
     ["registration ivory on burgundy", registrationColors.ivory, registrationColors.burgundy],
@@ -89,15 +103,17 @@ describe("contrast of approved pairings", () => {
 
   const nonText: Array<[string, string, string]> = [
     ["field border on white", functionalColors.fieldBorder, functionalColors.white],
-    ["field border on off-white", functionalColors.fieldBorder, colors.offWhite],
-    ["charcoal focus ring on off-white", colors.charcoal, colors.offWhite],
-    ["off-white focus ring on charcoal", colors.offWhite, colors.charcoal],
+    ["field border on warm ivory", functionalColors.fieldBorder, colors.warmIvory],
+    ["indigo focus ring on warm ivory", colors.midnightIndigo, colors.warmIvory],
+    ["ivory focus ring on midnight indigo", colors.warmIvory, colors.midnightIndigo],
+    ["slate field border on deep indigo", colors.mutedSlate, colors.deepIndigo],
   ];
   it.each(nonText)("%s meets 3:1", (_name, fg, bg) => {
     expect(contrastRatio(fg, bg)).toBeGreaterThanOrEqual(3);
   });
 
-  it("confirms gold is below text contrast on light surfaces, so it is never used there", () => {
-    expect(contrastRatio(colors.champagneGold, colors.offWhite)).toBeLessThan(3);
+  it("confirms amber and muted slate fall below text contrast on light surfaces, so they are never used there", () => {
+    expect(contrastRatio(colors.amber, colors.warmIvory)).toBeLessThan(3);
+    expect(contrastRatio(colors.mutedSlate, colors.warmIvory)).toBeLessThan(4.5);
   });
 });

@@ -8386,11 +8386,20 @@
                     },
                     "tone": {
                         "type": "string"
+                    },
+                    "image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Photo"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "required": [
                     "demo_art",
                     "description",
+                    "image",
                     "name",
                     "slug",
                     "tone"
@@ -10639,6 +10648,21 @@
                     "secret"
                 ]
             },
+            "Photo": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "alt": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "alt",
+                    "url"
+                ]
+            },
             "PlaceInRequest": {
                 "type": "object",
                 "properties": {
@@ -10899,6 +10923,14 @@
                         ],
                         "nullable": true
                     },
+                    "hover_image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Photo"
+                            }
+                        ],
+                        "nullable": true
+                    },
                     "is_new": {
                         "type": "boolean"
                     },
@@ -10910,6 +10942,7 @@
                     "category",
                     "colours",
                     "department",
+                    "hover_image",
                     "image",
                     "is_featured",
                     "is_new",
@@ -11005,6 +11038,14 @@
                         ],
                         "nullable": true
                     },
+                    "hover_image": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Photo"
+                            }
+                        ],
+                        "nullable": true
+                    },
                     "is_new": {
                         "type": "boolean"
                     },
@@ -11068,6 +11109,7 @@
                     "description",
                     "fabric",
                     "fit_note",
+                    "hover_image",
                     "image",
                     "images",
                     "is_featured",

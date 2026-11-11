@@ -74,7 +74,7 @@ export function GarmentArt({
   const light = luminance(safe) > 0.75;
   const detail = light ? shade(safe, -0.25) : shade(safe, 0.18);
   // Gold only on the dark stage (decision 0004: gold is for accents on dark surfaces).
-  const hanger = stage === "dark" ? colors.champagneGold : colors.deepBrown;
+  const hanger = stage === "dark" ? colors.amber : colors.deepIndigo;
 
   return (
     <svg

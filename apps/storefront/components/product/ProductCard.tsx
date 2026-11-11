@@ -39,9 +39,24 @@ export async function ProductCard({ product, locale }: { product: Card; locale: 
               height={1000}
             />
           ) : image?.demo_art ? (
-            <div className={styles.art}>
-              <GarmentArt kind={image.demo_art as ArtKind} colour={image.tone} />
-            </div>
+            <>
+              <div className={styles.art}>
+                <GarmentArt kind={image.demo_art as ArtKind} colour={image.tone} float={false} />
+              </div>
+              {/* The illustration is a stand-in until photography exists; say so (decision 0006, #9). */}
+              <span className={styles.sample}>{t("sampleImage")}</span>
+            </>
+          ) : null}
+          {image?.url && product.hover_image?.url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- second photograph, shown on hover
+            <img
+              src={product.hover_image.url}
+              alt=""
+              className={`${styles.photo} ${styles.hoverPhoto}`}
+              loading="lazy"
+              width={800}
+              height={1000}
+            />
           ) : null}
           {product.is_new ? <span className={styles.badge}>{t("new")}</span> : null}
         </div>

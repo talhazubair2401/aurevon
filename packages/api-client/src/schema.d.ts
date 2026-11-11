@@ -2990,6 +2990,7 @@ export interface components {
       description: string;
       demo_art: string | null;
       tone: string;
+      image: components["schemas"]["Photo"] | null;
     };
     ColourFacet: {
       slug: string;
@@ -3631,6 +3632,10 @@ export interface components {
       /** @description The otpauth URI as an inline SVG QR code. */
       qr_svg: string;
     };
+    Photo: {
+      url: string;
+      alt: string;
+    };
     PlaceInRequest: {
       /** Format: email */
       email?: string;
@@ -3702,6 +3707,7 @@ export interface components {
       colours: components["schemas"]["ProductColour"][];
       sizes: string[];
       image: components["schemas"]["ProductCardImage"] | null;
+      hover_image: components["schemas"]["Photo"] | null;
       is_new: boolean;
       is_featured: boolean;
     };
@@ -3726,6 +3732,7 @@ export interface components {
       colours: components["schemas"]["ProductColour"][];
       sizes: string[];
       image: components["schemas"]["ProductCardImage"] | null;
+      hover_image: components["schemas"]["Photo"] | null;
       is_new: boolean;
       is_featured: boolean;
       description: string;

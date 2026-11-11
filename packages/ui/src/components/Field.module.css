@@ -96,7 +96,7 @@
   block-size: 1.25rem;
   margin: 0.15rem 0 0;
   flex: none;
-  accent-color: var(--av-color-charcoal);
+  accent-color: var(--av-color-midnight-indigo);
 }
 
 .checkbox:focus-visible {

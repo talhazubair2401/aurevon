@@ -99,6 +99,11 @@ class ProductCardImageSerializer(serializers.Serializer[Any]):
     alt = serializers.CharField()
 
 
+class PhotoSerializer(serializers.Serializer[Any]):
+    url = serializers.CharField()
+    alt = serializers.CharField()
+
+
 class ProductCardSerializer(serializers.Serializer[Any]):
     slug = serializers.CharField()
     name = serializers.CharField()
@@ -109,6 +114,7 @@ class ProductCardSerializer(serializers.Serializer[Any]):
     colours = ProductColourSerializer(many=True)
     sizes = serializers.ListField(child=serializers.CharField())
     image = ProductCardImageSerializer(allow_null=True)
+    hover_image = PhotoSerializer(allow_null=True)
     is_new = serializers.BooleanField()
     is_featured = serializers.BooleanField()
 
@@ -125,6 +131,7 @@ class CollectionCardSerializer(serializers.Serializer[Any]):
     description = serializers.CharField()
     demo_art = serializers.CharField(allow_null=True)
     tone = serializers.CharField()
+    image = PhotoSerializer(allow_null=True)
 
 
 class CountFacetSerializer(serializers.Serializer[Any]):

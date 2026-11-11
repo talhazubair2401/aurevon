@@ -307,7 +307,7 @@ function Wishlist() {
               ) : (
                 <GarmentArt
                   kind={(p.image?.demo_art ?? "kurta") as ArtKind}
-                  colour={p.image?.tone ?? "#E5E0DB"}
+                  colour={p.image?.tone ?? "#E4E1D9"}
                   float={false}
                 />
               )}

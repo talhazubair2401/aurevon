@@ -8,7 +8,7 @@
 .gallery {
   background:
     radial-gradient(ellipse 55% 80% at 50% 0%, rgb(249 248 246 / 0.1), transparent 70%),
-    linear-gradient(180deg, var(--av-color-charcoal), #1d1816);
+    linear-gradient(180deg, var(--av-color-midnight-indigo), var(--av-color-deep-indigo));
   color: var(--av-text-inverse);
 }
 
@@ -35,7 +35,7 @@
 
 .gallerySubtitle {
   margin: 0;
-  color: var(--av-color-stone);
+  color: var(--av-color-ivory-shade);
 }
 
 .hangers {
@@ -292,7 +292,7 @@
   inline-size: 1.05rem;
   block-size: 1.05rem;
   margin: 0;
-  accent-color: var(--av-color-charcoal);
+  accent-color: var(--av-color-midnight-indigo);
 }
 
 .option input:focus-visible {
@@ -499,7 +499,7 @@
   overflow: hidden;
   background:
     radial-gradient(ellipse 50% 90% at 20% 50%, rgb(194 166 118 / 0.16), transparent 70%),
-    linear-gradient(120deg, var(--av-color-charcoal), var(--av-color-deep-brown));
+    linear-gradient(120deg, var(--av-color-midnight-indigo), var(--av-color-deep-indigo));
   color: var(--av-text-inverse);
 }
 
@@ -556,7 +556,7 @@
 .editorialBody {
   margin: 0;
   max-inline-size: 28rem;
-  color: var(--av-color-stone);
+  color: var(--av-color-ivory-shade);
 }
 
 .editorialLink {

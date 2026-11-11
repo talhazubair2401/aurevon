@@ -17,7 +17,7 @@ import { siteUrl } from "@/lib/seo";
 // Every page renders per request so it carries that request's CSP nonce (decision 0005, D-08). Reading the
 // request headers opts the whole tree out of static generation; Next.js then stamps the nonce on its scripts.
 
-export const viewport: Viewport = { themeColor: colors.offWhite };
+export const viewport: Viewport = { themeColor: colors.midnightIndigo };
 
 export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;

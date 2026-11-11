@@ -1,0 +1,88 @@
+/* Homepage hero garment: the poster sits underneath; the canvas fades in over it once the model is ready. */
+.hero {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.poster,
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.canvas {
+  opacity: 0;
+  transition: opacity 800ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.hero[data-phase="ready"] .canvas {
+  opacity: 1;
+}
+
+.hero[data-phase="ready"] .poster {
+  opacity: 0;
+  transition: opacity 800ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.scene {
+  inline-size: 100%;
+  block-size: 100%;
+  touch-action: pan-y; /* scrolling always wins on touch screens */
+  cursor: grab;
+}
+
+.scene:active {
+  cursor: grabbing;
+}
+
+/* Loading: a thin amber line along the foot of the stage. */
+.progress {
+  position: absolute;
+  inset-inline: 30%;
+  inset-block-end: 6%;
+  block-size: 1px;
+  overflow: hidden;
+  background: rgb(133 135 154 / 0.3);
+}
+
+.progress::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: 40%;
+  background: #d99a32;
+  animation: sweep 1.6s cubic-bezier(0.2, 0, 0, 1) infinite;
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+[dir="rtl"] .progress::after {
+  animation-direction: reverse;
+}
+
+.srOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas,
+  .hero[data-phase="ready"] .poster {
+    transition: none;
+  }
+  .progress::after {
+    animation: none;
+  }
+}

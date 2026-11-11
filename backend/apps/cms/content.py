@@ -59,6 +59,9 @@ SECTION_FIELDS: dict[str, list[Field]] = {
         Field("subtitle", "Subtitle", kind="textarea", max_length=300),
         *_link("primary", "Primary button"),
         *_link("secondary", "Secondary button"),
+        # The garment the hero shows: its photograph is the poster and, once 3D is on for shoppers, its approved
+        # model is shown in 3D (redesign, 11 Nov 2026). A product slug; shared by both languages.
+        Field("feature_product", "Featured garment (product slug)", max_length=120, translatable=False),
     ],
     HomepageSectionKey.COLLECTIONS: [
         Field("title", "Title", required=True),

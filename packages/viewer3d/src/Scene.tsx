@@ -17,7 +17,7 @@ import { shouldRender, type ViewerStore } from "./state";
 
 const FLOOR = -1.55;
 const HOME = new THREE.Vector3(0, 0.55, 7.9);
-const GOLD = 0xc2a676;
+const GOLD = 0xd99a32; // Amber (decision 0008)
 
 export interface CameraApi {
   zoom: (factor: number) => void;
@@ -92,8 +92,8 @@ function Stage({ reducedMotion }: { reducedMotion: boolean }) {
   });
   return (
     <>
-      <fog attach="fog" args={[0x1a1414, 9, 18]} />
-      <hemisphereLight args={[0xfff4e6, 0x2a201c, 0.55]} />
+      <fog attach="fog" args={[0x141729, 9, 18]} />
+      <hemisphereLight args={[0xfff4e6, 0x191d35, 0.55]} />
       <directionalLight color={0xfff1df} intensity={2.2} position={[2.5, 4, 4]} />
       <directionalLight color={0xe9dccb} intensity={0.6} position={[-4, 1.5, 2]} />
       <pointLight color={GOLD} intensity={14} distance={10} position={[-2.4, 1.6, -2.2]} />
@@ -101,7 +101,7 @@ function Stage({ reducedMotion }: { reducedMotion: boolean }) {
       <mesh position={[0, FLOOR - 0.06, 0]}>
         <cylinderGeometry args={[1.35, 1.42, 0.12, 96]} />
         <meshStandardMaterial
-          color={0x141110}
+          color={0x111322}
           roughness={0.55}
           metalness={0}
           envMapIntensity={0.25}

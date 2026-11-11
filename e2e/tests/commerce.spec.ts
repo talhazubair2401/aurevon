@@ -95,7 +95,10 @@ test.describe("checkout", () => {
   test("a guest orders with cash on delivery and sees the confirmation", async ({ page }) => {
     await addToBag(page);
     await page.goto("/en/checkout");
-    await page.locator('input[name="email"]').fill(`guest.${Date.now()}@aurevon.test`);
+    await page
+      .getByRole("main")
+      .locator('input[name="email"]')
+      .fill(`guest.${Date.now()}@aurevon.test`);
     await fillAddress(page);
     await expect(page.getByText("Standard delivery")).toBeVisible();
     await page.getByText("Cash on delivery", { exact: true }).click();
@@ -118,7 +121,7 @@ test.describe("checkout", () => {
     const email = `shopper.${Date.now()}.${Math.floor(Math.random() * 1e4)}@aurevon.test`;
     await page.goto("/en/account/register");
     await page.getByLabel("Full name").fill("Sana Malik");
-    await page.getByLabel("Email").fill(email);
+    await page.getByRole("main").getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password").fill("quiet linen evening 2026");
     await page.getByTestId("register").click();
     await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
@@ -128,7 +131,7 @@ test.describe("checkout", () => {
     await expect(page.getByRole("heading", { name: "Email confirmed" })).toBeVisible();
 
     await page.goto("/en/account/sign-in?next=/account");
-    await page.getByLabel("Email").fill(email);
+    await page.getByRole("main").getByLabel("Email", { exact: true }).fill(email);
     await page.getByLabel("Password").fill("quiet linen evening 2026");
     await page.getByTestId("sign-in").click();
     await expect(page).toHaveURL(/\/en\/account$/);
@@ -160,7 +163,10 @@ test.describe("checkout", () => {
   test("a declined card can be tried again", async ({ page }) => {
     await addToBag(page);
     await page.goto("/en/checkout");
-    await page.locator('input[name="email"]').fill(`decline.${Date.now()}@aurevon.test`);
+    await page
+      .getByRole("main")
+      .locator('input[name="email"]')
+      .fill(`decline.${Date.now()}@aurevon.test`);
     await fillAddress(page, "Islamabad", "ict");
     await page.getByText("Card", { exact: true }).click();
     await page.getByTestId("place-order").click();
@@ -189,7 +195,7 @@ test.describe("account", () => {
 
   test("a wrong password is refused without saying which part was wrong", async ({ page }) => {
     await page.goto("/en/account/sign-in");
-    await page.getByLabel("Email").fill("nobody@aurevon.test");
+    await page.getByRole("main").getByLabel("Email", { exact: true }).fill("nobody@aurevon.test");
     await page.getByLabel("Password").fill("not the password at all");
     await page.getByTestId("sign-in").click();
     await expect(page.getByRole("alert")).toBeVisible();

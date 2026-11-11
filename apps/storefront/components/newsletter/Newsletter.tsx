@@ -8,7 +8,17 @@ import styles from "./Newsletter.module.css";
 type State = "idle" | "sending" | "sent" | "error";
 
 /** Newsletter sign-up: double opt-in through POST /api/v1/newsletter/subscribe (same origin). */
-export function Newsletter({ source }: { source: string }) {
+export function Newsletter({
+  source,
+  headingId = "newsletter-title",
+  compact = false,
+}: {
+  source: string;
+  /** Unique per page: the footer carries its own form on pages that also have one in the body. */
+  headingId?: string;
+  /** Footer form: smaller heading, no section padding. */
+  compact?: boolean;
+}) {
   const t = useTranslations("newsletter");
   const locale = useLocale();
   const [state, setState] = useState<State>("idle");
@@ -39,10 +49,14 @@ export function Newsletter({ source }: { source: string }) {
   }
 
   return (
-    <section className={styles.newsletter} aria-labelledby="newsletter-title">
+    <section
+      className={compact ? styles.compact : styles.newsletter}
+      aria-labelledby={headingId}
+      data-newsletter={source}
+    >
       <div className={styles.inner}>
         <div className={styles.copy}>
-          <h2 id="newsletter-title" className={styles.title}>
+          <h2 id={headingId} className={styles.title}>
             {t("title")}
           </h2>
           <p className={styles.body}>{t("body")}</p>

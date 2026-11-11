@@ -84,7 +84,7 @@
   display: block;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: var(--av-color-stone);
+  background: var(--av-color-ivory-shade);
 }
 
 .thumb img {
@@ -221,7 +221,7 @@
   justify-content: center;
   min-block-size: var(--av-tap-target);
   padding-inline: var(--av-space-6);
-  border: 1px solid var(--av-color-charcoal);
+  border: 1px solid var(--av-color-midnight-indigo);
   font: inherit;
   font-size: var(--av-text-small);
   letter-spacing: var(--av-tracking-caps);
@@ -236,13 +236,13 @@
 .primary,
 .primaryLink {
   inline-size: 100%;
-  background: var(--av-color-charcoal);
-  color: var(--av-color-off-white);
+  background: var(--av-color-midnight-indigo);
+  color: var(--av-color-warm-ivory);
 }
 
 .primary:hover:not(:disabled),
 .primaryLink:hover {
-  background: var(--av-color-deep-brown);
+  background: var(--av-color-deep-indigo);
 }
 
 .secondary {
@@ -251,8 +251,8 @@
 }
 
 .secondary:hover:not(:disabled) {
-  background: var(--av-color-charcoal);
-  color: var(--av-color-off-white);
+  background: var(--av-color-midnight-indigo);
+  color: var(--av-color-warm-ivory);
 }
 
 .primary:disabled,
@@ -311,9 +311,9 @@
   place-items: center;
   inline-size: var(--av-tap-target);
   min-block-size: var(--av-tap-target);
-  border: 1px solid var(--av-color-charcoal);
+  border: 1px solid var(--av-color-midnight-indigo);
   background: transparent;
-  color: var(--av-color-charcoal);
+  color: var(--av-color-midnight-indigo);
   cursor: pointer;
 }
 

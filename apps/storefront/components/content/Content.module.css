@@ -101,7 +101,7 @@
 .breadcrumbItem + .breadcrumbItem::before {
   content: "/";
   margin-inline-end: var(--av-space-2);
-  color: var(--av-color-stone);
+  color: var(--av-color-ivory-shade);
 }
 
 .breadcrumbLink {

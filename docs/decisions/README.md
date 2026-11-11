@@ -13,9 +13,10 @@ decisions made since then are recorded here and in the numbered records; the nex
 | R-03 | Toolchain and version pins | 0002 | 4 Nov 2026 | In effect |
 | P-05 | Six staff roles, permission matrix, TOTP for staff, session lengths, dual refund approval | 0003 | 4 Nov 2026 | APPROVED |
 | D-12 | Owner recovery: two Owners before launch, 24-hour assisted recovery, sealed break-glass | 0003 | 4 Nov 2026 | APPROVED |
-| P-19 | Functional colours, charcoal focus, Inter, Nastaliq + Naskh for Urdu, registration palette, interim wordmark | 0004 | 4 Nov 2026 | APPROVED (A-04 files still to supply) |
+| P-19 | Functional colours (values retuned in 0008), focus ring, Inter, Nastaliq + Naskh for Urdu, registration palette, interim wordmark | 0004 | 4 Nov 2026 | APPROVED (A-04 files still to supply) |
 | D-08 | CSP with a per-request nonce and `'strict-dynamic'`, both apps; HTML never publicly cached | 0005 | 4 Nov 2026 | APPROVED, implemented |
 | D-01–D-05 | 3D: provisional warnings only (no final budget), Draco, material variants per colour, external CLO 3D / Marvelous Designer specialist, Ctrl/⌘ + wheel zoom | 0007 | 5 Nov 2026 | APPROVED |
+| A-03 | Core palette replaced by "Midnight Indigo & Amber" (#111322, #191D35, #D99A32, #E8B968, #F5F3EE, #85879A); functional neutrals retuned; typography unchanged | 0008 | 11 Nov 2026 | APPROVED, implemented |
 | P-12 | Launch catalogue rules: departments, categories, letter and numeric sizes per category, colours, SKUs, prices, product fields, images, CSV import, stock | 0006 | 4 Nov 2026 | APPROVED |
 
 ## Still open (unchanged from MTS v2.1 §18 unless noted)

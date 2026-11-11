@@ -17,6 +17,8 @@ export interface LoadedModel {
   parser: GLTFParser;
   json: GlbJson;
   decoder: "wasm" | "js" | null;
+  /** Baked clips (only the homepage hero plays one: a cloth loop, if the garment was delivered with it). */
+  animations: THREE.AnimationClip[];
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
@@ -51,7 +53,13 @@ export async function loadModel(buf: ArrayBuffer, decoderPath: string): Promise<
   }
   if (!used.includes("KHR_draco_mesh_compression")) {
     const gltf = await withTimeout(parse(loader, buf), LIMITS.parseMs);
-    return { scene: gltf.scene, parser: gltf.parser, json, decoder: null };
+    return {
+      scene: gltf.scene,
+      parser: gltf.parser,
+      json,
+      decoder: null,
+      animations: gltf.animations,
+    };
   }
   for (const type of wasm ? (["wasm", "js"] as const) : (["js"] as const)) {
     const draco = new DRACOLoader().setDecoderPath(decoderPath);
@@ -64,7 +72,13 @@ export async function loadModel(buf: ArrayBuffer, decoderPath: string): Promise<
         type === "wasm" ? LIMITS.dracoStartMs : LIMITS.parseMs,
       );
       draco.dispose(); // decoding is done; release the worker
-      return { scene: gltf.scene, parser: gltf.parser, json, decoder: type };
+      return {
+        scene: gltf.scene,
+        parser: gltf.parser,
+        json,
+        decoder: type,
+        animations: gltf.animations,
+      };
     } catch (error) {
       draco.dispose(); // also stops a stuck worker
       console.warn(`[viewer3d] Draco ${type} decoder failed:`, (error as Error)?.message);

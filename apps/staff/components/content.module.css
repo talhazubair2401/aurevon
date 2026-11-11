@@ -238,7 +238,7 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: 4px;
-  background: #121212;
+  background: #111322;
 }
 
 .facts {
@@ -316,7 +316,7 @@ a.stat:focus-visible {
 }
 
 .chart rect {
-  fill: #c2a676;
+  fill: #d99a32;
 }
 
 .chart rect:hover,

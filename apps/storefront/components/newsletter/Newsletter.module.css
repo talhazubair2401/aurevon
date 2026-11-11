@@ -63,3 +63,20 @@
 .submit {
   min-block-size: var(--av-tap-target);
 }
+
+/* Footer form: the band supplies the surface and spacing. */
+.compact .inner {
+  padding: 0;
+  gap: var(--av-space-6);
+}
+
+.compact .title {
+  font-size: var(--av-text-h3);
+}
+
+@media (min-width: 64rem) {
+  .compact .inner {
+    grid-template-columns: 1fr;
+    gap: var(--av-space-6);
+  }
+}

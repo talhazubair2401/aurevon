@@ -2,12 +2,12 @@
 .viewer {
   position: absolute;
   inset: 0;
-  color: var(--av-color-off-white, #f9f8f6);
+  color: var(--av-color-warm-ivory, #f5f3ee);
   font-size: 0.8125rem;
 }
 
 .keyboard {
-  outline: 2px solid var(--av-accent, #c2a676);
+  outline: 2px solid var(--av-accent, #d99a32);
   outline-offset: 3px;
 }
 
@@ -20,7 +20,7 @@
 .canvasHidden {
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 80% at 50% 18%, #3b2f2f 0%, #221b1b 48%, #121212 100%);
+  background: radial-gradient(120% 80% at 50% 18%, #191d35 0%, #141729 48%, #111322 100%);
   transition: opacity 0.45s ease;
 }
 
@@ -65,7 +65,7 @@
 .chip:hover,
 .chipIcon:hover,
 .chip[aria-pressed="true"] {
-  border-color: var(--av-accent, #c2a676);
+  border-color: var(--av-accent, #d99a32);
 }
 
 .chip[aria-pressed="true"] {
@@ -74,7 +74,7 @@
 
 .chip:focus-visible,
 .chipIcon:focus-visible {
-  outline: 2px solid var(--av-accent, #c2a676);
+  outline: 2px solid var(--av-accent, #d99a32);
   outline-offset: 2px;
 }
 
@@ -85,7 +85,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--av-accent, #c2a676);
+  color: var(--av-accent, #d99a32);
   font-size: 0.6875rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -174,7 +174,7 @@
   display: block;
   inline-size: 10%;
   block-size: 100%;
-  background: var(--av-accent, #c2a676);
+  background: var(--av-accent, #d99a32);
   transition: inline-size 0.3s;
 }
 

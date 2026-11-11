@@ -37,8 +37,8 @@
   min-block-size: var(--av-tap-target);
   padding-inline: var(--av-space-6);
   border: 0;
-  background: var(--av-color-charcoal);
-  color: var(--av-color-off-white);
+  background: var(--av-color-midnight-indigo);
+  color: var(--av-color-warm-ivory);
   font: inherit;
   font-size: var(--av-text-small);
   letter-spacing: var(--av-tracking-caps);

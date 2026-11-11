@@ -4,6 +4,15 @@ import { expect, test, type Page } from "@playwright/test";
 // M4 first slice: homepage and Shop All against the running API with the demo catalogue (seed_demo_catalog).
 
 async function axe(page: Page) {
+  // Contrast is judged at rest: let the entrance fades finish (infinite loops are ignored).
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+        .map((a) => a.finished.catch(() => undefined)),
+    ),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();

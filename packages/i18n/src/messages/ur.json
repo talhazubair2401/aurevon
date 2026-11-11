@@ -23,16 +23,28 @@
     "shopAll": "تمام مصنوعات",
     "collections": "کلیکشنز",
     "shop": "خریداری",
-    "help": "مدد",
+    "help": "کسٹمر کیئر",
     "contact": "ہم سے رابطہ کریں",
     "shipping": "ترسیل",
     "returns": "واپسی اور تبادلہ",
     "privacy": "رازداری کی پالیسی",
-    "terms": "فروخت کی شرائط"
+    "terms": "فروخت کی شرائط",
+    "about": "ہمارے بارے میں",
+    "policies": "پالیسیاں"
   },
   "home": {
     "explore": "دیکھیں",
-    "collectionsHeading": "کلیکشنز"
+    "collectionsHeading": "کلیکشنز",
+    "pending": {
+      "hero": "عارضی جگہ · ہیرو لباس کی تصویر اور تھری ڈی ماڈل آنا باقی ہے",
+      "collection": "کلیکشن کی تصویر آنا باقی ہے",
+      "story": "اٹیلیئر کی تصویر آنا باقی ہے"
+    },
+    "loading3d": "تھری ڈی لباس لوڈ ہو رہا ہے",
+    "view3d": "تھری ڈی میں دیکھیں",
+    "collectionsEyebrow": "کلیکشنز",
+    "featuredEyebrow": "منتخب لباس",
+    "newEyebrow": "ابھی آئے ہیں"
   },
   "notFound": {
     "title": "صفحہ نہیں ملا",
@@ -67,7 +79,8 @@
     "inCollections": "کلیکشن",
     "gallery": "تصاویر",
     "sizeOption": "سائز {size}",
-    "colourOption": "{name}"
+    "colourOption": "{name}",
+    "sampleImage": "نمونے کی تصویر"
   },
   "shop": {
     "title": "تمام مصنوعات",
