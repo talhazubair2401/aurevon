@@ -336,7 +336,7 @@ test("Owner packs, dispatches and delivers a cash-on-delivery order", async ({ b
   await expect(page.getByText("Added to your bag")).toBeVisible();
   const email = `ops.${Date.now()}@aurevon.test`;
   await page.goto("/en/checkout");
-  await page.locator('input[name="email"]').fill(email);
+  await page.getByRole("main").locator('input[name="email"]').fill(email);
   await page.locator('input[name="full_name"]').fill("Hira Shah");
   await page.locator('input[name="phone"]').fill("0300 7654321");
   await page.locator('input[name="line1"]').fill("Flat 3, Block B");
