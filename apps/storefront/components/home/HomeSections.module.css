@@ -711,6 +711,222 @@
   text-transform: uppercase;
 }
 
+/* ---------- Cinematic hero (a background video is set) ---------- */
+.hero[data-video] {
+  min-block-size: min(100svh - 4.5rem, 56rem);
+  display: grid;
+}
+
+.hero[data-video] .heroInner {
+  position: relative;
+  z-index: 1;
+  align-content: end;
+  inline-size: 100%;
+  padding-block: var(--av-space-16);
+}
+
+.hero[data-video] .heroCopy {
+  order: 0;
+}
+
+.heroBackdrop {
+  position: absolute;
+  inset: 0;
+  animation: settle 1600ms var(--av-easing) both;
+}
+
+.heroVideo {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 62% 50%;
+  transform: scale(1.04);
+  animation: drift 24s ease-in-out infinite alternate;
+}
+
+/* Text sits on indigo: strong on the reading side and the bottom, clear over the garment. */
+.heroScrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(17 19 34 / 0.92), rgb(17 19 34 / 0.2) 45%, rgb(17 19 34 / 0.35)),
+    linear-gradient(to right, rgb(17 19 34 / 0.85), rgb(17 19 34 / 0.35) 50%, transparent 75%);
+}
+
+:global([dir="rtl"]) .heroScrim {
+  background:
+    linear-gradient(to top, rgb(17 19 34 / 0.92), rgb(17 19 34 / 0.2) 45%, rgb(17 19 34 / 0.35)),
+    linear-gradient(to left, rgb(17 19 34 / 0.85), rgb(17 19 34 / 0.35) 50%, transparent 75%);
+}
+
+.heroCaptionFloat {
+  position: absolute;
+  inset-inline: auto var(--av-gutter);
+  inset-block-end: var(--av-space-6);
+  z-index: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: var(--av-text-caption);
+}
+
+/* Phones: keep the garment in frame behind the copy. */
+@media (max-width: 51.99rem) {
+  .heroVideo {
+    object-position: 74% 50%;
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: scale(1.1) translateX(-1.5%);
+  }
+}
+
+/* Brand band: two identical runs slide by half their width, so the loop is seamless. */
+.marquee {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-block: var(--av-border-width) solid rgb(217 154 50 / 0.25);
+  padding-block: var(--av-space-4);
+  color: var(--av-color-soft-amber);
+  font-family: var(--av-font-display);
+  font-size: 1.125rem;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.marqueeTrack {
+  display: inline-flex;
+  animation: marquee 60s linear infinite;
+}
+
+.marqueeTrack > span {
+  padding-inline-end: 0.35em;
+}
+
+:global([dir="rtl"]) .marqueeTrack {
+  animation-name: marquee-rtl;
+}
+
+@keyframes marquee-rtl {
+  to {
+    transform: translateX(50%);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause for the moving hero (WCAG 2.2.2): bottom corner, above the band. */
+.motionToggle {
+  position: absolute;
+  inset-inline-end: var(--av-space-2);
+  inset-block-end: var(--av-space-2);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  inline-size: var(--av-tap-target);
+  block-size: var(--av-tap-target);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(17 19 34 / 0.75);
+  color: var(--av-color-warm-ivory);
+  cursor: pointer;
+}
+
+.motionToggle svg {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  fill: currentColor;
+}
+
+.srOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:global(html[data-motion-paused]) .marqueeTrack,
+:global(html[data-motion-paused]) .heroVideo,
+:global(html[data-motion-paused]) .heroViewer::after {
+  animation-play-state: paused;
+}
+
+/* Headline: each line rises out of its own mask. */
+.titleLine {
+  display: block;
+  overflow: hidden;
+  padding-block-end: 0.08em;
+}
+
+.titleLineInner {
+  display: inline-block;
+  animation: line-rise 1000ms cubic-bezier(0.2, 0.7, 0.1, 1) both;
+  animation-delay: 150ms;
+}
+
+.titleLine:nth-child(2) .titleLineInner {
+  animation-delay: 300ms;
+}
+
+.titleLine:nth-child(3) .titleLineInner {
+  animation-delay: 450ms;
+}
+
+@keyframes line-rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+
+/* A slow amber glint passes over the hero photograph (no video): light on wool, nothing more. */
+.heroViewer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(232 185 104 / 0.14) 48%,
+    transparent 60%
+  );
+  background-size: 250% 100%;
+  animation: glint 9s ease-in-out 1.2s infinite;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes glint {
+  0% {
+    background-position: 120% 0;
+  }
+  45%,
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroBackdrop,
+  .heroVideo,
+  .titleLineInner,
+  .heroViewer::after,
+  .marqueeTrack {
+    animation: none;
+  }
+  .motionToggle {
+    display: none; /* nothing moves, so nothing to pause */
+  }
+}
+
 /* ---------- Reduced motion and Urdu ---------- */
 @media (prefers-reduced-motion: reduce) {
   .enter1,

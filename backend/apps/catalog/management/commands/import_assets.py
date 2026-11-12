@@ -6,6 +6,7 @@ Layout (any part may be missing):
     products/<product-slug>/1.jpg 2.jpg …  info.txt
     collections/<collection-slug>.jpg
     story.jpg
+    hero.mp4       (optional silent loop behind the homepage hero; hero-poster.jpg or hero.jpg is its first frame)
 
 - Products: details from info.txt (name, price, sizes, colours, fabric, description, care) update the existing
   product with that slug; photographs are centre-cropped to 4:5 and added through the normal image pipeline
@@ -165,6 +166,15 @@ class Command(BaseCommand):
         if story:
             set_section("brand_story", "image", store_photo(story, "cms"))
             self.stdout.write("brand story: photo set")
+        video = next(iter(sorted(root.glob("hero.mp4"))), None)
+        if video:
+            data = video.read_bytes()
+            key = f"cms/{hashlib.sha256(data).hexdigest()[:32]}.mp4"
+            storage().put(key, data, "video/mp4")
+            set_section("hero", "video", f"{settings.MEDIA_URL}{key}")
+            still = next((p for p in (root / "hero-poster.jpg", root / "hero.jpg") if p.exists()), None)
+            set_section("hero", "video_poster", store_photo(still, "cms") if still else "")
+            self.stdout.write("hero: background video set")
         if hero:
             set_section("hero", "feature_product", hero)
             self.stdout.write(f"hero: featured garment {hero}")

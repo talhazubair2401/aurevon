@@ -56,6 +56,18 @@ test.describe("homepage", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Shop All");
   });
 
+  test("the moving hero can be paused (WCAG 2.2.2)", async ({ page }) => {
+    await page.goto("/en");
+    const pause = page.getByRole("button", { name: "Pause motion" });
+    await expect(pause).toHaveAttribute("aria-pressed", "false");
+    await pause.click();
+    await expect(page.getByRole("button", { name: "Play motion" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await expect(page.locator("html")).toHaveAttribute("data-motion-paused", "");
+  });
+
   for (const locale of ["en", "ur"]) {
     test(`/${locale} has no automatically detectable WCAG 2.2 AA violations`, async ({ page }) => {
       await page.goto(`/${locale}`);

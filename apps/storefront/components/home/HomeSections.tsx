@@ -2,6 +2,8 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "@aurevon/i18n";
 import { colors } from "@aurevon/design-tokens";
 import { decoderPath, HeroViewer } from "@aurevon/viewer3d";
+import { HeroVideo } from "./HeroVideo";
+import { MotionToggle } from "./MotionToggle";
 import { Link } from "@/i18n/navigation";
 import {
   getProduct,
@@ -95,15 +97,31 @@ export async function Hero({ content, locale }: { content: Content; locale: Loca
     />
   ) : null;
 
+  // A background video sets the cinematic layout; an approved 3D model still takes precedence over it.
+  const video = !garment?.model && content.video?.startsWith("/media/") ? content.video : undefined;
+  const videoPoster = content.video_poster?.startsWith("/media/")
+    ? content.video_poster
+    : undefined;
+
   return (
-    <section className={styles.hero} aria-labelledby="hero-title">
+    <section
+      className={styles.hero}
+      aria-labelledby="hero-title"
+      data-video={video ? "" : undefined}
+    >
+      {video ? (
+        <div className={styles.heroBackdrop}>
+          <HeroVideo src={video} poster={videoPoster ?? garment?.poster?.url} />
+          <div className={styles.heroScrim} aria-hidden="true" />
+        </div>
+      ) : null}
       <div className={styles.heroInner}>
         <div className={styles.heroCopy}>
           {content.eyebrow ? (
             <p className={`${styles.eyebrow} ${styles.enter1}`}>{content.eyebrow}</p>
           ) : null}
-          <h1 id="hero-title" className={`${styles.heroTitle} ${styles.enter2}`}>
-            {content.title}
+          <h1 id="hero-title" className={styles.heroTitle}>
+            <SplitLines text={content.title ?? ""} />
           </h1>
           {content.subtitle ? (
             <p className={`${styles.heroSubtitle} ${styles.enter3}`}>{content.subtitle}</p>
@@ -122,35 +140,78 @@ export async function Hero({ content, locale }: { content: Content; locale: Loca
           </div>
         </div>
 
-        <div className={`${styles.heroStage} ${styles.enterStage}`}>
-          <div className={styles.heroLight} aria-hidden="true" />
-          {poster && garment?.model ? (
-            <HeroViewer
-              src={garment.model.url}
-              variant={garment.model.variant}
-              decoderPath={decoderPath()}
-              loadingLabel={t("loading3d")}
-              className={styles.heroViewer}
+        {video ? (
+          garment ? (
+            <Link
+              href={garment.href}
+              className={`${styles.heroCaption} ${styles.heroCaptionFloat}`}
             >
-              {poster}
-            </HeroViewer>
-          ) : poster ? (
-            <div className={styles.heroViewer}>{poster}</div>
-          ) : (
-            <PendingImage locale={locale} what="hero" hanger className={styles.heroViewer} />
-          )}
-          {garment ? (
-            <Link href={garment.href} className={styles.heroCaption}>
               <span>{garment.name}</span>
-              {/* Only a real, approved model earns the 3D label (never a photograph or placeholder). */}
-              {garment.model && poster ? (
-                <span className={styles.badge3d}>{t("view3d")}</span>
-              ) : null}
             </Link>
-          ) : null}
-        </div>
+          ) : null
+        ) : (
+          <div className={`${styles.heroStage} ${styles.enterStage}`}>
+            <div className={styles.heroLight} aria-hidden="true" />
+            {poster && garment?.model ? (
+              <HeroViewer
+                src={garment.model.url}
+                variant={garment.model.variant}
+                decoderPath={decoderPath()}
+                loadingLabel={t("loading3d")}
+                className={styles.heroViewer}
+              >
+                {poster}
+              </HeroViewer>
+            ) : poster ? (
+              <div className={styles.heroViewer}>{poster}</div>
+            ) : (
+              <PendingImage locale={locale} what="hero" hanger className={styles.heroViewer} />
+            )}
+            {garment ? (
+              <Link href={garment.href} className={styles.heroCaption}>
+                <span>{garment.name}</span>
+                {/* Only a real, approved model earns the 3D label (never a photograph or placeholder). */}
+                {garment.model && poster ? (
+                  <span className={styles.badge3d}>{t("view3d")}</span>
+                ) : null}
+              </Link>
+            ) : null}
+          </div>
+        )}
       </div>
+      <Marquee text={t("marquee")} />
+      <MotionToggle pause={t("pauseMotion")} play={t("playMotion")} />
     </section>
+  );
+}
+
+/** A slow band of brand words under the hero. Decorative (the words repeat), so hidden from screen readers. */
+function Marquee({ text }: { text: string }) {
+  const run = Array.from({ length: 4 }, () => text).join(" · ");
+  return (
+    <div className={styles.marquee} aria-hidden="true">
+      <div className={styles.marqueeTrack}>
+        <span>{run} · </span>
+        <span>{run} · </span>
+      </div>
+    </div>
+  );
+}
+
+/** The headline rises line by line (each sentence is a line); screen readers read it as one heading. */
+function SplitLines({ text }: { text: string }) {
+  const lines = text
+    .match(/[^.!?]+[.!?]*/g)
+    ?.map((l) => l.trim())
+    .filter(Boolean) ?? [text];
+  return (
+    <>
+      {lines.map((line, i) => (
+        <span key={i} className={styles.titleLine}>
+          <span className={styles.titleLineInner}>{line}</span>{" "}
+        </span>
+      ))}
+    </>
   );
 }
 
