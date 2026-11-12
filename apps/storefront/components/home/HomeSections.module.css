@@ -215,6 +215,7 @@
 .heroStage {
   position: relative;
   order: 1;
+  margin-block-end: var(--av-tap-target); /* room for the caption under the photo */
   block-size: clamp(20rem, 92vw, 30rem);
 }
 
@@ -239,17 +240,30 @@
   object-position: 50% 0;
 }
 
+/* The garment's name, centred under the photograph (which is centred in the stage), as a gallery label. */
 .heroCaption {
   position: absolute;
-  inset-inline-start: 0;
-  inset-block-end: 0;
-  display: inline-flex;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: var(--av-space-3);
   min-block-size: var(--av-tap-target);
+  margin-inline: auto;
+  inline-size: max-content;
   color: var(--av-color-muted-slate);
-  font-size: var(--av-text-small);
+  font-size: var(--av-text-caption);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   text-decoration: none;
+}
+
+.heroCaption::before {
+  content: "";
+  inline-size: 1.5rem;
+  block-size: 1px;
+  background: var(--av-color-amber);
 }
 
 .heroCaption:hover {
@@ -761,6 +775,8 @@
 
 .heroCaptionFloat {
   position: absolute;
+  inset-block-start: auto;
+  margin: 0;
   inset-inline: auto var(--av-gutter);
   inset-block-end: var(--av-space-6);
   z-index: 1;
