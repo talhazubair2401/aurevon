@@ -7,6 +7,7 @@ Layout (any part may be missing):
     collections/<collection-slug>.jpg
     story.jpg
     hero.mp4       (optional silent loop behind the homepage hero; hero-poster.jpg or hero.jpg is its first frame)
+    hero.txt       (optional: the product slug to feature in the hero; otherwise the current one stays)
 
 - Products: details from info.txt (name, price, sizes, colours, fabric, description, care) update the existing
   product with that slug; photographs are centre-cropped to 4:5 and added through the normal image pipeline
@@ -21,7 +22,7 @@ import io
 import re
 from decimal import Decimal
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -74,17 +75,61 @@ def focus_left(img: Image.Image, crop_w: int) -> int:
     return max(0, min(round(centre - crop_w / 2), img.width - crop_w))
 
 
+def trim_border(img: Image.Image) -> Image.Image:
+    """Remove a thin near-white or near-black frame some generators leave around a photo (at most 2% a side)."""
+    grey = img.convert("L")
+    w, h = grey.size
+
+    def plain(box: tuple[int, int, int, int]) -> bool:
+        band = grey.crop(box)
+        lo, hi = cast(tuple[int, int], band.getextrema())
+        mean = sum(cast(list[int], list(band.getdata()))) / (band.width * band.height)
+        return (mean > 225 and lo > 150) or (mean < 12 and hi < 60)
+
+    left = top = 0
+    right, bottom = w, h
+    while left < w * 0.02 and plain((left, 0, left + 1, h)):
+        left += 1
+    while w - right < w * 0.02 and plain((right - 1, 0, right, h)):
+        right -= 1
+    while top < h * 0.02 and plain((0, top, w, top + 1)):
+        top += 1
+    while h - bottom < h * 0.02 and plain((0, bottom - 1, w, bottom)):
+        bottom -= 1
+    return img.crop((left, top, right, bottom)) if (left, top, right, bottom) != (0, 0, w, h) else img
+
+
+def widen(img: Image.Image, width: int) -> Image.Image:
+    """Extend a narrow photo to the given width: the photo sits on a blurred, darkened copy of itself, with
+    feathered sides, so there is no hard seam and nothing of the garment is cut."""
+    w, h = img.size
+    scale = width / w
+    bg = img.resize((width, round(h * scale))).crop(
+        (0, (round(h * scale) - h) // 2, width, (round(h * scale) - h) // 2 + h)
+    )
+    bg = Image.blend(
+        bg.filter(ImageFilter.GaussianBlur(radius=width // 25)), Image.new("RGB", bg.size, (17, 19, 34)), 0.45
+    )
+    feather = max(8, w // 14)
+    mask = Image.new("L", (w, h), 255)
+    for x in range(feather):
+        level = round(255 * (x + 1) / feather)
+        mask.paste(level, (x, 0, x + 1, h))
+        mask.paste(level, (w - 1 - x, 0, w - x, h))
+    bg.paste(img, ((width - w) // 2, 0), mask)
+    return bg
+
+
 def portrait(path: Path) -> bytes:
-    """Centre-crop to 4:5 and scale to the catalogue's 1600 x 2000 page size."""
+    """Fit to 4:5 (crop wide photos around the garment, extend narrow ones), then scale to 1600 x 2000."""
     with Image.open(path) as opened:
-        img = ImageOps.exif_transpose(opened).convert("RGB")
+        img = trim_border(ImageOps.exif_transpose(opened).convert("RGB"))
     w, h = img.size
     if w / h > 0.8:
         nw = round(h * 0.8)
         img = img.crop((left := focus_left(img, nw), 0, left + nw, h))
-    else:
-        nh = round(w / 0.8)
-        img = img.crop((0, (h - nh) // 2, w, (h - nh) // 2 + nh))
+    elif w / h < 0.8:
+        img = widen(img, round(h * 0.8))  # keep the whole figure: never crop heads or hems
     img = img.resize((1600, 2000), Image.Resampling.LANCZOS)
     buf = io.BytesIO()
     img.save(buf, "JPEG", quality=92)
@@ -143,8 +188,14 @@ class Command(BaseCommand):
         folders = sorted((root / "products").glob("*/"))
         for folder in folders:
             self.product(folder)
-        # The hero garment: a coat if there is one (the hanger scene), otherwise the first product.
-        hero = next((f.name for f in folders if "coat" in f.name), folders[0].name if folders else None)
+        # The hero garment: named in hero.txt; otherwise the current one stays; otherwise the first product.
+        names = [f.name for f in folders]
+        chosen = (root / "hero.txt").read_text(encoding="utf-8-sig").strip() if (root / "hero.txt").exists() else ""
+        section = HomepageSection.objects.filter(key="hero").first()
+        current = ((section.content or {}).get("en", {}) if section and isinstance(section.content, dict) else {}).get(
+            "feature_product", ""
+        )
+        hero = next((n for n in (chosen, current) if n in names), names[0] if names else None)
         for photo in sorted((root / "collections").glob("*.jp*g")):
             col = Collection.objects.filter(slug=photo.stem).first()
             if col is None:

@@ -166,3 +166,24 @@ def test_start_up_reseed_keeps_the_owners_photos_and_hero_video(tmp_path: Path) 
     assert product.translations.get(locale="en").name == "Owner Dress"
     hero = HomepageSection.objects.get(key="hero").content["en"]
     assert hero["video"].endswith(".mp4") and hero["feature_product"] == "silk-column-dress"
+
+
+def test_import_assets_keeps_a_narrow_photo_whole(tmp_path: Path) -> None:
+    """A tall, narrow photo (a full-length model shot) is widened, never cropped: head and hem stay."""
+    folder = tmp_path / "assets" / "products" / "silk-column-dress"
+    folder.mkdir(parents=True)
+    tall = Image.new("RGB", (960, 2000), (30, 30, 40))
+    tall.paste((240, 240, 240), (0, 0, 960, 3))  # a thin white frame line, as some generators leave
+    tall.paste((200, 60, 60), (430, 3, 530, 60))  # "head" at the very top
+    tall.paste((60, 60, 200), (430, 1940, 530, 2000))  # "hem" at the very bottom
+    tall.save(folder / "1.jpg")
+    call_command("import_assets", str(tmp_path / "assets"), stdout=open("/dev/null", "w"))  # noqa: SIM115
+    photo = Product.objects.get(slug="silk-column-dress").images.exclude(url="").get()
+    with Image.open(tmp_path / photo.url.removeprefix("/media/")) as page:
+        assert page.size == (1600, 2000)
+        top = page.getpixel((800, 30))
+        bottom = page.getpixel((800, 1975))
+        assert isinstance(top, tuple) and isinstance(bottom, tuple)
+        assert top[0] > 150 and bottom[2] > 150  # both ends survive
+        edge = page.getpixel((800, 1))
+        assert isinstance(edge, tuple) and edge[0] < 200  # the white frame line was trimmed
