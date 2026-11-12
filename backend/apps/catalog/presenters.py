@@ -72,6 +72,8 @@ def collection_image(col: Collection, locale: str) -> dict[str, str] | None:
     have no image of their own yet (no schema change in the homepage redesign)."""
     from .models import ProductImage, ProductStatus
 
+    if col.cover_url.startswith("/media/"):
+        return {"url": col.cover_url, "alt": _pick(col.cover_alt_en, col.cover_alt_ur, locale)}
     image = (
         ProductImage.objects.filter(product__collectionitem__collection=col, product__status=ProductStatus.PUBLISHED)
         .exclude(url="")

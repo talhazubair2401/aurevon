@@ -351,7 +351,12 @@ export async function BrandStory({ content, locale }: { content: Content; locale
     <section className={styles.story} aria-labelledby="story-title">
       <Reveal className={styles.storyInner}>
         <div className={styles.storyMedia}>
-          <PendingImage locale={locale} what="story" />
+          {content.image?.startsWith("/media/") ? (
+            // eslint-disable-next-line @next/next/no-img-element -- served pre-sized from the media library
+            <img src={content.image} alt="" className={styles.editorialPhoto} loading="lazy" />
+          ) : (
+            <PendingImage locale={locale} what="story" />
+          )}
         </div>
         <div className={styles.storyCopy}>
           {content.eyebrow ? <p className={styles.eyebrow}>{content.eyebrow}</p> : null}

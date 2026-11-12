@@ -40,3 +40,6 @@ backend/media-private-test/
 
 # Draco decoder, copied from three.js by aurevon-copy-decoders (M6)
 apps/*/public/3d/
+
+# Owner photo drop folder (imported with manage.py import_assets; never committed)
+aurevon-assets/

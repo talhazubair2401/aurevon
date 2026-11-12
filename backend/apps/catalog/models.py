@@ -95,6 +95,10 @@ class Collection(models.Model):
     description_ur = models.TextField(blank=True)
     demo_art = models.CharField(max_length=20, choices=DemoArt.choices, blank=True)
     tone = models.CharField(max_length=7, default="#3B2F2F", help_text="Background tone for its card, #RRGGBB")
+    # Editorial cover photograph (a /media/ address); without one, the first product photograph is used.
+    cover_url = models.CharField(max_length=300, blank=True)
+    cover_alt_en = models.CharField(max_length=200, blank=True)
+    cover_alt_ur = models.CharField(max_length=200, blank=True)
     is_published = models.BooleanField(default=False)
     position = models.PositiveIntegerField(default=0)
 

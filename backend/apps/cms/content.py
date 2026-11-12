@@ -74,6 +74,8 @@ SECTION_FIELDS: dict[str, list[Field]] = {
         Field("title", "Title", required=True),
         Field("body", "Story", kind="textarea", max_length=1200),
         *_link("link", "Link"),
+        # A photograph already in the media library (an address starting /media/); shared by both languages.
+        Field("image", "Photo (a /media/ address)", max_length=300, translatable=False),
     ],
 }
 

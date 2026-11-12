@@ -107,6 +107,9 @@ def remove_image(image: ProductImage, actor: Actor, request: Any = None) -> None
         store = storage()
 
         def remove_files() -> None:
+            # Keys are content-addressed: the same photo re-added in this transaction reuses the files.
+            if ProductImage.objects.filter(storage_key=key).exists():
+                return
             for k in (key, key.replace("-page.", "-thumb.")):
                 store.delete(k)
 

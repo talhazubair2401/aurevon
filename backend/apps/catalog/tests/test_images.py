@@ -123,3 +123,24 @@ def test_local_storage_refuses_keys_outside_its_folder(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError):
         LocalStorage(tmp_path).put("../escape.webp", b"x", "image/webp")
+
+
+def test_import_assets_twice_keeps_the_photo_files(tmp_path: Path) -> None:
+    """Keys are content-addressed: re-importing the same photos must not delete the files the new records use."""
+    folder = tmp_path / "assets" / "products" / "silk-column-dress"
+    folder.mkdir(parents=True)
+    wide = Image.new("RGB", (2752, 1536), (40, 40, 60))
+    wide.paste((230, 220, 200), (2000, 300, 2400, 1400))  # an off-centre garment
+    wide.save(folder / "1.jpg")
+    (folder / "info.txt").write_text("Product Name: Silk Column Dress\nPrice: PKR 39,000\n", encoding="utf-8")
+    for _ in range(2):
+        call_command("import_assets", str(tmp_path / "assets"), stdout=open("/dev/null", "w"))  # noqa: SIM115
+    product = Product.objects.get(slug="silk-column-dress")
+    photos = list(product.images.exclude(url=""))
+    assert len(photos) == 1 and not product.images.filter(url="").exists()
+    assert (tmp_path / photos[0].url.removeprefix("/media/")).exists()
+    assert product.base_price == 39000
+    with Image.open(tmp_path / photos[0].url.removeprefix("/media/")) as page:
+        assert page.size == (1600, 2000)
+        light = int(page.convert("L").getpixel((800, 1000)))  # type: ignore[arg-type]
+        assert light > 150  # the crop followed the off-centre garment
