@@ -144,3 +144,25 @@ def test_import_assets_twice_keeps_the_photo_files(tmp_path: Path) -> None:
         assert page.size == (1600, 2000)
         light = int(page.convert("L").getpixel((800, 1000)))  # type: ignore[arg-type]
         assert light > 150  # the crop followed the off-centre garment
+
+
+def test_start_up_reseed_keeps_the_owners_photos_and_hero_video(tmp_path: Path) -> None:
+    """Compose re-runs seed_demo_catalog on every start; it must not undo import_assets."""
+    from apps.cms.models import HomepageSection
+
+    root = tmp_path / "assets"
+    folder = root / "products" / "silk-column-dress"
+    folder.mkdir(parents=True)
+    Image.new("RGB", (1600, 2000), (90, 60, 40)).save(folder / "1.jpg")
+    (folder / "info.txt").write_text("Product Name: Owner Dress\nPrice: PKR 41,000\n", encoding="utf-8")
+    (root / "hero.mp4").write_bytes(b"\x00\x00\x00\x18ftypmp42")
+    Image.new("RGB", (1920, 1080), (20, 20, 30)).save(root / "hero.jpg")
+    quiet = open("/dev/null", "w")  # noqa: SIM115
+    call_command("import_assets", str(root), stdout=quiet)
+    call_command("seed_demo_catalog", stdout=quiet)
+    product = Product.objects.get(slug="silk-column-dress")
+    assert product.images.exclude(url="").count() == 1
+    assert product.base_price == 41000
+    assert product.translations.get(locale="en").name == "Owner Dress"
+    hero = HomepageSection.objects.get(key="hero").content["en"]
+    assert hero["video"].endswith(".mp4") and hero["feature_product"] == "silk-column-dress"

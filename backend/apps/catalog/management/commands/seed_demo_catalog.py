@@ -12,6 +12,7 @@ from typing import Any
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.db.models import ProtectedError
 from django.utils import timezone
 
 from apps.catalog import services
@@ -634,6 +635,10 @@ class Command(BaseCommand):
         for position, row in enumerate(PRODUCTS):
             slug, dept, cat, art, en, ur, price, colours, sizes, featured, collections, age = row
             sizes = category_sizes(cat, sizes)
+            # The owner's photographs and details (import_assets or staff edits) win: a product that has real
+            # photographs is never reset to the demo, so re-seeding on start-up keeps them.
+            if ProductImage.objects.filter(product__slug=slug).exclude(url="").exists():
+                continue
             product, _ = Product.objects.update_or_create(
                 slug=slug,
                 defaults={
@@ -681,10 +686,16 @@ class Command(BaseCommand):
                     )
                     wanted.append(variant.pk)
             # Demo only: variants no longer in the demo list go, with their (demo) stock records.
+            # Anything a bag, reservation or order still points at is switched off instead (never deleted).
             stale = ProductVariant.objects.filter(product=product).exclude(pk__in=wanted)
-            StockMovement.objects.filter(item__variant__in=stale).delete()
-            InventoryItem.objects.filter(variant__in=stale).delete()
-            stale.delete()
+            for variant in stale:
+                try:
+                    with transaction.atomic():
+                        StockMovement.objects.filter(item__variant=variant).delete()
+                        InventoryItem.objects.filter(variant=variant).delete()
+                        variant.delete()
+                except ProtectedError:
+                    ProductVariant.objects.filter(pk=variant.pk).update(is_active=False)
             inventory.ensure_items(wanted)
             for index, variant_id in enumerate(wanted):
                 # Deterministic demo stock: most variants in stock, a few sold out, so both states show.
@@ -707,7 +718,14 @@ class Command(BaseCommand):
             services.refresh_price_range(product)
             services.refresh_search(product)
 
+        # Media the owner set (import_assets or staff) survives re-seeding; the demo text is refreshed.
+        owner_fields = ("image", "video", "video_poster", "feature_product")
         for key, position, content in HOME_SECTIONS:
+            existing = HomepageSection.objects.filter(key=key).first()
+            kept = (existing.content or {}).get("en", {}) if existing and isinstance(existing.content, dict) else {}
+            owned = {f: kept[f] for f in owner_fields if kept.get(f)}
+            if owned:
+                content = {**content, "en": {**content.get("en", {}), **owned}}
             HomepageSection.objects.update_or_create(
                 key=key, defaults={"position": position, "is_enabled": True, "content": content, "draft": None}
             )
